@@ -3,6 +3,8 @@
 *.md
 *.MD
 *.markdown
+# ...except the public README (D-053)
+!/README.md
 
 # Claude Code local config
 .claude/

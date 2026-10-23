@@ -1,0 +1,46 @@
+# CubeBuddy
+
+A free speedcubing companion that runs in your browser: a timer, a virtual cube with solving hints, an algorithm trainer, and step-by-step CFOP (3x3) and Ortega (2x2) tutorials.
+
+**Live:** https://coder-r2.github.io/cubebuddy/
+
+> 🚧 Under active development. Pages are being built one by one; unfinished ones show a "Coming soon" note.
+
+## Features
+
+- **Timer** — WCA random-state scrambles with a preview, spacebar or touch timing, 15 s inspection, +2/DNF, sessions, Ao5 to Ao100, a progress graph, and cstimer import/export.
+- **Free-play** — turn a virtual 3x3 or 2x2 by tapping, with the keyboard (cstimer layout) or an on-screen move pad, and get help with the next cross, F2L pair, OLL or PLL.
+- **Algorithm trainer** — F2L, 2-look and full OLL/PLL, Ortega and CLL, with 3D demos, timed and recognition drills, progress tracking and printable sheets.
+- **Tutorials** — solve any scramble with CFOP or Ortega, one highlighted step at a time.
+- **Works everywhere** — laptop, tablet and phone; light and dark themes; your data stays on your device, with optional sync across devices.
+
+## Tech stack
+
+React 19 · TypeScript · Vite · Tailwind CSS · Zustand · Dexie (IndexedDB) · [cubing.js](https://js.cubing.net/cubing/) · Firebase (optional sign-in and sync) · Vitest · Playwright · GitHub Actions + GitHub Pages.
+
+## Development
+
+Requires Node.js 24+.
+
+```bash
+npm install
+cp .env.example .env.local   # optional: Firebase web config, only needed for sign-in/sync
+npm run dev                  # http://localhost:5173/cubebuddy/
+```
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build into `dist/` |
+| `npm run preview` | Serve the production build at http://localhost:4173/cubebuddy/ |
+| `npm test` | Unit tests (Vitest) |
+| `npm run test:e2e` | Browser tests (Playwright; run `npm run build` first) |
+| `npm run lint` / `npm run typecheck` / `npm run format` | Code quality |
+
+## Deployment
+
+Every push to `main` runs lint, type checks, unit and browser tests, then builds and publishes to GitHub Pages. A failing check blocks the deploy.
+
+## Credits
+
+3D cube rendering, scrambles and puzzle search are provided by [cubing.js](https://github.com/cubing/cubing.js) (MPL-2.0). The default keyboard layout follows [csTimer](https://cstimer.net)'s virtual cube.
