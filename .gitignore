@@ -1,0 +1,39 @@
+# --- Local-only docs: no Markdown file is ever committed (D-051) ---
+# SPEC.md, SPEC.original.md, plan.md, decisions.md, CLAUDE.md, notes, etc.
+*.md
+*.MD
+*.markdown
+
+# Claude Code local config
+.claude/
+
+# Environment files (Firebase config lives in GitHub repository variables for CI)
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+dist/
+dev-dist/
+coverage/
+*.tsbuildinfo
+.vite/
+
+# Test artifacts
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
