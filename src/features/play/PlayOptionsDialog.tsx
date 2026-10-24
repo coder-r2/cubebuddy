@@ -57,6 +57,21 @@ export function HelperOptions({ speed = true }: { speed?: boolean }) {
         Right-click turns the other way. Shift-click turns a middle slice, Ctrl-click rotates the whole cube.
       </p>
       <Choice
+        legend="Cross colour"
+        name="crossColorMode"
+        value={settings.crossColorMode}
+        options={[
+          ['white', 'White'],
+          ['white-yellow', 'White or yellow'],
+          ['neutral', 'Any colour'],
+        ]}
+        onChange={(crossColorMode) => void update({ crossColorMode })}
+      />
+      <p className="-mt-3 text-sm text-muted">
+        With more than one colour, the helpers pick whichever cross is shortest (on the 2x2, the first face)
+        and keep that colour for the rest of the solve.
+      </p>
+      <Choice
         legend="F2L helper style"
         name="f2lStyle"
         value={settings.f2lStyle}

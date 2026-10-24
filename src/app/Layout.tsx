@@ -7,7 +7,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { UpdatePrompt } from './UpdatePrompt';
 
 const topLink = ({ isActive }: { isActive: boolean }) =>
-  `rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap ${
+  `rounded-lg px-2.5 py-2 xl:px-3 text-sm font-medium whitespace-nowrap ${
     isActive ? 'bg-surface-2 text-text' : 'text-muted hover:bg-surface-2 hover:text-text'
   }`;
 

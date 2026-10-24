@@ -1,15 +1,15 @@
 # CubeBuddy
 
-A free speedcubing companion that runs in your browser: a timer, a virtual cube with solving hints, an algorithm trainer, and step-by-step CFOP (3x3) and Ortega (2x2) tutorials.
+A free speedcubing companion that runs in your browser: a timer, a virtual cube with solving hints, an algorithm trainer, and step-by-step beginner, CFOP (3x3) and Ortega (2x2) tutorials.
 
 **Live:** https://coder-r2.github.io/cubebuddy/
 
 ## Features
 
 - **Timer** — WCA random-state scrambles with a preview, spacebar or touch timing, 15 s inspection, +2/DNF, sessions, Ao5 to Ao100, a progress graph, and cstimer import/export.
-- **Free-play** — turn a virtual 3x3 or 2x2 by tapping, with the keyboard (cstimer layout) or an on-screen move pad, and get help with the next cross, F2L pair, OLL or PLL.
+- **Free-play** — turn a virtual 3x3 or 2x2 by tapping, with the keyboard (cstimer layout) or an on-screen move pad, and get help with the next cross, F2L pair, OLL or PLL. The cross can be white only, white or yellow, or any colour (colour neutral).
 - **Algorithm trainer** — F2L, 2-look and full OLL/PLL, Ortega and CLL, with 3D demos, timed and recognition drills, progress tracking and printable sheets.
-- **Tutorials** — solve any scramble with CFOP or Ortega, one highlighted step at a time.
+- **Tutorials** — solve any scramble with the beginner layer-by-layer method, CFOP or Ortega, one highlighted step at a time.
 - **Learn** — a short quiz that sets CubeBuddy up for your level, and a notation course with a live cube and a mini-quiz.
 - **Works everywhere** — laptop, tablet and phone; installable and fully usable offline; light and dark themes. Your data stays on your device, with optional sign-in (Google or email) to sync across devices and a JSON backup.
 

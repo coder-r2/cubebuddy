@@ -32,6 +32,12 @@ const FEATURES: Feature[] = [
     icon: 'target',
   },
   {
+    to: '/tutorial/beginner',
+    title: 'Beginner tutorial',
+    description: 'Never solved a cube? Learn layer by layer, one short alg per step.',
+    icon: 'route',
+  },
+  {
     to: '/tutorial/cfop',
     title: 'CFOP tutorial',
     description: 'Solve any scramble step by step: cross, F2L, OLL, PLL.',

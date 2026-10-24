@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { CubeView, type CubeViewHandle } from '../../components/CubeView/CubeView';
 import { MovePad } from '../../components/MovePad';
 import { Icon } from '../../components/ui/Icon';
 import type { Puzzle } from '../../db/types';
 import type { Analysis, EngineStep } from '../../engine/api';
 import { useCubeKeys } from '../../lib/useCubeKeys';
-import { useHelperEngine } from '../../lib/useHelperEngine';
+import { COLOUR_NAMES } from '../../engine/colourSets';
+import { useHelperEngine, useHelperOptions } from '../../lib/useHelperEngine';
 import { useSettings } from '../../stores/settings';
 import { nextScramble } from '../timer/scrambles';
 import { HistoryPanel } from './HistoryPanel';
@@ -31,11 +32,16 @@ interface HelperButtons {
 
 function helperButtons(analysis: Analysis | null, llMode: string): HelperButtons {
   if (!analysis) return { status: 'Analysing…' };
+  const colour = COLOUR_NAMES[analysis.colour]!;
   if (analysis.puzzle === '2x2x2') {
     const r = analysis.report;
     switch (r.stage) {
       case 'face':
-        return { status: 'First face (white) not made yet', find: 'Find face pieces', solve: 'Solve face' };
+        return {
+          status: `First face (${colour}) not made yet`,
+          find: 'Find face pieces',
+          solve: 'Solve face',
+        };
       case 'oll':
         return { status: 'Face ✓ · top not oriented', show: 'Show OLL case', solve: 'Solve OLL' };
       case 'pbl':
@@ -50,7 +56,11 @@ function helperButtons(analysis: Analysis | null, llMode: string): HelperButtons
   const twoLook = llMode === '2-look';
   switch (r.stage) {
     case 'cross':
-      return { status: 'White cross not solved', find: 'Find cross', solve: 'Solve cross' };
+      return {
+        status: `${colour[0]!.toUpperCase()}${colour.slice(1)} cross not solved`,
+        find: 'Find cross',
+        solve: 'Solve cross',
+      };
     case 'f2l':
       return {
         status: `Cross ✓ · ${r.solvedPairs.length}/4 F2L pairs`,
@@ -93,10 +103,7 @@ export default function PlayPage() {
   const [optionsOpen, setOptionsOpen] = useState(false);
   const playback = useRef<{ timer: number; cancelled: boolean } | null>(null);
   const tempo = settings.animationSpeed;
-  const solveOptions = useMemo(
-    () => ({ colour: 0, f2lStyle: settings.f2lStyle, llMode: settings.llMode }),
-    [settings.f2lStyle, settings.llMode],
-  );
+  const { options: solveOptions } = useHelperOptions();
 
   // Re-analyse after every change (SPEC §5.3); stale answers are ignored.
   useEffect(() => {

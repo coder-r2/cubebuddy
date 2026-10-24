@@ -62,6 +62,10 @@ export default function AboutPage() {
             CubeBuddy’s own order, as F2L numbering differs between sources.
           </li>
           <li>
+            <strong>Beginner tutorial:</strong> the layer-by-layer method and algorithms taught in most
+            beginner guides, such as {ext('https://jperm.net/3x3', 'J Perm’s beginner tutorial')}.
+          </li>
+          <li>
             <strong>CLL, F2L Advanced and two F2L Basic cases:</strong> found by CubeBuddy’s solver and marked
             as such in the trainer. F2L algorithms only use “pair up, then insert” moves, so they never break
             the cross. You can replace any algorithm with your own.

@@ -5,6 +5,8 @@ import { formatAlg, parseAlg } from './notation';
 import { nextStep, solveAll, slotColours, solveNextPair, type SolveOptions, type Step } from './solvers';
 import { warmUp } from './tables';
 import { setAlgChoices } from './algSource';
+import { chooseColour } from './colour';
+import { analyseLbl, nextLblStep, solveAllLbl, type LblReport } from './lbl';
 
 /*
  * Engine API (SPEC §6.6). Plain functions so the worker and the tests share them; states are passed as
@@ -13,8 +15,22 @@ import { setAlgChoices } from './algSource';
 
 export type Puzzle = '3x3x3' | '2x2x2';
 
+/** Solver settings plus the allowed cross colours; the engine picks one of them for each cube (D-095). */
+export interface HelperOptions extends SolveOptions {
+  colours?: readonly number[];
+  /** 3x3 method: CFOP (default) or the beginner layer-by-layer method (D-096). */
+  method?: 'cfop' | 'lbl';
+}
+
+export interface LblAnalysis {
+  colour: number;
+  report: LblReport;
+}
+
 export interface EngineStep {
   kind: Step['kind'];
+  /** The cross (2x2: first-face) colour the step solves with. */
+  colour: number;
   label: string;
   caseName?: string;
   alg?: string;
@@ -25,7 +41,12 @@ export interface EngineStep {
   moves: string[];
 }
 
-export type Analysis = { puzzle: '3x3x3'; report: StageReport } | { puzzle: '2x2x2'; report: StageReport2x2 };
+export type Analysis = (
+  { puzzle: '3x3x3'; report: StageReport } | { puzzle: '2x2x2'; report: StageReport2x2 }
+) & {
+  /** The cross (2x2: first-face) colour the report is for. */
+  colour: number;
+};
 
 export interface PieceHint {
   label: string;
@@ -35,9 +56,16 @@ export interface PieceHint {
 
 const stateOf = (moves: string): Facelets => applyMoves(solvedFacelets(), parseAlg(moves));
 
+/** The options with the colour picked for this cube. */
+function resolve(state: Facelets, puzzle: Puzzle, options: HelperOptions): SolveOptions & { colour: number } {
+  const { colours, method: _method, ...rest } = options;
+  return { ...rest, colour: colours ? chooseColour(state, puzzle, colours) : (options.colour ?? 0) };
+}
+
 /** `state` is the cube the step starts from. */
-const toEngineStep = (step: Step, state: Facelets, colour = 0): EngineStep => ({
+const toEngineStep = (step: Step, state: Facelets, colour: number): EngineStep => ({
   kind: step.kind,
+  colour,
   label: step.label,
   caseName: step.caseName,
   alg: step.alg,
@@ -58,34 +86,49 @@ export const engine = {
     setAlgChoices(choices);
   },
 
-  analyse(moves: string, puzzle: Puzzle, options: SolveOptions = {}): Analysis {
+  analyse(moves: string, puzzle: Puzzle, options: HelperOptions = {}): Analysis {
     const state = stateOf(moves);
+    const { colour } = resolve(state, puzzle, options);
     return puzzle === '2x2x2'
-      ? { puzzle, report: analyse2x2(state, options.colour) }
-      : { puzzle, report: analyse3x3(state, options.colour) };
+      ? { puzzle, colour, report: analyse2x2(state, colour) }
+      : { puzzle, colour, report: analyse3x3(state, colour) };
   },
 
   /** The next helper step (solve cross / next pair / LL step / AUF; 2x2: face / OLL / PBL), or null. */
-  nextStep(moves: string, puzzle: Puzzle, options: SolveOptions = {}): EngineStep | null {
+  nextStep(moves: string, puzzle: Puzzle, options: HelperOptions = {}): EngineStep | null {
     const state = stateOf(moves);
-    const step = nextStep(state, puzzle, options);
-    return step ? toEngineStep(step, state, options.colour) : null;
+    const resolved = resolve(state, puzzle, options);
+    const step = lbl(puzzle, options)
+      ? nextLblStep(state, resolved.colour)
+      : nextStep(state, puzzle, resolved);
+    return step ? toEngineStep(step, state, resolved.colour) : null;
   },
 
-  /** Every remaining step (full CFOP / Ortega). */
-  solveAll(moves: string, puzzle: Puzzle, options: SolveOptions = {}): EngineStep[] {
+  /** Every remaining step (full CFOP / Ortega), all with the colour picked for the starting cube. */
+  solveAll(moves: string, puzzle: Puzzle, options: HelperOptions = {}): EngineStep[] {
     let state = stateOf(moves);
-    return solveAll(state, puzzle, options).map((step) => {
-      const result = toEngineStep(step, state, options.colour);
+    const resolved = resolve(state, puzzle, options);
+    const steps = lbl(puzzle, options)
+      ? solveAllLbl(state, resolved.colour)
+      : solveAll(state, puzzle, resolved);
+    return steps.map((step) => {
+      const result = toEngineStep(step, state, resolved.colour);
       state = applyMoves(state, step.moves);
       return result;
     });
   },
 
-  /** Highlight for "Find cross" / "Find next F2L pair" / "Find face", and the tutorial's last-layer hints. */
-  findPieces(moves: string, puzzle: Puzzle, options: SolveOptions = {}): PieceHint | null {
+  /** Stage analysis for the beginner method (3x3). */
+  analyseLbl(moves: string, options: HelperOptions = {}): LblAnalysis {
     const state = stateOf(moves);
-    const colour = options.colour ?? 0;
+    const { colour } = resolve(state, '3x3x3', options);
+    return { colour, report: analyseLbl(state, colour) };
+  },
+
+  /** Highlight for "Find cross" / "Find next F2L pair" / "Find face", and the tutorial's last-layer hints. */
+  findPieces(moves: string, puzzle: Puzzle, options: HelperOptions = {}): PieceHint | null {
+    const state = stateOf(moves);
+    const { colour } = resolve(state, puzzle, options);
     const top = (colour + 3) % 6; // the opposite face's colour
     if (puzzle === '2x2x2') {
       const stage = analyse2x2(state, colour).stage;
@@ -96,6 +139,25 @@ export const engine = {
       if (stage !== 'face') return null;
       const corners = CORNER_HOMES.filter((c) => c.includes(colour));
       return { label: 'First-face pieces', mask: highlightMask(puzzle, { corners }) };
+    }
+    if (lbl(puzzle, options)) {
+      const { stage } = analyseLbl(state, colour);
+      if (stage === 'corners' || stage === 'middle') {
+        const step = nextLblStep(state, colour);
+        if (!step?.slot) return null;
+        const { corner, edge } = slotColours(state, colour, step.slot);
+        return stage === 'corners'
+          ? { label: 'The next corner', mask: highlightMask(puzzle, { corners: [corner] }) }
+          : { label: 'The next edge', mask: highlightMask(puzzle, { edges: [edge] }) };
+      }
+      if (stage === 'cross') {
+        const edges = EDGE_HOMES.filter((e) => e.includes(colour));
+        return { label: 'Cross pieces', mask: highlightMask(puzzle, { edges }) };
+      }
+      if (stage === 'solved' || stage === 'auf') return null;
+      const corners = CORNER_HOMES.filter((c) => c.includes(top));
+      const edges = EDGE_HOMES.filter((e) => e.includes(top));
+      return { label: 'Last-layer pieces', mask: highlightMask(puzzle, { corners, edges }) };
     }
     const report = analyse3x3(state, colour);
     if (report.stage === 'cross') {
@@ -121,6 +183,8 @@ export const engine = {
 };
 
 export type EngineAPI = typeof engine;
+
+const lbl = (puzzle: Puzzle, options: HelperOptions) => puzzle === '3x3x3' && options.method === 'lbl';
 
 // Piece identities as home-face colour lists (U0 R1 F2 D3 L4 B5).
 const EDGE_HOMES = [

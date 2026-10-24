@@ -133,10 +133,6 @@ export default function SettingsPage() {
 
       <Section id="settings-helpers" title="Solving helpers">
         <HelperOptions speed={false} />
-        <p className="mt-5 text-sm text-muted">
-          Cross colour: <span className="font-medium text-text">white</span>. White-or-yellow and
-          colour-neutral crosses are planned for a later update.
-        </p>
       </Section>
 
       <Section id="settings-timer" title="Timer">

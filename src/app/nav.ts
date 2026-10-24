@@ -14,6 +14,7 @@ export const MAIN_NAV: NavItem[] = [
   { to: '/play', label: 'Free-play', icon: 'cube' },
   { to: '/timer', label: 'Timer', icon: 'timer' },
   { to: '/trainer', label: 'Trainer', icon: 'target' },
+  { to: '/tutorial/beginner', label: 'Beginner tutorial', icon: 'route' },
   { to: '/tutorial/cfop', label: 'CFOP tutorial', icon: 'route' },
   { to: '/tutorial/ortega', label: 'Ortega tutorial', icon: 'route' },
 ];
@@ -33,6 +34,7 @@ export const BOTTOM_NAV: NavItem[] = [
 
 export const MORE_NAV: NavItem[] = [
   { to: '/learn', label: 'Learn', icon: 'book' },
+  { to: '/tutorial/beginner', label: 'Beginner tutorial', icon: 'route' },
   { to: '/tutorial/cfop', label: 'CFOP tutorial', icon: 'route' },
   { to: '/tutorial/ortega', label: 'Ortega tutorial', icon: 'route' },
   ...ACCOUNT_NAV,

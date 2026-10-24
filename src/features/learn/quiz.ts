@@ -69,7 +69,7 @@ export const SUGGESTED_START: Record<Level, Suggestion> = {
   1: {
     to: '/learn#notation',
     title: 'Learn the notation',
-    text: 'Start with what R, U′ and friends mean. Then follow a beginner tutorial to solve your first cube.',
+    text: 'Start with what R, U′ and friends mean. Then the beginner tutorial walks you through your first solve.',
   },
   2: {
     to: '/tutorial/cfop',

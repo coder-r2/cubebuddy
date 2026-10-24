@@ -107,3 +107,47 @@ test('OLL case popup shows the diagram and alg', async ({ page }) => {
   await expect(dialog.getByRole('img')).toBeVisible();
   await expect(dialog).toContainText("R U R' U R U2 R'");
 });
+
+test('white-or-yellow mode solves the shorter yellow cross', async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto('tutorial/cfop');
+  await page.getByRole('button', { name: 'Tutorial options' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Tutorial options' });
+  await dialog.getByRole('radio', { name: 'White or yellow' }).check();
+  await dialog.getByRole('radio', { name: 'Very fast' }).check();
+  await dialog.getByRole('button', { name: 'Close' }).click();
+
+  // The triggers bring the yellow edges back, so the yellow cross is one D turn away; the white one isn't.
+  await page.getByRole('textbox', { name: /type the scramble/ }).fill("R U R' F U2 F' L U L' D");
+  await page.getByRole('button', { name: 'Start' }).click();
+  await expect(stage(page)).toHaveText('Cross', { timeout: 30_000 });
+  await expect(page.getByTestId('step-title')).toHaveText('Solve the yellow cross');
+  await expect(page.getByText(/Solve the four yellow edges/)).toBeVisible();
+
+  // An easy scramble: F2L may finish the last layer too, so only the end is checked.
+  await playToSolved(page);
+  await expect(stage(page)).toHaveText('Solved');
+});
+
+test('beginner tutorial: random scramble to solved, layer by layer', async ({ page }) => {
+  test.setTimeout(240_000);
+  await page.goto('tutorial/beginner');
+  await expect(page.getByRole('heading', { name: 'Beginner tutorial' })).toBeVisible();
+  await setVeryFast(page);
+  await page.getByRole('button', { name: 'Random scramble' }).click();
+  await expect(stage(page)).toHaveText('Cross', { timeout: 30_000 });
+  await expect(page.getByTestId('step-title')).toHaveText('Solve the white cross');
+
+  const seen = await playToSolved(page);
+  expect(seen.slice(0, 3)).toEqual(['Cross', 'First layer', 'Middle layer']);
+  expect(seen).toContain('Twist corners');
+  await expect(stage(page)).toHaveText('Solved');
+  await expect(page.getByRole('link', { name: 'Next: the CFOP tutorial' })).toBeVisible();
+});
+
+test('the Learn page sends new cubers to the beginner tutorial', async ({ page }) => {
+  await page.goto('learn');
+  await page.getByRole('button', { name: 'Skip quiz' }).click();
+  await page.getByRole('link', { name: 'beginner tutorial', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Beginner tutorial' })).toBeVisible();
+});

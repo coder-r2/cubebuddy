@@ -14,6 +14,7 @@ const TimerPage = lazy(() => import('../features/timer/TimerPage'));
 const TrainerPage = lazy(() => import('../features/trainer/TrainerPage'));
 const CfopTutorialPage = lazy(() => import('../features/tutorial/CfopTutorialPage'));
 const OrtegaTutorialPage = lazy(() => import('../features/tutorial/OrtegaTutorialPage'));
+const BeginnerTutorialPage = lazy(() => import('../features/tutorial/BeginnerTutorialPage'));
 const SettingsPage = lazy(() => import('../features/settings/SettingsPage'));
 const AccountPage = lazy(() => import('../features/account/AccountPage'));
 const LabPage = lazy(() => import('../features/lab/LabPage'));
@@ -45,6 +46,7 @@ export function App() {
         <Route path="trainer/:setId/print" element={<TrainerPage />} />
         <Route path="tutorial/cfop" element={<CfopTutorialPage />} />
         <Route path="tutorial/ortega" element={<OrtegaTutorialPage />} />
+        <Route path="tutorial/beginner" element={<BeginnerTutorialPage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="lab" element={<LabPage />} />

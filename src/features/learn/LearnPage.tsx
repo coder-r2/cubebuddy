@@ -5,9 +5,6 @@ import { NotationCourse } from './NotationCourse';
 import { OnboardingQuiz } from './OnboardingQuiz';
 import { LEVEL_NAMES, SUGGESTED_START } from './quiz';
 
-/** External beginner tutorial for people who have never solved a cube (SPEC §5.2; built-in LBL is P6c). */
-const BEGINNER_TUTORIAL = 'https://jperm.net/3x3';
-
 function LearnContent({ startWithQuiz }: { startWithQuiz: boolean }) {
   const [quiz, setQuiz] = useState(startWithQuiz);
   const level = useSettings((s) => s.settings.level);
@@ -43,11 +40,11 @@ function LearnContent({ startWithQuiz }: { startWithQuiz: boolean }) {
           <div className="rounded-xl border border-accent/40 bg-accent/5 p-4">
             <p className="font-medium">Never solved a cube?</p>
             <p className="mt-1 text-sm text-muted">
-              Learn the notation below, then follow a{' '}
-              <a href={BEGINNER_TUTORIAL} target="_blank" rel="noreferrer" className="text-accent underline">
-                beginner’s method tutorial by J Perm
-              </a>{' '}
-              to solve your first cube. Once you can, the CFOP tutorial here takes you further.
+              Learn the notation below, then solve your first cube with the{' '}
+              <Link to="/tutorial/beginner" className="text-accent underline">
+                beginner tutorial
+              </Link>
+              . Once you can, the CFOP tutorial takes you further.
             </p>
           </div>
         )}

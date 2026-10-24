@@ -26,7 +26,25 @@ import { caseState } from './cases';
 import { getCrossTable, getFaceTable, moveFacePattern } from './tables';
 
 export type StepKind =
-  'cross' | 'pair' | 'eo' | 'ocll' | 'oll' | 'cpll' | 'epll' | 'pll' | 'auf' | 'face' | 'ortega-oll' | 'pbl';
+  | 'cross'
+  | 'pair'
+  | 'eo'
+  | 'ocll'
+  | 'oll'
+  | 'cpll'
+  | 'epll'
+  | 'pll'
+  | 'auf'
+  | 'face'
+  | 'ortega-oll'
+  | 'pbl'
+  // Beginner layer-by-layer (lbl.ts)
+  | 'lbl-corner'
+  | 'lbl-edge'
+  | 'lbl-eo'
+  | 'lbl-ep'
+  | 'lbl-cp'
+  | 'lbl-co';
 
 export interface Step {
   kind: StepKind;
@@ -57,11 +75,19 @@ export interface SolveOptions {
 
 const crossIndex = (v: ArrayLike<number>) => ((v[0]! * 24 + v[1]!) * 24 + v[2]!) * 24 + v[3]!;
 
+const crossEdges = (framed: Facelets) => {
+  const { edges } = readPieces(framed);
+  return [edges[4]!, edges[5]!, edges[6]!, edges[7]!];
+};
+
+/** Optimal move count for the cross of `colour` (rotations not counted). */
+export const crossDistance = (state: Facelets, colour: number) =>
+  getCrossTable()[crossIndex(crossEdges(frameForCentre(state, colour).state))]!;
+
 export function solveCross(state: Facelets, colour = 0): Step {
   const { prefix, state: framed } = frameForCentre(state, colour);
-  const { edges } = readPieces(framed);
   const table = getCrossTable();
-  let values = [edges[4]!, edges[5]!, edges[6]!, edges[7]!];
+  let values = crossEdges(framed);
   let distance = table[crossIndex(values)]!;
   const path: Move[] = [];
   let previous = -1;
@@ -305,7 +331,8 @@ function facePattern(state: Facelets, colour: number): number {
 /** Bottom-face candidates, starting with no rotation. */
 const FACE_ORDER = [3, 0, 1, 2, 4, 5];
 
-export function solveFace(state: Facelets, colour = 0): Step {
+/** The bottom face that's quickest to make in `colour`, and its optimal move count. */
+function bestFace(state: Facelets, colour: number) {
   const table = getFaceTable();
   let best: { prefix: Move[]; pattern: number; distance: number } | null = null;
   for (const face of FACE_ORDER) {
@@ -314,7 +341,16 @@ export function solveFace(state: Facelets, colour = 0): Step {
     const distance = table[pattern]!;
     if (!best || distance < best.distance) best = { prefix, pattern, distance };
   }
-  let { pattern, distance } = best!;
+  return best!;
+}
+
+/** Optimal move count for a face of `colour` on a 2x2 (rotations not counted). */
+export const faceDistance = (state: Facelets, colour: number) => bestFace(state, colour).distance;
+
+export function solveFace(state: Facelets, colour = 0): Step {
+  const table = getFaceTable();
+  const best = bestFace(state, colour);
+  let { pattern, distance } = best;
   const path: Move[] = [];
   let previous = -1;
   while (distance > 0) {
@@ -333,7 +369,7 @@ export function solveFace(state: Facelets, colour = 0): Step {
     }
     if (!advanced) throw new Error('Face search failed');
   }
-  return { kind: 'face', label: 'First face', moves: [...best!.prefix, ...path] };
+  return { kind: 'face', label: 'First face', moves: [...best.prefix, ...path] };
 }
 
 const cornerFaceUniform = (s: Facelets, face: number) =>
