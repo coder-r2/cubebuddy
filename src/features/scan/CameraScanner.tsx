@@ -2,6 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { COLOUR_NAMES, STICKER_HEX } from '../../engine/colourSets';
 import { averageRgb, rgbToLab, type Lab, type RGB } from './classify';
 
+// Missing on insecure origins and some embedded browsers, despite what the DOM types say.
+const cameraSupported = () => typeof navigator.mediaDevices?.getUserMedia === 'function';
+
 /*
  * Camera scan of the six faces (D-019, D-097). The rear camera on phones (any camera elsewhere) shows the
  * cube inside a 3×3 guide; each capture samples the middle of every guide cell. Faces are scanned in a fixed
@@ -48,7 +51,7 @@ export function CameraScanner({ onDone, onManual }: CameraScannerProps) {
   const video = useRef<HTMLVideoElement>(null);
   const canvas = useRef<HTMLCanvasElement | null>(null);
   const [error, setError] = useState<string | null>(() =>
-    navigator.mediaDevices?.getUserMedia ? null : 'This browser can’t use the camera here.',
+    cameraSupported() ? null : 'This browser can’t use the camera here.',
   );
   const [ready, setReady] = useState(false);
   const [live, setLive] = useState<RGB[] | null>(null);
@@ -58,7 +61,7 @@ export function CameraScanner({ onDone, onManual }: CameraScannerProps) {
   useEffect(() => {
     let stream: MediaStream | null = null;
     let cancelled = false;
-    if (!navigator.mediaDevices?.getUserMedia) return;
+    if (!cameraSupported()) return;
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 } }, audio: false })
       .then((s) => {
