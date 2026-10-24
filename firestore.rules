@@ -1,0 +1,60 @@
+rules_version = '2';
+
+// CubeBuddy security rules (SPEC §7.3, D-039, D-092). Each user can read and write only their own
+// documents under users/{uid}; everything else is denied. Writes are checked for shape and size.
+// Published by pasting this file into Firebase console → Firestore → Rules → Publish (D-050).
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    // Every write stamps the server time it was made; sync pulls "changed since" by this field.
+    function stamped() {
+      return request.resource.data.syncedAt == request.time;
+    }
+
+    function optionalMap(data, field) {
+      return !(field in data) || (data[field] is map && data[field].size() <= 1000);
+    }
+
+    match /users/{uid} {
+      match /meta/{docId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && stamped() && (
+          (docId == 'settings'
+            && request.resource.data.updatedAt is number
+            && request.resource.data.keys().size() <= 50)
+          || (docId == 'algs'
+            && request.resource.data.keys().hasOnly(['choices', 'progress', 'trainerStats', 'syncedAt'])
+            && optionalMap(request.resource.data, 'choices')
+            && optionalMap(request.resource.data, 'progress')
+            && optionalMap(request.resource.data, 'trainerStats'))
+        );
+      }
+
+      match /sessions/{sessionId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && stamped()
+          && request.resource.data.keys().hasOnly(['name', 'puzzle', 'createdAt', 'updatedAt', 'deleted', 'syncedAt'])
+          && request.resource.data.name is string
+          && request.resource.data.name.size() <= 100
+          && request.resource.data.puzzle in ['3x3x3', '2x2x2']
+          && request.resource.data.createdAt is number
+          && request.resource.data.updatedAt is number
+          && request.resource.data.deleted is bool;
+      }
+
+      match /solveChunks/{chunkId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && stamped()
+          && request.resource.data.keys().hasOnly(['sessionId', 'solves', 'syncedAt'])
+          && request.resource.data.sessionId is string
+          && chunkId.matches(request.resource.data.sessionId + '_[0-9]+')
+          && request.resource.data.solves is map
+          && request.resource.data.solves.size() <= 5000;
+      }
+    }
+  }
+}

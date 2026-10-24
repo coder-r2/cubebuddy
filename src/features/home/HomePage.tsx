@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router';
 import { CubeView, type CubeViewHandle } from '../../components/CubeView/CubeView';
 import { Icon, type IconName } from '../../components/ui/Icon';
+import { useSettings } from '../../stores/settings';
 import { useIdleMoves } from './useIdleMoves';
 
 interface Feature {
@@ -44,12 +45,50 @@ const FEATURES: Feature[] = [
   },
 ];
 
+/** First-visit prompt for the onboarding quiz (SPEC §5.1, §5.2); "No thanks" counts as skipping it. */
+function QuizPrompt() {
+  const hydrated = useSettings((s) => s.hydrated);
+  const done = useSettings((s) => s.settings.onboardingDone);
+  const update = useSettings((s) => s.update);
+  if (!hydrated || done) return null;
+  return (
+    <section
+      aria-label="Get started"
+      className="flex flex-col gap-3 rounded-xl border border-accent/40 bg-accent/5 p-4 sm:flex-row sm:items-center"
+    >
+      <div className="flex-1">
+        <p className="font-semibold">New here?</p>
+        <p className="text-sm text-muted">
+          Answer four quick questions and CubeBuddy sets itself up for your level: hints, speed and timer.
+        </p>
+      </div>
+      <div className="flex gap-2">
+        <Link
+          to="/learn"
+          className="inline-flex h-11 items-center rounded-lg bg-accent px-4 font-medium text-accent-contrast"
+        >
+          Take the quiz
+        </Link>
+        <button
+          type="button"
+          onClick={() => void update({ onboardingDone: true })}
+          className="h-11 rounded-lg px-3 text-sm text-muted hover:bg-surface-2 hover:text-text"
+        >
+          No thanks
+        </button>
+      </div>
+    </section>
+  );
+}
+
 export default function HomePage() {
   const cube = useRef<CubeViewHandle>(null);
+  const onboardingDone = useSettings((s) => s.settings.onboardingDone);
   useIdleMoves(cube);
 
   return (
     <div className="space-y-12">
+      <QuizPrompt />
       <section className="grid items-center gap-8 md:grid-cols-2">
         <div className="order-2 space-y-4 md:order-1">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Your speedcubing buddy</h1>
@@ -62,7 +101,7 @@ export default function HomePage() {
               to="/learn"
               className="rounded-lg bg-accent px-5 py-3 font-medium text-accent-contrast hover:opacity-90"
             >
-              Take the quiz
+              {onboardingDone ? 'Learn notation' : 'Take the quiz'}
             </Link>
             <Link
               to="/timer"

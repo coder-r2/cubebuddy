@@ -1,6 +1,7 @@
 import { lazy, useEffect } from 'react';
 import { Route, Routes } from 'react-router';
 import { useSettings } from '../stores/settings';
+import { useAccount, wasSignedIn } from '../sync/account';
 import { Layout } from './Layout';
 import { NotFoundPage } from './NotFoundPage';
 import { useApplyTheme } from './useTheme';
@@ -22,6 +23,13 @@ export function App() {
   const hydrate = useSettings((s) => s.hydrate);
   useEffect(() => {
     hydrate().catch((error: unknown) => console.error('Failed to load settings', error));
+    // Sync starts at launch only on devices that were signed in; others load Firebase on the Account page.
+    if (wasSignedIn()) {
+      useAccount
+        .getState()
+        .start()
+        .catch((error: unknown) => console.warn('Accounts failed to load', error));
+    }
   }, [hydrate]);
   useApplyTheme();
 

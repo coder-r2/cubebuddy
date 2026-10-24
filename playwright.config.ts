@@ -12,6 +12,8 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${PORT}/cubebuddy/`,
     trace: 'retain-on-failure',
+    // Precaching the whole app in every test context would only slow tests down; pwa.spec.ts opts in.
+    serviceWorkers: 'block',
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },

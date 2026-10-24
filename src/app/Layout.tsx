@@ -2,7 +2,9 @@ import { Suspense, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
 import { Icon } from '../components/ui/Icon';
 import { ACCOUNT_NAV, BOTTOM_NAV, MAIN_NAV, MORE_NAV } from './nav';
+import { SyncBadge } from './SyncBadge';
 import { ThemeToggle } from './ThemeToggle';
+import { UpdatePrompt } from './UpdatePrompt';
 
 const topLink = ({ isActive }: { isActive: boolean }) =>
   `rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap ${
@@ -37,6 +39,7 @@ export function Layout() {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-1">
+            <SyncBadge />
             <ThemeToggle />
             {ACCOUNT_NAV.map((item) => (
               <NavLink
@@ -93,6 +96,8 @@ export function Layout() {
           More
         </button>
       </nav>
+
+      <UpdatePrompt />
 
       {moreOpen && (
         <div className="fixed inset-0 z-20 lg:hidden" onClick={() => setMoreOpen(false)}>

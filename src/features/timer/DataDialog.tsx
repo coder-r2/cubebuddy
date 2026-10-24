@@ -1,18 +1,9 @@
 import { useState } from 'react';
 import { Dialog } from '../../components/ui/Dialog';
+import { download, today } from '../../lib/download';
 import { useTimerStore, type ImportSummary } from '../../stores/timer';
 import { CstimerFormatError, parseCstimer } from './cstimer';
 
-function download(text: string, filename: string) {
-  const url = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-const today = () => new Date().toISOString().slice(0, 10).replaceAll('-', '');
 const safeName = (name: string) => name.replace(/[^\w-]+/g, '-').replace(/^-|-$/g, '') || 'session';
 
 function describe(summary: ImportSummary) {

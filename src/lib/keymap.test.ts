@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { CSTIMER_KEYMAP, moveForKey } from './keymap';
+import {
+  bindKey,
+  CSTIMER_KEYMAP,
+  effectiveKeymap,
+  isBindableKey,
+  keyLabel,
+  moveForKey,
+  unbindKey,
+} from './keymap';
 
 describe('cstimer keymap', () => {
   it('has the core face-turn pairs from cstimer', () => {
@@ -24,5 +32,29 @@ describe('cstimer keymap', () => {
   it('lets user overrides win and ignores unmapped keys', () => {
     expect(moveForKey('KeyI', { KeyI: 'U2' })).toBe('U2');
     expect(moveForKey('F13')).toBeUndefined();
+  });
+});
+
+describe('keymap editing', () => {
+  it('binds, unbinds and keeps overrides minimal', () => {
+    let overrides = bindKey({}, 'KeyQ', 'R2');
+    expect(moveForKey('KeyQ', overrides)).toBe('R2');
+    overrides = unbindKey(overrides, 'KeyI');
+    expect(moveForKey('KeyI', overrides)).toBeUndefined();
+    expect(effectiveKeymap(overrides).KeyI).toBeUndefined();
+    overrides = bindKey(overrides, 'KeyI', 'R');
+    overrides = bindKey(overrides, 'KeyQ', "z'");
+    expect(overrides).toEqual({});
+    expect(unbindKey({ F1: 'R' }, 'F1')).toEqual({});
+  });
+
+  it('labels keys and only allows typing keys', () => {
+    expect(keyLabel('KeyI')).toBe('I');
+    expect(keyLabel('Digit5')).toBe('5');
+    expect(keyLabel('Semicolon')).toBe(';');
+    expect(keyLabel('Backslash')).toBe('\\');
+    expect(isBindableKey('KeyZ')).toBe(true);
+    expect(isBindableKey('Space')).toBe(false);
+    expect(isBindableKey('ArrowLeft')).toBe(false);
   });
 });

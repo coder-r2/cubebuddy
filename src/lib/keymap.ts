@@ -43,10 +43,63 @@ export const CSTIMER_KEYMAP: Readonly<Record<string, string>> = {
   Slash: "d'",
 };
 
-/** Resolve a key press to a move, preferring the user's overrides (Settings, P5). */
+/**
+ * Resolve a key press to a move. The user's overrides (Settings → keyboard map) win; an override of ''
+ * unbinds a default key.
+ */
 export function moveForKey(
   code: string,
   overrides: Readonly<Record<string, string>> = {},
 ): string | undefined {
-  return overrides[code] ?? CSTIMER_KEYMAP[code];
+  return (code in overrides ? overrides[code] : CSTIMER_KEYMAP[code]) || undefined;
+}
+
+/** Every bound key → move after applying the overrides. */
+export function effectiveKeymap(overrides: Readonly<Record<string, string>> = {}): Record<string, string> {
+  const map: Record<string, string> = {};
+  for (const code of new Set([...Object.keys(CSTIMER_KEYMAP), ...Object.keys(overrides)])) {
+    const move = moveForKey(code, overrides);
+    if (move) map[code] = move;
+  }
+  return map;
+}
+
+/** Keys that can be bound to moves: letters, digits and punctuation (not Space, Esc, arrows, …). */
+export const isBindableKey = (code: string) =>
+  /^(Key[A-Z]|Digit[0-9]|Semicolon|Comma|Period|Slash|Quote|BracketLeft|BracketRight|Backslash|Minus|Equal|Backquote)$/.test(
+    code,
+  );
+
+const KEY_LABELS: Record<string, string> = {
+  Semicolon: ';',
+  Comma: ',',
+  Period: '.',
+  Slash: '/',
+  Quote: "'",
+  BracketLeft: '[',
+  BracketRight: ']',
+  Backslash: '\\',
+  Minus: '-',
+  Equal: '=',
+  Backquote: '`',
+};
+
+/** Short label for a key code (KeyI → I, Semicolon → ;). */
+export const keyLabel = (code: string) => KEY_LABELS[code] ?? code.replace(/^(Key|Digit)/, '');
+
+/**
+ * Bind `code` to `move`. The key is taken from whatever it did before; the overrides stay minimal, so a
+ * binding that matches the cstimer default isn't stored.
+ */
+export function bindKey(overrides: Readonly<Record<string, string>>, code: string, move: string) {
+  const next = { ...overrides, [code]: move };
+  if (CSTIMER_KEYMAP[code] === move) delete next[code];
+  return next;
+}
+
+export function unbindKey(overrides: Readonly<Record<string, string>>, code: string) {
+  const next = { ...overrides };
+  if (CSTIMER_KEYMAP[code]) next[code] = '';
+  else delete next[code];
+  return next;
 }

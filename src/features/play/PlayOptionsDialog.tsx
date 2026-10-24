@@ -1,7 +1,8 @@
 import { Dialog } from '../../components/ui/Dialog';
+import { SPEEDS } from '../../lib/speeds';
 import { useSettings } from '../../stores/settings';
 
-function Choice<T extends string | number>({
+export function Choice<T extends string | number>({
   legend,
   name,
   value,
@@ -35,7 +36,60 @@ function Choice<T extends string | number>({
   );
 }
 
-/** Free-play options (SPEC §5.3, §5.8); also on the Settings page from P5. */
+/** Tap direction and solving-helper style (SPEC §5.3, §5.8); shared by the options dialogs and Settings. */
+export function HelperOptions({ speed = true }: { speed?: boolean }) {
+  const settings = useSettings((s) => s.settings);
+  const update = useSettings((s) => s.update);
+
+  return (
+    <div className="space-y-5">
+      <Choice
+        legend="Tapping a sticker turns its face"
+        name="tapDirection"
+        value={settings.tapDirection}
+        options={[
+          ['clockwise', 'Clockwise'],
+          ['anticlockwise', 'Anticlockwise'],
+        ]}
+        onChange={(tapDirection) => void update({ tapDirection })}
+      />
+      <p className="-mt-3 text-sm text-muted">
+        Right-click turns the other way. Shift-click turns a middle slice, Ctrl-click rotates the whole cube.
+      </p>
+      <Choice
+        legend="F2L helper style"
+        name="f2lStyle"
+        value={settings.f2lStyle}
+        options={[
+          ['front-right', 'Rotate to front-right'],
+          ['rotationless', 'No rotations'],
+        ]}
+        onChange={(f2lStyle) => void update({ f2lStyle })}
+      />
+      <Choice
+        legend="Last layer"
+        name="llMode"
+        value={settings.llMode}
+        options={[
+          ['2-look', '2-look (beginner)'],
+          ['full', 'Full OLL / PLL'],
+        ]}
+        onChange={(llMode) => void update({ llMode })}
+      />
+      {speed && (
+        <Choice
+          legend="Animation speed"
+          name="animationSpeed"
+          value={settings.animationSpeed}
+          options={SPEEDS.map((s) => [s.value, s.label] as const)}
+          onChange={(animationSpeed) => void update({ animationSpeed })}
+        />
+      )}
+    </div>
+  );
+}
+
+/** Free-play (and tutorial) options dialog. */
 export function PlayOptionsDialog({
   open,
   onClose,
@@ -45,59 +99,9 @@ export function PlayOptionsDialog({
   onClose: () => void;
   title?: string;
 }) {
-  const settings = useSettings((s) => s.settings);
-  const update = useSettings((s) => s.update);
-
   return (
     <Dialog open={open} onClose={onClose} title={title}>
-      <div className="space-y-5">
-        <Choice
-          legend="Tapping a sticker turns its face"
-          name="tapDirection"
-          value={settings.tapDirection}
-          options={[
-            ['clockwise', 'Clockwise'],
-            ['anticlockwise', 'Anticlockwise'],
-          ]}
-          onChange={(tapDirection) => void update({ tapDirection })}
-        />
-        <p className="-mt-3 text-sm text-muted">
-          Right-click turns the other way. Shift-click turns a middle slice, Ctrl-click rotates the whole
-          cube.
-        </p>
-        <Choice
-          legend="F2L helper style"
-          name="f2lStyle"
-          value={settings.f2lStyle}
-          options={[
-            ['front-right', 'Rotate to front-right'],
-            ['rotationless', 'No rotations'],
-          ]}
-          onChange={(f2lStyle) => void update({ f2lStyle })}
-        />
-        <Choice
-          legend="Last layer"
-          name="llMode"
-          value={settings.llMode}
-          options={[
-            ['2-look', '2-look (beginner)'],
-            ['full', 'Full OLL / PLL'],
-          ]}
-          onChange={(llMode) => void update({ llMode })}
-        />
-        <Choice
-          legend="Animation speed"
-          name="animationSpeed"
-          value={settings.animationSpeed}
-          options={[
-            [1, 'Slow'],
-            [2, 'Normal'],
-            [3, 'Fast'],
-            [5, 'Very fast'],
-          ]}
-          onChange={(animationSpeed) => void update({ animationSpeed })}
-        />
-      </div>
+      <HelperOptions />
     </Dialog>
   );
 }
