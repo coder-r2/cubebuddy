@@ -39,3 +39,6 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Personal cstimer exports dropped in for local testing (tests use synthetic fixtures)
+cstimer_*.txt

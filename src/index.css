@@ -13,6 +13,9 @@
   --muted: #5b6270;
   --accent: #2563eb;
   --accent-contrast: #ffffff;
+  /* Graph series (validated for colour-vision deficiency against each theme's surface). */
+  --chart-1: #2563eb;
+  --chart-2: #c2410c;
   --success: #15803d;
   --danger: #b91c1c;
   color-scheme: light;
@@ -27,6 +30,8 @@
   --muted: #a3a9b6;
   --accent: #60a5fa;
   --accent-contrast: #0b1220;
+  --chart-1: #4b8ef5;
+  --chart-2: #dc6d24;
   --success: #4ade80;
   --danger: #f87171;
   color-scheme: dark;

@@ -15,6 +15,13 @@ const PATHS = {
   moon: 'M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z',
   monitor: 'M3 4h18v12H3zM8 20h8M12 16v4',
   close: 'M18 6 6 18M6 6l12 12',
+  plus: 'M12 5v14M5 12h14',
+  edit: 'M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z',
+  trash: 'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6',
+  sliders: 'M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6',
+  refresh: 'M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5',
+  transfer: 'M7 4v13M3 13l4 4 4-4M17 20V7M21 11l-4-4-4 4',
+  expand: 'M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7',
 } as const;
 
 export type IconName = keyof typeof PATHS;

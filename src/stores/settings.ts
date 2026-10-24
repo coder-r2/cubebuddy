@@ -15,6 +15,7 @@ export const DEFAULT_SETTINGS: Settings = {
   inspectionAlerts: true,
   holdMs: 300,
   hideTimeWhileRunning: false,
+  timerInput: 'timer',
   visibleStats: ['pb', 'ao5', 'ao12', 'ao50', 'ao100', 'mean'],
   onboardingDone: false,
   updatedAt: 0,

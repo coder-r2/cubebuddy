@@ -16,7 +16,7 @@ A free speedcubing companion that runs in your browser: a timer, a virtual cube 
 
 ## Tech stack
 
-React 19 · TypeScript · Vite · Tailwind CSS · Zustand · Dexie (IndexedDB) · [cubing.js](https://js.cubing.net/cubing/) · Firebase (optional sign-in and sync) · Vitest · Playwright · GitHub Actions + GitHub Pages.
+React 19 · TypeScript · Vite · Tailwind CSS · Zustand · Dexie (IndexedDB) · [cubing.js](https://js.cubing.net/cubing/) · uPlot · Firebase (optional sign-in and sync) · Vitest · Playwright · GitHub Actions + GitHub Pages.
 
 ## Development
 
