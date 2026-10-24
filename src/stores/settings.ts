@@ -5,7 +5,8 @@ import type { Settings } from '../db/types';
 // Pre-onboarding defaults; the quiz (P5) replaces these with a level preset (SPEC §5.2).
 export const DEFAULT_SETTINGS: Settings = {
   level: null,
-  animationSpeed: 1,
+  // cubing.js tempo: 1 = one second per quarter turn, which feels sluggish; 2 is the "Normal" choice.
+  animationSpeed: 2,
   theme: 'system',
   keymap: {},
   f2lStyle: 'front-right',
@@ -16,6 +17,7 @@ export const DEFAULT_SETTINGS: Settings = {
   holdMs: 300,
   hideTimeWhileRunning: false,
   timerInput: 'timer',
+  tapDirection: 'clockwise',
   visibleStats: ['pb', 'ao5', 'ao12', 'ao50', 'ao100', 'mean'],
   onboardingDone: false,
   updatedAt: 0,

@@ -29,8 +29,12 @@ export interface CubeViewProps {
   maskOrbits?: string;
   /** Click/tap a face to turn it (D-010). */
   interactive?: boolean;
+  /** Temporarily ignore presses (e.g. during helper playback) without switching renderer. */
+  locked?: boolean;
   /** Called with each user-generated move (click/tap-to-turn). */
   onMove?: (move: string) => void;
+  /** What a tap / left-click does; right-click does the opposite (D-068). cubing.js's own default is anticlockwise. */
+  pressDirection?: 'clockwise' | 'anticlockwise';
   /** Animation speed (tempoScale); defaults to the global setting. */
   speed?: number;
   view?: '3D' | '2D' | 'top';
@@ -62,7 +66,9 @@ export function CubeView({
   mask,
   maskOrbits,
   interactive = false,
+  locked = false,
   onMove,
+  pressDirection = 'anticlockwise',
   speed,
   view = '3D',
   controls = 'none',
@@ -162,18 +168,31 @@ export function CubeView({
   useEffect(() => {
     const player = playerRef.current;
     if (!player) return;
-    player.experimentalMovePressInput = interactive ? 'basic' : 'none';
+    player.experimentalMovePressInput = interactive && !locked ? 'basic' : 'none';
     player.experimentalDragInput = orbit ? 'auto' : 'none';
     player.hintFacelets = hints ? 'floating' : 'none';
     // cubing.js only raycasts presses with its PG3D renderer; the default 3x3 renderer ignores clicks.
     player.visualization = interactive && view === '3D' ? 'PG3D' : VISUALIZATION[view];
     player.controlPanel = controls === 'playback' ? 'bottom-row' : 'none';
-  }, [ready, interactive, orbit, hints, view, controls]);
+  }, [ready, interactive, locked, orbit, hints, view, controls]);
 
   useEffect(() => {
     const player = playerRef.current;
     if (player) player.tempoScale = speed ?? globalSpeed;
   }, [ready, speed, globalSpeed]);
+
+  // cubing.js turns a face clockwise only for a right-click (it reads `button` on pointerup), which touch
+  // screens can't do. For clockwise taps, swap the reported button before cubing.js sees the event: the
+  // listener runs in the capture phase on an ancestor, and an own property shadows the prototype getter.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !interactive || pressDirection === 'anticlockwise') return;
+    const flip = (e: PointerEvent) => {
+      Object.defineProperty(e, 'button', { value: e.button === 2 ? 0 : 2 });
+    };
+    container.addEventListener('pointerup', flip, { capture: true });
+    return () => container.removeEventListener('pointerup', flip, { capture: true });
+  }, [interactive, pressDirection]);
 
   useImperativeHandle(
     ref,

@@ -8,6 +8,7 @@ export type LLMode = '2-look' | 'full';
 export type CrossColorMode = 'white' | 'white-yellow' | 'neutral';
 export type StatKey = 'pb' | 'ao5' | 'ao12' | 'ao50' | 'ao100' | 'mean';
 export type TimerInput = 'timer' | 'typing';
+export type TapDirection = 'clockwise' | 'anticlockwise';
 
 export interface Settings {
   level: Level | null;
@@ -24,6 +25,8 @@ export interface Settings {
   hideTimeWhileRunning: boolean;
   /** Timer page entry mode: spacebar/touch timing or typed times (SPEC §5.4). */
   timerInput: TimerInput;
+  /** Direction of a tap / left-click on an interactive cube (D-068). */
+  tapDirection: TapDirection;
   visibleStats: StatKey[];
   onboardingDone: boolean;
   updatedAt: number;
