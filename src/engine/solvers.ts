@@ -15,11 +15,12 @@ import {
   solvedUpToAuf,
   type Slot,
 } from './analyse';
-import { CORNER_FACELETS, EDGE_MOVE, CORNER_MOVE, FACE_MOVES, readPieces } from './cubies';
+import { CORNER_FACELETS, EDGE_MOVE, FACE_MOVES, readPieces } from './cubies';
 import { applyMoves, isSolved, solvedFacelets, type Facelets } from './facelets';
 import { algsFor, type LLAlg } from './algSource';
 import { FACES, parseAlg, type Move } from './notation';
-import { getCrossTable, getFaceTable, getPairTable, getSlotTable, moveFacePattern } from './tables';
+import { pairCost, solvePair, type TriggerOptions } from './f2lSearch';
+import { getCrossTable, getFaceTable, moveFacePattern } from './tables';
 
 export type StepKind =
   'cross' | 'pair' | 'eo' | 'ocll' | 'oll' | 'cpll' | 'epll' | 'pll' | 'auf' | 'face' | 'ortega-oll' | 'pbl';
@@ -45,12 +46,6 @@ export interface SolveOptions {
   f2lStyle?: F2LStyle;
   llMode?: LLMode;
 }
-
-const opposite = (face: number) => (face + 3) % 6;
-
-/** Skip a move on the same face as the previous one, and fix the order of commuting opposite faces. */
-const redundant = (face: number, previous: number) =>
-  face === previous || (previous >= 0 && face === opposite(previous) && face < previous);
 
 // ---------------------------------------------------------------------------------------------------------
 // Cross: the cross table is exact, so following strictly decreasing distances gives an optimal solution.
@@ -94,79 +89,6 @@ const Y_FOR_SLOT: Record<Slot, Move[]> = {
   BR: parseAlg('y'),
 };
 
-/** Face moves in tie-break order: R and U first. Front-right style uses ⟨R, U, F, L⟩ only. */
-const MOVE_ORDER: Record<F2LStyle, number[]> = {
-  'front-right': [1, 0, 2, 4].flatMap((f) => [f * 3, f * 3 + 1, f * 3 + 2]),
-  rotationless: [1, 0, 2, 4, 5, 3].flatMap((f) => [f * 3, f * 3 + 1, f * 3 + 2]),
-};
-
-interface PairProblem {
-  slot: Slot;
-  /** Cross edges DR DF DL DB, target corner, target edge, then (corner, edge) of each preserved slot. */
-  values: Uint8Array;
-  preserved: Int8Array[];
-}
-
-function pairHeuristic(v: Uint8Array, preserved: Int8Array[], cross: Int8Array, pair: Int8Array): number {
-  let h = cross[crossIndex(v)]!;
-  const p = pair[((v[4]! * 24 + v[5]!) * 24 + v[1]!) * 24 + v[0]!]!;
-  if (p > h) h = p;
-  for (let i = 0; i < preserved.length; i++) {
-    const s = preserved[i]![v[6 + 2 * i]! * 24 + v[7 + 2 * i]!]!;
-    if (s > h) h = s;
-  }
-  return h;
-}
-
-/** Depth-limited search; returns move indices or null. */
-function searchPair(problem: PairProblem, bound: number, order: number[]): number[] | null {
-  const cross = getCrossTable();
-  const pair = getPairTable();
-  const n = problem.values.length;
-  const stack: Uint8Array[] = Array.from({ length: bound + 1 }, () => new Uint8Array(n));
-  stack[0]!.set(problem.values);
-  const path: number[] = [];
-
-  const dfs = (depth: number, previous: number): boolean => {
-    const v = stack[depth]!;
-    const h = pairHeuristic(v, problem.preserved, cross, pair);
-    if (h === 0) return true;
-    if (depth + h > bound) return false;
-    const next = stack[depth + 1]!;
-    for (const m of order) {
-      const face = Math.floor(m / 3);
-      if (redundant(face, previous)) continue;
-      const cm = CORNER_MOVE[m]!;
-      const em = EDGE_MOVE[m]!;
-      for (let i = 0; i < 4; i++) next[i] = em[v[i]!]!;
-      next[4] = cm[v[4]!]!;
-      next[5] = em[v[5]!]!;
-      for (let i = 6; i < n; i += 2) {
-        next[i] = cm[v[i]!]!;
-        next[i + 1] = em[v[i + 1]!]!;
-      }
-      path.push(m);
-      if (dfs(depth + 1, face)) return true;
-      path.pop();
-    }
-    return false;
-  };
-  return dfs(0, -1) ? path : null;
-}
-
-function pairProblem(framed: Facelets, slot: Slot): PairProblem {
-  const rotated = applyMoves(framed, Y_FOR_SLOT[slot]);
-  const { corners, edges } = readPieces(rotated);
-  const keep = SLOTS.filter((s) => s !== 'FR' && slotSolved(rotated, s));
-  const values = new Uint8Array(6 + keep.length * 2);
-  values.set([edges[4]!, edges[5]!, edges[6]!, edges[7]!, corners[4]!, edges[8]!]);
-  keep.forEach((s, i) => {
-    values[6 + 2 * i] = corners[SLOT_PIECES[s].corner]!;
-    values[7 + 2 * i] = edges[SLOT_PIECES[s].edge]!;
-  });
-  return { slot, values, preserved: keep.map(getSlotTable) };
-}
-
 /** Express moves made after rotation `r` as moves on the unrotated cube. */
 export function conjugate(moves: Move[], r: Move[]): Move[] {
   if (r.length === 0) return moves;
@@ -181,46 +103,44 @@ export function conjugate(moves: Move[], r: Move[]): Move[] {
   });
 }
 
-const MAX_PAIR_DEPTH = 16;
-
-/** Solve the unsolved pair with the shortest solution (greedy order, SPEC §6.3). Null if F2L is done. */
+/**
+ * Solve the unsolved pair that's quickest to solve with human moves (pair up, hide in an empty slot, insert;
+ * D-084), greedy order (SPEC §6.3). Null if F2L is done.
+ */
 export function solveNextPair(
   state: Facelets,
   colour = 0,
   style: F2LStyle = 'front-right',
   only?: Slot,
-  /** Restrict the turns (face indices U0 R1 F2 D3 L4 B5, in the target-slot frame); used by the generator. */
-  faces?: number[],
 ): Step | null {
   const { prefix, state: framed } = frameForCentre(state, colour);
   if (!crossSolved(framed)) throw new Error('Solve the cross first');
-  const problems = SLOTS.filter((slot) => !slotSolved(framed, slot) && (!only || slot === only)).map((slot) =>
-    pairProblem(framed, slot),
-  );
-  if (problems.length === 0) return null;
-
-  const cross = getCrossTable();
-  const pair = getPairTable();
-  const order = faces ? faces.flatMap((f) => [f * 3, f * 3 + 1, f * 3 + 2]) : MOVE_ORDER[style];
-  const start = Math.min(...problems.map((p) => pairHeuristic(p.values, p.preserved, cross, pair)));
-  for (let bound = start; bound <= MAX_PAIR_DEPTH; bound++) {
-    for (const problem of problems) {
-      const path = searchPair(problem, bound, order);
-      if (!path) continue;
-      const moves = path.map((m) => FACE_MOVES[m]!);
-      const rotation = Y_FOR_SLOT[problem.slot];
-      return {
-        kind: 'pair',
-        label: `F2L pair (${problem.slot})`,
-        slot: problem.slot,
-        moves:
-          style === 'front-right'
-            ? [...prefix, ...rotation, ...moves]
-            : [...prefix, ...conjugate(moves, rotation)],
-      };
-    }
+  let best: { slot: Slot; cost: number; corner: number; edge: number; options: TriggerOptions } | null = null;
+  for (const slot of SLOTS) {
+    if (slotSolved(framed, slot) || (only && slot !== only)) continue;
+    const rotated = applyMoves(framed, Y_FOR_SLOT[slot]);
+    const { corners, edges } = readPieces(rotated);
+    const corner = corners[SLOT_PIECES.FR.corner]!;
+    const edge = edges[SLOT_PIECES.FR.edge]!;
+    const options: TriggerOptions = {
+      free: SLOTS.filter((s) => s !== 'FR' && !slotSolved(rotated, s)),
+      noBack: style === 'front-right',
+    };
+    const cost = pairCost(corner, edge, options);
+    if (!best || cost < best.cost) best = { slot, cost, corner, edge, options };
   }
-  throw new Error('F2L search failed');
+  if (!best) return null;
+  const moves = solvePair(best.corner, best.edge, best.options);
+  const rotation = Y_FOR_SLOT[best.slot];
+  return {
+    kind: 'pair',
+    label: `F2L pair (${best.slot})`,
+    slot: best.slot,
+    moves:
+      style === 'front-right'
+        ? [...prefix, ...rotation, ...moves]
+        : [...prefix, ...conjugate(moves, rotation)],
+  };
 }
 
 /** Colours (home faces) of the pieces belonging to `slot`, as seen in the current cube. */
@@ -392,6 +312,8 @@ const cornerFaceUniform = (s: Facelets, face: number) =>
   [2, 6, 8].every((i) => s[face * 9 + i] === s[face * 9]);
 
 const DS = ['', 'D', "D'", 'D2'].map(parseAlg);
+const FLIPS = ['', 'x2'].map(parseAlg);
+const isRotation = (m: Move) => m.family === 'x' || m.family === 'y' || m.family === 'z';
 const NO_ALG: LLAlg = { name: '', alg: '' };
 
 export function solveOrtegaStep(state: Facelets, colour = 0): Step | null {
@@ -412,10 +334,12 @@ export function solveOrtegaStep(state: Facelets, colour = 0): Step | null {
   const auf = aufToSolve(s, true);
   if (auf) return { kind: 'auf', label: 'Final U turn', moves: [...prefix, ...auf] };
 
-  // PBL: try pre-D adjustments too, and finish with U and D turns.
+  // PBL: try pre-D adjustments and flipping the cube over (each case is listed once, with the worse layer on
+  // top; D-085), and finish with U and D turns. A flip is only used when nothing shorter works without one.
   let best: Match | null = null;
-  for (const preD of DS) {
-    const start = applyMoves(s, preD);
+  let bestCost = Infinity;
+  for (const pre of FLIPS.flatMap((flip) => DS.map((d) => [...d, ...flip]))) {
+    const start = applyMoves(s, pre);
     const match = bruteForce(
       start,
       [NO_ALG, ...algsFor.pbl()],
@@ -428,8 +352,10 @@ export function solveOrtegaStep(state: Facelets, colour = 0): Step | null {
         return null;
       },
     );
-    if (match && (!best || preD.length + match.moves.length < best.moves.length)) {
-      best = { entry: match.entry, moves: [...preD, ...match.moves] };
+    const cost = match ? pre.length + match.moves.length + (pre.some(isRotation) ? 0.5 : 0) : Infinity;
+    if (match && cost < bestCost) {
+      best = { entry: match.entry, moves: [...pre, ...match.moves] };
+      bestCost = cost;
     }
   }
   return llStep('pbl', 'PBL', prefix, best);

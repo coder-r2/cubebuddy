@@ -33,17 +33,17 @@ export function diagramProps(set: AlgSet, algCase: AlgCase): Omit<CaseDiagramPro
   };
 }
 
-/** Sticker mask for the 3D demo: the pieces that matter stay normal, the rest are dimmed or greyed. */
+/** Sticker mask for the 3D demo: the pieces that matter keep their colours, the rest are grey (D-086). */
 export function demoMask(set: AlgSet, algCase: AlgCase): string | undefined {
   if (set.puzzle === '2x2x2') return undefined;
   if ((algCase.goal ?? set.goal) !== 'f2l-pair') {
-    return pieceMask(set.puzzle, (colours) => (colours.includes(YELLOW) ? '-' : 'D'));
+    return pieceMask(set.puzzle, (colours) => (colours.includes(YELLOW) ? '-' : 'I'));
   }
   const [a, b] = SLOT_COLOURS[algCase.slot ?? 'FR'];
   return pieceMask(set.puzzle, (colours) => {
     if (colours.includes(YELLOW)) return 'I';
     const target =
       colours.every((c) => c === 0 || c === a || c === b) && colours.includes(a) && colours.includes(b);
-    return target ? '-' : 'D';
+    return target ? '-' : 'I';
   });
 }

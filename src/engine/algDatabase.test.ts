@@ -49,7 +49,7 @@ describe('set sizes (SPEC §5.5)', () => {
     ['oll', 57],
     ['pll', 21],
     ['f2l-advanced', 159],
-    ['ortega', 15],
+    ['ortega', 12],
     ['cll', 42],
   ])('%s has %d cases', (id, size) => {
     expect(ALG_SETS.find((s) => s.id === id)?.cases).toHaveLength(size);
@@ -84,5 +84,27 @@ describe('helpers use the chosen algs', () => {
     expect(solveLastLayerStep(sune, 0, 'full')?.alg).toBe(custom);
     setAlgChoices({});
     expect(solveLastLayerStep(sune, 0, 'full')?.alg).toBe("R U R' U R U2 R'");
+  });
+});
+
+describe('PBL cases (D-085)', () => {
+  const ortega = ALG_SETS.find((s) => s.id === 'ortega')!;
+  const pbl = ortega.cases.filter((c) => c.goal === 'pbl');
+
+  it('no case is another one held upside down', () => {
+    for (const a of pbl) {
+      // The same case with the top and bottom layers swapped (x2 on both sides of the alg).
+      const flipped = caseState(`x2 ${a.algs[0]} x2`);
+      for (const b of pbl) {
+        if (a === b) continue;
+        const context = contextFor(ortega, b);
+        for (const d of ['', 'D', "D'", 'D2']) {
+          expect(
+            solvesWith(flipped, parseAlg(`${d} ${b.algs[0]}`), context),
+            `${a.name} = ${b.name}`,
+          ).toBeNull();
+        }
+      }
+    }
   });
 });

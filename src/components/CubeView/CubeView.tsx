@@ -13,6 +13,24 @@ export interface CubeViewHandle {
   queueMoves(moves: readonly string[]): boolean;
   /** Snap (without animation) to `setup` applied to a solved cube, clearing the move list. */
   reset(setup?: string): void;
+  togglePlay(): Promise<void>;
+  /** Animate one move forwards (1) or backwards (−1). */
+  step(direction: 1 | -1): void;
+  /** Pause and jump to `ms` from the start of the alg. */
+  seek(ms: number): void;
+  /** Pause and jump to the state after the first `count` moves. */
+  seekToMove(count: number): Promise<void>;
+}
+
+/** Where an alg demo is, for custom playback controls. */
+export interface PlaybackInfo {
+  /** Milliseconds from the start of the alg. */
+  timestamp: number;
+  duration: number;
+  playing: boolean;
+  /** Moves completed so far. */
+  position: number;
+  moves: number;
 }
 
 export interface CubeViewProps {
@@ -39,6 +57,8 @@ export interface CubeViewProps {
   speed?: number;
   view?: '3D' | '2D' | 'top';
   controls?: 'none' | 'playback';
+  /** Receives the playback position whenever it changes (for custom controls, D-086). */
+  onPlayback?: (info: PlaybackInfo) => void;
   idle?: 'none' | 'hover';
   /** Allow dragging to orbit the camera. */
   orbit?: boolean;
@@ -72,6 +92,7 @@ export function CubeView({
   speed,
   view = '3D',
   controls = 'none',
+  onPlayback,
   idle = 'none',
   orbit = true,
   hints = true,
@@ -89,8 +110,10 @@ export function CubeView({
   // Number of moves in the player's alg that we put there ourselves; anything beyond came from the user.
   const ownMoveCount = useRef(0);
   const onMoveRef = useRef(onMove);
+  const onPlaybackRef = useRef(onPlayback);
   useEffect(() => {
     onMoveRef.current = onMove;
+    onPlaybackRef.current = onPlayback;
   });
 
   useEffect(() => {
@@ -171,8 +194,9 @@ export function CubeView({
     player.experimentalMovePressInput = interactive && !locked ? 'basic' : 'none';
     player.experimentalDragInput = orbit ? 'auto' : 'none';
     player.hintFacelets = hints ? 'floating' : 'none';
-    // cubing.js only raycasts presses with its PG3D renderer; the default 3x3 renderer ignores clicks.
-    player.visualization = interactive && view === '3D' ? 'PG3D' : VISUALIZATION[view];
+    // PG3D for every 3D view: cubing.js only raycasts presses with it, and it looks cleaner than the default
+    // 3x3 renderer (D-086).
+    player.visualization = view === '3D' ? 'PG3D' : VISUALIZATION[view];
     player.controlPanel = controls === 'playback' ? 'bottom-row' : 'none';
   }, [ready, interactive, locked, orbit, hints, view, controls]);
 
@@ -180,6 +204,42 @@ export function CubeView({
     const player = playerRef.current;
     if (player) player.tempoScale = speed ?? globalSpeed;
   }, [ready, speed, globalSpeed]);
+
+  const reportsPlayback = onPlayback !== undefined;
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player || !reportsPlayback) return;
+    const model = player.experimentalModel;
+    let latest = 0;
+    const update = async () => {
+      const call = ++latest;
+      const [timeline, playing, indexer] = await Promise.all([
+        model.detailedTimelineInfo.get(),
+        model.playingInfo.get(),
+        model.indexer.get(),
+      ]);
+      if (call !== latest) return;
+      const { start, end } = timeline.timeRange;
+      const moves = indexer.numAnimatedLeaves();
+      // Moves finished by now; cubing.js's own timestampToIndex is ambiguous exactly on a move boundary.
+      const finishedBy = (i: number) => (i === moves ? end : indexer.indexToMoveStartTimestamp(i as never));
+      let position = 0;
+      while (position < moves && finishedBy(position + 1) <= timeline.timestamp) position++;
+      onPlaybackRef.current?.({
+        timestamp: timeline.timestamp - start,
+        duration: end - start,
+        playing: playing.playing,
+        position,
+        moves,
+      });
+    };
+    model.detailedTimelineInfo.addFreshListener(update);
+    model.playingInfo.addFreshListener(update);
+    return () => {
+      model.detailedTimelineInfo.removeFreshListener(update);
+      model.playingInfo.removeFreshListener(update);
+    };
+  }, [ready, reportsPlayback]);
 
   // cubing.js turns a face clockwise only for a right-click (it reads `button` on pointerup), which touch
   // screens can't do. For clockwise taps, swap the reported button before cubing.js sees the event: the
@@ -209,6 +269,44 @@ export function CubeView({
           player.experimentalAddMove(move, { cancel: false });
         }
         return true;
+      },
+      // Not TwistyPlayer.togglePlay(), which (in 0.66) toggles and then also pauses.
+      async togglePlay() {
+        const player = playerRef.current;
+        if (!player) return;
+        const { playing } = await player.experimentalModel.playingInfo.get();
+        if (playing) player.pause();
+        else player.play();
+      },
+      step(direction) {
+        playerRef.current?.experimentalModel.playingInfo.set({
+          playing: true,
+          direction,
+          untilBoundary: 'move',
+          loop: false,
+        } as never);
+      },
+      seek(ms) {
+        const player = playerRef.current;
+        if (!player) return;
+        player.pause();
+        void player.experimentalModel.detailedTimelineInfo.get().then(({ timeRange }) => {
+          player.experimentalModel.timestampRequest.set((timeRange.start + ms) as never);
+        });
+      },
+      async seekToMove(count) {
+        const player = playerRef.current;
+        if (!player) return;
+        const indexer = await player.experimentalModel.indexer.get();
+        // The ends use cubing.js's own jumps, which keep its animation clock in step for the next Play.
+        if (count <= 0) player.jumpToStart();
+        else if (count >= indexer.numAnimatedLeaves()) player.jumpToEnd();
+        else {
+          player.pause();
+          player.experimentalModel.timestampRequest.set(
+            indexer.indexToMoveStartTimestamp(count as never) as never,
+          );
+        }
       },
       reset(newSetup = '') {
         const player = playerRef.current;

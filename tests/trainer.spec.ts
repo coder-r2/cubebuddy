@@ -74,3 +74,27 @@ test('full OLL print sheet fits on A4 and Letter', async ({ page, browserName, i
     expect(pages, `${format} pages`).toBeLessThanOrEqual(3);
   }
 });
+
+test('alg player: queued steps, move list and replay', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.goto('trainer/pll');
+  await page.getByRole('button', { name: 'Open T-perm' }).click();
+  const dialog = page.getByRole('dialog', { name: 'T-perm' });
+  const moves = dialog.getByRole('list', { name: 'Moves' }).getByRole('button');
+  await expect(moves.first()).toHaveAttribute('aria-current', 'step');
+  // Three quick taps all count.
+  for (let i = 0; i < 3; i++) await dialog.getByRole('button', { name: 'Next move' }).click();
+  await expect(moves.nth(3)).toHaveAttribute('aria-current', 'step', { timeout: 10_000 });
+  await dialog.getByRole('button', { name: 'Previous move' }).click();
+  await expect(moves.nth(2)).toHaveAttribute('aria-current', 'step', { timeout: 10_000 });
+  // Tap a move to jump to the cube after it.
+  await moves.nth(9).click();
+  await expect(moves.nth(10)).toHaveAttribute('aria-current', 'step');
+  await moves.last().click();
+  await expect(dialog.getByRole('button', { name: 'Replay' })).toBeVisible({ timeout: 10_000 });
+  await dialog.getByRole('button', { name: 'Back to the start' }).click();
+  await expect(moves.first()).toHaveAttribute('aria-current', 'step', { timeout: 10_000 });
+  await dialog.getByRole('button', { name: 'Play' }).click();
+  // Software WebGL in CI is slow; the whole alg plays to the end.
+  await expect(dialog.getByRole('button', { name: 'Replay' })).toBeVisible({ timeout: 30_000 });
+});

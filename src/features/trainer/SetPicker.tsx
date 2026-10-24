@@ -49,7 +49,10 @@ export function SetPicker() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Algorithm trainer</h1>
         <p className="mt-1 text-muted">
-          Pick a set to browse its cases, choose your algs, track what you’ve learned and drill them.
+          Pick a set to browse its cases, choose your algs, track what you’ve learned and drill them.{' '}
+          <Link to="/about#algorithms" className="text-accent hover:underline">
+            Where the algorithms come from
+          </Link>
         </p>
       </div>
       {(['3x3x3', '2x2x2'] as const).map((puzzle) => (

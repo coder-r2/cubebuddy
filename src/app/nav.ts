@@ -36,4 +36,5 @@ export const MORE_NAV: NavItem[] = [
   { to: '/tutorial/cfop', label: 'CFOP tutorial', icon: 'route' },
   { to: '/tutorial/ortega', label: 'Ortega tutorial', icon: 'route' },
   ...ACCOUNT_NAV,
+  { to: '/about', label: 'About & credits', icon: 'info' },
 ];

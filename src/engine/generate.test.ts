@@ -114,9 +114,9 @@ describe.skipIf(!env.GENERATE_ALGS)('generate alg sets', () => {
         const reference = basic.algs.find((a) => /^[URFDLBurfdlb'2 ]+$/.test(a))!;
         const moved = formatAlg(conjugate(parseAlg(reference), parseAlg(Y[slot])));
         const state = caseState(moved);
-        // Main: the familiar front-right alg done from the other slot. Alternative: shortest with U and the
-        // slot's own two faces (searched in the target-slot frame, so R/F there are the slot's faces).
-        const step = solveNextPair(state, 0, 'rotationless', slot, [1, 0, 2])!;
+        // Main: the familiar front-right alg done from the other slot. Alternative: the best pair-up-and-insert
+        // solution with the slot's own triggers (D-084).
+        const step = solveNextPair(state, 0, 'rotationless', slot)!;
         const shortest = formatAlg(step.moves);
         const algs: [string, ...string[]] = shortest === moved ? [moved] : [moved, shortest];
         cases.push({
@@ -133,8 +133,9 @@ describe.skipIf(!env.GENERATE_ALGS)('generate alg sets', () => {
     // Stuck pieces: one FR piece trapped in another slot.
     const slotOf: Record<string, string> = { DLF: 'FL', DBL: 'BL', DRB: 'BR' };
     stuckF2LStates().forEach((state, i) => {
-      // No D turns (they move the cross); shortest without rotations, then the front-right style version.
-      const step = solveNextPair(state, 0, 'rotationless', 'FR', [1, 0, 2, 4, 5])!;
+      // Take the piece out with its slot's trigger and pair up (D-084): without rotations (B turns allowed),
+      // then the front-right style version.
+      const step = solveNextPair(state, 0, 'rotationless', 'FR')!;
       const fr = solveNextPair(state, 0, 'front-right', 'FR')!;
       const main = formatAlg(step.moves);
       const alt = formatAlg(fr.moves);

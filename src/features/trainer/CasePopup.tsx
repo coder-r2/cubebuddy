@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CubeView } from '../../components/CubeView/CubeView';
+import { AlgPlayer } from '../../components/AlgPlayer';
 import { CaseDiagram } from '../../components/CaseDiagram';
 import { Dialog } from '../../components/ui/Dialog';
 import type { AlgSet } from '../../data/algs/types';
@@ -51,20 +51,15 @@ function CaseDetails({ set, caseId }: { set: AlgSet; caseId: string }) {
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_12rem]">
-        <div className="rounded-xl border border-border bg-bg">
-          <CubeView
-            puzzle={set.puzzle}
-            // Anchor "end": the demo ends at the case frame (yellow on top) and starts from the case.
-            setup="z2"
-            setupAnchor="end"
-            alg={alg}
-            maskOrbits={demoMask(set, algCase)}
-            controls="playback"
-            hints={false}
-            label={`3D demo of ${algCase.name}`}
-            className="aspect-square w-full"
-          />
-        </div>
+        <AlgPlayer
+          puzzle={set.puzzle}
+          // Anchor "end": the demo ends at the case frame (yellow on top) and starts from the case.
+          setup="z2"
+          setupAnchor="end"
+          alg={alg}
+          maskOrbits={demoMask(set, algCase)}
+          label={`3D demo of ${algCase.name}`}
+        />
         <div className="space-y-3">
           <CaseDiagram {...diagramProps(set, algCase)} className="mx-auto h-32 w-32" />
           {algCase.group && <p className="text-center text-sm text-muted">{algCase.group}</p>}
@@ -134,7 +129,8 @@ function CaseDetails({ set, caseId }: { set: AlgSet; caseId: string }) {
       </fieldset>
       {algCase.generated && (
         <p className="text-xs text-muted">
-          This alg was found by CubeBuddy’s solver (shortest possible). You can type a different one above.
+          These algs were found by CubeBuddy’s solver rather than taken from a published list. You can type a
+          different one above.
         </p>
       )}
     </div>

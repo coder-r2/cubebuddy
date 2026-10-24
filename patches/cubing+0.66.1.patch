@@ -1,0 +1,16 @@
+diff --git a/node_modules/cubing/dist/lib/cubing/chunks/twisty-dynamic-3d-HSYJR5CM.js b/node_modules/cubing/dist/lib/cubing/chunks/twisty-dynamic-3d-HSYJR5CM.js
+index c186717..f4bee8a 100644
+--- a/node_modules/cubing/dist/lib/cubing/chunks/twisty-dynamic-3d-HSYJR5CM.js
++++ b/node_modules/cubing/dist/lib/cubing/chunks/twisty-dynamic-3d-HSYJR5CM.js
+@@ -1645,8 +1645,10 @@ var PG3D = class extends Object3D2 {
+           }
+         }
+       }
+-      this.lastPos = p;
+     }
++    // CubeBuddy patch (D-083): always remember the latest position. Keeping an older one with the same
++    // pattern meant a stickering change repainted a move that had already finished turning.
++    this.lastPos = p;
+     let vismods = 0;
+     for (const moveProgress of p.movesInProgress) {
+       const externalMove = moveProgress.move;

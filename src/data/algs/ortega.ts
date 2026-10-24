@@ -1,6 +1,8 @@
 import type { AlgCase } from './types';
 
-// 2x2 Ortega: first face (intuitive), then OLL (7) and PBL (8) — SPEC §5.7.
+// 2x2 Ortega: first face (intuitive), then OLL (7) and PBL (5) — SPEC §5.7. A PBL case that only differs by
+// which layer is on top is the same case held upside down (x2), so each appears once with the worse layer on
+// top (D-085).
 
 export const ORTEGA_CASES: AlgCase[] = [
   { id: 'ortega-oll-sune', name: 'Sune', group: 'OLL', goal: 'ortega-oll', algs: ["R U R' U R U2 R'"] },
@@ -26,44 +28,23 @@ export const ORTEGA_CASES: AlgCase[] = [
   { id: 'pbl-diag-diag', name: 'Diagonal / diagonal', group: 'PBL', goal: 'pbl', algs: ['R2 F2 R2'] },
   {
     id: 'pbl-adj-diag',
-    name: 'Adjacent top / diagonal bottom',
+    name: 'Adjacent / diagonal',
     group: 'PBL',
     goal: 'pbl',
     algs: ["R U' R F2 R' U R'"],
   },
   {
-    id: 'pbl-diag-adj',
-    name: 'Diagonal top / adjacent bottom',
-    group: 'PBL',
-    goal: 'pbl',
-    algs: ["R D' R B2 R' D R'"],
-  },
-  {
     id: 'pbl-adj-top',
-    name: 'Adjacent top',
+    name: 'Adjacent (one layer)',
     group: 'PBL',
     goal: 'pbl',
     algs: ["R U R' U' R' F R2 U' R' U' R U R' F'"],
   },
   {
     id: 'pbl-diag-top',
-    name: 'Diagonal top',
+    name: 'Diagonal (one layer)',
     group: 'PBL',
     goal: 'pbl',
     algs: ["F R U' R' U' R U R' F' R U R' U' R' F R F'"],
-  },
-  {
-    id: 'pbl-adj-bottom',
-    name: 'Adjacent bottom',
-    group: 'PBL',
-    goal: 'pbl',
-    algs: ["R D R' D' R' B R2 D' R' D' R D R' B'"],
-  },
-  {
-    id: 'pbl-diag-bottom',
-    name: 'Diagonal bottom',
-    group: 'PBL',
-    goal: 'pbl',
-    algs: ["B R D' R' D' R D R' B' R D R' D' R' B R B'"],
   },
 ];

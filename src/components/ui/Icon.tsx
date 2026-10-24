@@ -22,6 +22,12 @@ const PATHS = {
   refresh: 'M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5',
   transfer: 'M7 4v13M3 13l4 4 4-4M17 20V7M21 11l-4-4-4 4',
   expand: 'M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7',
+  play: 'M7 4.5v15a.5.5 0 0 0 .8.4l11.4-7.5a.5.5 0 0 0 0-.8L7.8 4.1a.5.5 0 0 0-.8.4z',
+  pause: 'M8 5v14M16 5v14',
+  'step-back': 'M17 6v12l-8-6zM7 6v12',
+  'step-forward': 'M7 6v12l8-6zM17 6v12',
+  info: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-4M12 8h.01',
+  restart: 'M3 12a9 9 0 1 0 2.6-6.4L3 8M3 3v5h5',
 } as const;
 
 export type IconName = keyof typeof PATHS;

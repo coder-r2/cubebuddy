@@ -139,7 +139,9 @@ test('touch: hold, release to start, tap anywhere to stop', async ({ page, isMob
   await touch('touchEnd');
   await expect(page.getByTestId('timer-overlay').getByRole('timer')).toHaveAttribute('data-phase', 'running');
   await page.waitForTimeout(200);
+  // Stop with a tap on the header logo's spot: once the overlay closes, that tap must not click the logo.
   await touch('touchStart', { x: 20, y: 40 });
   await touch('touchEnd');
   await expect(historyTimes(page)).toHaveCount(1);
+  await expect(page).toHaveURL(/\/timer$/);
 });

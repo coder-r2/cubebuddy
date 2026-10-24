@@ -16,6 +16,7 @@ const OrtegaTutorialPage = lazy(() => import('../features/tutorial/OrtegaTutoria
 const SettingsPage = lazy(() => import('../features/settings/SettingsPage'));
 const AccountPage = lazy(() => import('../features/account/AccountPage'));
 const LabPage = lazy(() => import('../features/lab/LabPage'));
+const AboutPage = lazy(() => import('../features/about/AboutPage'));
 
 export function App() {
   const hydrate = useSettings((s) => s.hydrate);
@@ -39,6 +40,7 @@ export function App() {
         <Route path="settings" element={<SettingsPage />} />
         <Route path="account" element={<AccountPage />} />
         <Route path="lab" element={<LabPage />} />
+        <Route path="about" element={<AboutPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

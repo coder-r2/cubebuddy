@@ -1,4 +1,3 @@
-import { SLOT_PIECES, SLOTS, type Slot } from './analyse';
 import { CORNER_MOVE, EDGE_MOVE } from './cubies';
 
 /*
@@ -52,29 +51,11 @@ function buildTable(kinds: readonly Kind[], goal: readonly number[]): Int8Array 
 }
 
 let crossTable: Int8Array | null = null;
-let pairTable: Int8Array | null = null;
-const slotTables = new Map<Slot, Int8Array>();
 let faceTable: Int8Array | null = null;
 
 /** Cross edges DR, DF, DL, DB (edge values). 190,080 reachable states. */
 export function getCrossTable(): Int8Array {
   return (crossTable ??= buildTable(['edge', 'edge', 'edge', 'edge'], [8, 10, 12, 14]));
-}
-
-/** FR pair (corner DFR, edge FR) plus the two adjacent cross edges DF and DR. */
-export function getPairTable(): Int8Array {
-  return (pairTable ??= buildTable(['corner', 'edge', 'edge', 'edge'], [12, 16, 10, 8]));
-}
-
-/** A single slot's corner + edge (576 entries), used to keep already-solved pairs intact. */
-export function getSlotTable(slot: Slot): Int8Array {
-  let table = slotTables.get(slot);
-  if (!table) {
-    const { corner, edge } = SLOT_PIECES[slot];
-    table = buildTable(['corner', 'edge'], [corner * 3, edge * 2]);
-    slotTables.set(slot, table);
-  }
-  return table;
 }
 
 /**
@@ -127,8 +108,6 @@ export function warmUp(): Record<string, number> {
     timings[name] = Math.round(performance.now() - start);
   };
   time('cross', getCrossTable);
-  time('pair', getPairTable);
-  time('slots', () => SLOTS.forEach(getSlotTable));
   time('face2x2', getFaceTable);
   return timings;
 }

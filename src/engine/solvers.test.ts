@@ -21,7 +21,7 @@ const EPLL_ALGS = algsFor.epll();
 const PLL_ALGS = algsFor.pll();
 const ORTEGA_OLL_ALGS = algsFor.ortegaOll();
 const PBL_ALGS = algsFor.pbl();
-import { invertAlg, parseAlg } from './notation';
+import { formatAlg, invertAlg, parseAlg, type Move } from './notation';
 import { nextStep, solveAll, solveCross, solveLastLayerStep, solveNextPair } from './solvers';
 import { randomScramble, rng } from './testUtils';
 
@@ -116,6 +116,7 @@ describe('F2L solver', () => {
         for (let step = solveNextPair(state, 0, style); step; step = solveNextPair(state, 0, style)) {
           const before = solvedPairColours(state);
           if (style === 'rotationless') expect(step.moves.some((m) => m.family === 'y')).toBe(false);
+          expectHumanPairMoves(step.moves, style);
           state = applyMoves(state, step.moves);
           const after = solvedPairColours(state);
           expect(analyse3x3(state).crossSolved).toBe(true);
@@ -128,6 +129,20 @@ describe('F2L solver', () => {
     });
   }
 });
+
+/**
+ * Pair solutions are U turns plus slot triggers (D-084): no D or slice turns, every side turn undone, and no B
+ * turns when rotating to the front-right slot.
+ */
+function expectHumanPairMoves(moves: Move[], style: 'front-right' | 'rotationless') {
+  const turns = moves.filter((m) => !['x', 'y', 'z'].includes(m.family));
+  expect(turns.every((m) => ['U', 'R', 'F', 'L', 'B'].includes(m.family))).toBe(true);
+  if (style === 'front-right') expect(turns.some((m) => m.family === 'B')).toBe(false);
+  for (const face of ['R', 'F', 'L', 'B']) {
+    const net = turns.filter((m) => m.family === face).reduce((sum, m) => sum + m.amount, 0);
+    expect(net % 4, `${formatAlg(moves)}: ${face} turns not undone`).toBe(0);
+  }
+}
 
 /** Solved pairs, identified by the colours of their two side faces so rotations don't matter. */
 function solvedPairColours(state: Facelets) {

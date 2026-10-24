@@ -190,16 +190,26 @@ function llProps(state: Facelets, kind: DiagramKind, edgesOnly: boolean, arrows:
   const pairs: [number, number][] = [];
   if (arrows !== 'none') {
     const { corners, edges } = readPieces(state);
-    for (let home = 0; home < 4; home++) {
-      const cornerPos = Math.floor(corners[home]! / 3);
-      if ((arrows === 'all' || arrows === 'corners') && cornerPos !== home && cornerPos < 4) {
-        pairs.push([CORNER_CELL[cornerPos]!, CORNER_CELL[home]!]);
+    const withCorners = arrows === 'all' || arrows === 'corners';
+    const withEdges = n === 3 && (arrows === 'all' || arrows === 'edges');
+    // Arrows are relative to the final U turn that leaves the fewest pieces to move (D-087), as on PLL
+    // sheets: a U turn moves top-layer position p to p + 1, so before a final U^k a piece belongs at home − k.
+    const targetsFor = (k: number) => {
+      const moves: [number, number][] = [];
+      for (let home = 0; home < 4; home++) {
+        const target = (home - k + 4) % 4;
+        const cornerPos = Math.floor(corners[home]! / 3);
+        if (withCorners && cornerPos < 4 && cornerPos !== target) {
+          moves.push([CORNER_CELL[cornerPos]!, CORNER_CELL[target]!]);
+        }
+        const edgePos = edges[home]! >> 1;
+        if (withEdges && edgePos < 4 && edgePos !== target)
+          moves.push([EDGE_CELL[edgePos]!, EDGE_CELL[target]!]);
       }
-      const edgePos = edges[home]! >> 1;
-      if (n === 3 && (arrows === 'all' || arrows === 'edges') && edgePos !== home && edgePos < 4) {
-        pairs.push([EDGE_CELL[edgePos]!, EDGE_CELL[home]!]);
-      }
-    }
+      return moves;
+    };
+    const best = [0, 1, 2, 3].map(targetsFor).reduce((a, b) => (b.length < a.length ? b : a));
+    pairs.push(...best);
   }
 
   return {

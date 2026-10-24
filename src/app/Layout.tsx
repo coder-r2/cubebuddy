@@ -63,6 +63,15 @@ export function Layout() {
         </Suspense>
       </main>
 
+      <footer className="hidden border-t border-border lg:block print:hidden">
+        <div className="mx-auto flex max-w-7xl gap-4 px-4 py-3 text-sm text-muted">
+          <span>CubeBuddy</span>
+          <Link to="/about" className="hover:text-text">
+            About &amp; credits
+          </Link>
+        </div>
+      </footer>
+
       <nav
         aria-label="Main"
         className="fixed inset-x-0 bottom-0 z-30 flex border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden print:hidden"

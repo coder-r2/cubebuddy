@@ -10,7 +10,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 1 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U F U' F'", "F' L F L'"],
+    algs: ["U F U' F'"],
     generated: true,
   },
   {
@@ -35,7 +35,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 5 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U' F U F' U2 F U' F'", "U F2 U2 L F' L' U2 F2"],
+    algs: ["U' F U F' U2 F U' F'"],
     generated: true,
   },
   {
@@ -43,7 +43,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 6 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U L' U' L U2 L' U L", "F' U' F L F' L' U F"],
+    algs: ["U L' U' L U2 L' U L", "U L' U' L U L' U2 L"],
     generated: true,
   },
   {
@@ -51,7 +51,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 7 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U' F U2 F' U2 F U' F'", "L2 U2 F' L2 F U2 L2"],
+    algs: ["U' F U2 F' U2 F U' F'"],
     generated: true,
   },
   {
@@ -59,7 +59,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 8 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U L' U2 L U2 L' U L", "F2 U2 L F2 L' U2 F2"],
+    algs: ["U L' U2 L U2 L' U L", "U L' U2 L U L' U2 L"],
     generated: true,
   },
   {
@@ -83,7 +83,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 11 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U' F U2 F' U L' U' L", "L U2 L2 U' L2 U' L'"],
+    algs: ["U' F U2 F' U L' U' L"],
     generated: true,
   },
   {
@@ -91,7 +91,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 12 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["F U' F' U F U' F' U2 F U' F'", "F' U2 F2 U F2 U F"],
+    algs: ["F U' F' U F U' F' U2 F U' F'", "U L' U2 L U' F U F'"],
     generated: true,
   },
   {
@@ -99,7 +99,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 13 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U L' U L U' L' U' L", "F U F2 L F L2 U' L"],
+    algs: ["U L' U L U' L' U' L"],
     generated: true,
   },
   {
@@ -107,7 +107,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 14 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U' F U' F' U F U F'", "U2 F2 U F' U F U2 F2"],
+    algs: ["U' F U' F' U F U F'"],
     generated: true,
   },
   {
@@ -147,7 +147,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 19 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U F U2 F' U F U' F'", "U F U2 F2 L F L'"],
+    algs: ["U F U2 F' U F U' F'"],
     generated: true,
   },
   {
@@ -155,7 +155,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 20 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U' L' U2 L U' L' U L", "U' L' U2 L2 F' L' F"],
+    algs: ["U' L' U2 L U' L' U L", "U' L' U2 L U2 L' U2 L"],
     generated: true,
   },
   {
@@ -163,7 +163,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 21 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U2 F U F' U F U' F'", "F U' F' U2 F U F'"],
+    algs: ["U2 F U F' U F U' F'", "U2 L' U' L F U F'"],
     generated: true,
   },
   {
@@ -179,7 +179,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 23 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U F U' F' U' F U' F' U F U' F'", "U2 F2 U2 F' U' F U' F2"],
+    algs: ["U F U' F' U' F U' F' U F U' F'", "F U F' L' U L F U F'"],
     generated: true,
   },
   {
@@ -187,7 +187,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 24 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U' L' U L U L' U L U' L' U L", "U2 L2 U2 L U L' U L2"],
+    algs: ["U' L' U L U L' U L U' L' U L", "L' U' L F U' F' L' U' L"],
     generated: true,
   },
   {
@@ -195,7 +195,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 25 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U' F' L F L' F U F'", "F L F' U F U' L' F'"],
+    algs: ["U' F' L F L' F U F'", "U L' U2 L U2 F U F'"],
     generated: true,
   },
   {
@@ -203,7 +203,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 26 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U F U' F' L F' L' F", "F' U' F L' F' U F L"],
+    algs: ["U F U' F' L F' L' F", "U F U F' U' L' U' L"],
     generated: true,
   },
   {
@@ -211,7 +211,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 27 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["F U' F' U F U' F'", "F U' F2 L F L'"],
+    algs: ["F U' F' U F U' F'", "L' U2 L F U2 F'"],
     generated: true,
   },
   {
@@ -235,7 +235,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 30 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["F U F' U' F U F'"],
+    algs: ["F U F' U' F U F'", "U2 L' U L F U F'"],
     generated: true,
   },
   {
@@ -251,7 +251,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 32 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["U F U' F' U F U' F' U F U' F'", 'F2 U F2 U F2 U2 F2'],
+    algs: ["U F U' F' U F U' F' U F U' F'", "F U F' U L' U L F U F'"],
     generated: true,
   },
   {
@@ -291,7 +291,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 37 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["F2 U2 L F2 L' U2 F' U F'", "F U' F U2 L F2 L' U2 F2"],
+    algs: ["F2 U2 L F2 L' U2 F' U F'", "F U F' U2 F U2 F' U L' U' L"],
     generated: true,
   },
   {
@@ -299,7 +299,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 38 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["F U' F' U' F U F' U2 F U' F'", "F U2 F U2 L F L' U2 F2"],
+    algs: ["F U' F' U' F U F' U2 F U' F'", "F U F' U' F U2 F' U' F U F'"],
     generated: true,
   },
   {
@@ -307,7 +307,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 39 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["F U' F' U F U2 F' U F U' F'", "F U2 F U F' U F U2 F2"],
+    algs: ["F U' F' U F U2 F' U F U' F'", "F U F' U2 F U' F' U F U F'"],
     generated: true,
   },
   {
@@ -315,7 +315,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 40 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["f U' f' U2 f U f' F U F'", "F L U F U' F' L' U' F'"],
+    algs: ["f U' f' U2 f U f' F U F'", "L' U L U2 L' U' L F U F'"],
     generated: true,
   },
   {
@@ -323,7 +323,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 41 (FL)',
     group: 'FL slot',
     slot: 'FL',
-    algs: ["F U' F' f U' f' U2 f U f'", "F U L F U F' U' L' F'"],
+    algs: ["F U' F' f U' f' U2 f U f'", "F U' F' U2 F U F' L' U' L"],
     generated: true,
   },
   {
@@ -331,7 +331,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 1 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U L U' L'", "L' B L B'"],
+    algs: ["U L U' L'"],
     generated: true,
   },
   {
@@ -356,7 +356,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 5 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U' L U L' U2 L U' L'", "U L2 U2 B L' B' U2 L2"],
+    algs: ["U' L U L' U2 L U' L'"],
     generated: true,
   },
   {
@@ -364,7 +364,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 6 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U B' U' B U2 B' U B", "L' U' L B L' B' U L"],
+    algs: ["U B' U' B U2 B' U B", "U B' U' B U B' U2 B"],
     generated: true,
   },
   {
@@ -372,7 +372,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 7 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U' L U2 L' U2 L U' L'", "B2 U2 L' B2 L U2 B2"],
+    algs: ["U' L U2 L' U2 L U' L'"],
     generated: true,
   },
   {
@@ -380,7 +380,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 8 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U B' U2 B U2 B' U B", "L2 U2 B L2 B' U2 L2"],
+    algs: ["U B' U2 B U2 B' U B", "U B' U2 B U B' U2 B"],
     generated: true,
   },
   {
@@ -404,7 +404,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 11 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U' L U2 L' U B' U' B", "B U2 B2 U' B2 U' B'"],
+    algs: ["U' L U2 L' U B' U' B"],
     generated: true,
   },
   {
@@ -412,7 +412,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 12 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["L U' L' U L U' L' U2 L U' L'", "L' U2 L2 U L2 U L"],
+    algs: ["L U' L' U L U' L' U2 L U' L'", "U B' U2 B U' L U L'"],
     generated: true,
   },
   {
@@ -420,7 +420,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 13 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U B' U B U' B' U' B", "L U L2 B L B2 U' B"],
+    algs: ["U B' U B U' B' U' B"],
     generated: true,
   },
   {
@@ -428,7 +428,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 14 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U' L U' L' U L U L'", "U2 L2 U L' U L U2 L2"],
+    algs: ["U' L U' L' U L U L'"],
     generated: true,
   },
   {
@@ -468,7 +468,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 19 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U L U2 L' U L U' L'", "U L U2 L2 B L B'"],
+    algs: ["U L U2 L' U L U' L'"],
     generated: true,
   },
   {
@@ -476,7 +476,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 20 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U' B' U2 B U' B' U B", "U' B' U2 B2 L' B' L"],
+    algs: ["U' B' U2 B U' B' U B", "U' B' U2 B U2 B' U2 B"],
     generated: true,
   },
   {
@@ -484,7 +484,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 21 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U2 L U L' U L U' L'", "L U' L' U2 L U L'"],
+    algs: ["U2 L U L' U L U' L'", "U2 B' U' B L U L'"],
     generated: true,
   },
   {
@@ -500,7 +500,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 23 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U L U' L' U' L U' L' U L U' L'", "U2 L2 U2 L' U' L U' L2"],
+    algs: ["U L U' L' U' L U' L' U L U' L'", "L U L' B' U B L U L'"],
     generated: true,
   },
   {
@@ -508,7 +508,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 24 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U' B' U B U B' U B U' B' U B", "U2 B2 U2 B U B' U B2"],
+    algs: ["U' B' U B U B' U B U' B' U B", "B' U' B L U' L' B' U' B"],
     generated: true,
   },
   {
@@ -516,7 +516,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 25 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U' L' B L B' L U L'", "L B L' U L U' B' L'"],
+    algs: ["U' L' B L B' L U L'", "U B' U2 B U2 L U L'"],
     generated: true,
   },
   {
@@ -524,7 +524,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 26 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U L U' L' B L' B' L", "L' U' L B' L' U L B"],
+    algs: ["U L U' L' B L' B' L", "U L U L' U' B' U' B"],
     generated: true,
   },
   {
@@ -532,7 +532,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 27 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["L U' L' U L U' L'", "L U' L2 B L B'"],
+    algs: ["L U' L' U L U' L'", "B' U2 B L U2 L'"],
     generated: true,
   },
   {
@@ -556,7 +556,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 30 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["L U L' U' L U L'"],
+    algs: ["L U L' U' L U L'", "U2 B' U B L U L'"],
     generated: true,
   },
   {
@@ -572,7 +572,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 32 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["U L U' L' U L U' L' U L U' L'", 'L2 U L2 U L2 U2 L2'],
+    algs: ["U L U' L' U L U' L' U L U' L'", "L U L' U B' U B L U L'"],
     generated: true,
   },
   {
@@ -612,7 +612,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 37 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["L2 U2 B L2 B' U2 L' U L'", "L U' L U2 B L2 B' U2 L2"],
+    algs: ["L2 U2 B L2 B' U2 L' U L'", "L U L' U2 L U2 L' U B' U' B"],
     generated: true,
   },
   {
@@ -620,7 +620,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 38 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["L U' L' U' L U L' U2 L U' L'", "L U2 L U2 B L B' U2 L2"],
+    algs: ["L U' L' U' L U L' U2 L U' L'", "L U L' U' L U2 L' U' L U L'"],
     generated: true,
   },
   {
@@ -628,7 +628,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 39 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["L U' L' U L U2 L' U L U' L'", "L U2 L U L' U L U2 L2"],
+    algs: ["L U' L' U L U2 L' U L U' L'", "L U L' U2 L U' L' U L U L'"],
     generated: true,
   },
   {
@@ -636,7 +636,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 40 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["l U' l' U2 l U l' L U L'", "L B U L U' L' B' U' L'"],
+    algs: ["l U' l' U2 l U l' L U L'", "B' U B U2 B' U' B L U L'"],
     generated: true,
   },
   {
@@ -644,7 +644,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 41 (BL)',
     group: 'BL slot',
     slot: 'BL',
-    algs: ["L U' L' l U' l' U2 l U l'", "L U B L U L' U' B' L'"],
+    algs: ["L U' L' l U' l' U2 l U l'", "L U' L' U2 L U L' B' U' B"],
     generated: true,
   },
   {
@@ -652,7 +652,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 1 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U B U' B'", "B' R B R'"],
+    algs: ["U B U' B'"],
     generated: true,
   },
   {
@@ -677,7 +677,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 5 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U' B U B' U2 B U' B'", "U B2 U2 R B' R' U2 B2"],
+    algs: ["U' B U B' U2 B U' B'"],
     generated: true,
   },
   {
@@ -685,7 +685,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 6 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U R' U' R U2 R' U R", "B' U' B R B' R' U B"],
+    algs: ["U R' U' R U2 R' U R", "U R' U' R U R' U2 R"],
     generated: true,
   },
   {
@@ -693,7 +693,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 7 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U' B U2 B' U2 B U' B'", "R2 U2 B' R2 B U2 R2"],
+    algs: ["U' B U2 B' U2 B U' B'"],
     generated: true,
   },
   {
@@ -701,7 +701,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 8 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U R' U2 R U2 R' U R", "B2 U2 R B2 R' U2 B2"],
+    algs: ["U R' U2 R U2 R' U R", "U R' U2 R U R' U2 R"],
     generated: true,
   },
   {
@@ -725,7 +725,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 11 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U' B U2 B' U R' U' R", "R U2 R2 U' R2 U' R'"],
+    algs: ["U' B U2 B' U R' U' R"],
     generated: true,
   },
   {
@@ -733,7 +733,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 12 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["B U' B' U B U' B' U2 B U' B'", "B' U2 B2 U B2 U B"],
+    algs: ["B U' B' U B U' B' U2 B U' B'", "U R' U2 R U' B U B'"],
     generated: true,
   },
   {
@@ -741,7 +741,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 13 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U R' U R U' R' U' R", "B U B2 R B R2 U' R"],
+    algs: ["U R' U R U' R' U' R"],
     generated: true,
   },
   {
@@ -749,7 +749,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 14 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U' B U' B' U B U B'", "U2 B2 U B' U B U2 B2"],
+    algs: ["U' B U' B' U B U B'"],
     generated: true,
   },
   {
@@ -789,7 +789,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 19 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U B U2 B' U B U' B'", "U B U2 B2 R B R'"],
+    algs: ["U B U2 B' U B U' B'"],
     generated: true,
   },
   {
@@ -797,7 +797,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 20 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U' R' U2 R U' R' U R", "U' R' U2 R2 B' R' B"],
+    algs: ["U' R' U2 R U' R' U R", "U' R' U2 R U2 R' U2 R"],
     generated: true,
   },
   {
@@ -805,7 +805,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 21 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U2 B U B' U B U' B'", "B U' B' U2 B U B'"],
+    algs: ["U2 B U B' U B U' B'", "U2 R' U' R B U B'"],
     generated: true,
   },
   {
@@ -821,7 +821,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 23 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U B U' B' U' B U' B' U B U' B'", "U2 B2 U2 B' U' B U' B2"],
+    algs: ["U B U' B' U' B U' B' U B U' B'", "B U B' R' U R B U B'"],
     generated: true,
   },
   {
@@ -829,7 +829,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 24 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U' R' U R U R' U R U' R' U R", "U2 R2 U2 R U R' U R2"],
+    algs: ["U' R' U R U R' U R U' R' U R", "R' U' R B U' B' R' U' R"],
     generated: true,
   },
   {
@@ -837,7 +837,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 25 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U' B' R B R' B U B'", "B R B' U B U' R' B'"],
+    algs: ["U' B' R B R' B U B'", "U R' U2 R U2 B U B'"],
     generated: true,
   },
   {
@@ -845,7 +845,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 26 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U B U' B' R B' R' B", "B' U' B R' B' U B R"],
+    algs: ["U B U' B' R B' R' B", "U B U B' U' R' U' R"],
     generated: true,
   },
   {
@@ -853,7 +853,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 27 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["B U' B' U B U' B'", "B U' B2 R B R'"],
+    algs: ["B U' B' U B U' B'", "R' U2 R B U2 B'"],
     generated: true,
   },
   {
@@ -877,7 +877,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 30 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["B U B' U' B U B'"],
+    algs: ["B U B' U' B U B'", "U2 R' U R B U B'"],
     generated: true,
   },
   {
@@ -893,7 +893,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 32 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["U B U' B' U B U' B' U B U' B'", 'B2 U B2 U B2 U2 B2'],
+    algs: ["U B U' B' U B U' B' U B U' B'", "B U B' U R' U R B U B'"],
     generated: true,
   },
   {
@@ -933,7 +933,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 37 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["B2 U2 R B2 R' U2 B' U B'", "B U' B U2 R B2 R' U2 B2"],
+    algs: ["B2 U2 R B2 R' U2 B' U B'", "B U B' U2 B U2 B' U R' U' R"],
     generated: true,
   },
   {
@@ -941,7 +941,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 38 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["B U' B' U' B U B' U2 B U' B'", "B U2 B U2 R B R' U2 B2"],
+    algs: ["B U' B' U' B U B' U2 B U' B'", "B U B' U' B U2 B' U' B U B'"],
     generated: true,
   },
   {
@@ -949,7 +949,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 39 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["B U' B' U B U2 B' U B U' B'", "B U2 B U B' U B U2 B2"],
+    algs: ["B U' B' U B U2 B' U B U' B'", "B U B' U2 B U' B' U B U B'"],
     generated: true,
   },
   {
@@ -957,7 +957,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 40 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["b U' b' U2 b U b' B U B'", "B R U B U' B' R' U' B'"],
+    algs: ["b U' b' U2 b U b' B U B'", "R' U R U2 R' U' R B U B'"],
     generated: true,
   },
   {
@@ -965,91 +965,91 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     name: 'F2L 41 (BR)',
     group: 'BR slot',
     slot: 'BR',
-    algs: ["B U' B' b U' b' U2 b U b'", "B U R B U B' U' R' B'"],
+    algs: ["B U' B' b U' b' U2 b U b'", "B U' B' U2 B U B' R' U' R"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-1',
     name: 'Edge stuck in FL (1)',
     group: 'Stuck pieces',
-    algs: ["L' U R U R' L"],
+    algs: ["L' U L R U R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-2',
     name: 'Corner stuck in FL (2)',
     group: 'Stuck pieces',
-    algs: ["L' U R L U' R'"],
+    algs: ["L' U L R U' R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-3',
     name: 'Edge stuck in BL (3)',
     group: 'Stuck pieces',
-    algs: ["R L U' L' U' R'"],
+    algs: ["L U' L' R U' R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-4',
     name: 'Corner stuck in BL (4)',
     group: 'Stuck pieces',
-    algs: ["R B' U2 B R'", "R L U' L' U2 R'"],
+    algs: ["L U' L' R U2 R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-5',
     name: 'Edge stuck in BR (5)',
     group: 'Stuck pieces',
-    algs: ["R2 F R2 F'"],
+    algs: ["R' U R2 U' R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-6',
     name: 'Corner stuck in FL (6)',
     group: 'Stuck pieces',
-    algs: ["R L' U' R' L"],
+    algs: ["F U' F' R U' R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-7',
     name: 'Edge stuck in BL (7)',
     group: 'Stuck pieces',
-    algs: ["F' B' U B U F", "L U R U R' L'"],
+    algs: ["L U L' R U R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-8',
     name: 'Corner stuck in BR (8)',
     group: 'Stuck pieces',
-    algs: ["B U B' R U R'", "R2 U' R U R' U R'"],
+    algs: ["B U B' R U R'", "U2 R' U R U R U R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-9',
     name: 'Edge stuck in BR (9)',
     group: 'Stuck pieces',
-    algs: ["B' R2 B R2", "R' U' R2 U R'"],
+    algs: ["R' U' R2 U R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-10',
     name: 'Edge stuck in BR (10)',
     group: 'Stuck pieces',
-    algs: ["B U' B' R U2 R'", "R U2 F R F' U' R'"],
+    algs: ["B U' B' R U2 R'", "U2 R' U2 R F' U' F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-11',
     name: 'Edge stuck in BL (11)',
     group: 'Stuck pieces',
-    algs: ["B' R U R' B", "F' U L U' L' F"],
+    algs: ["B' U' B R U2 R'", "F' U F L U2 L' F' U F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-12',
     name: 'Corner stuck in BL (12)',
     group: 'Stuck pieces',
-    algs: ["R B' U B U2 R'", "F' L2 U L U' L2 F"],
+    algs: ["B' U B R U2 R'", "L U L' U2 L U' L' R U' R'"],
     generated: true,
   },
   {
@@ -1070,42 +1070,42 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     id: 'f2l-adv-stuck-15',
     name: 'Edge stuck in BR (15)',
     group: 'Stuck pieces',
-    algs: ["B U F' B' U F", "R U2 R2 U' R2 U R'"],
+    algs: ["B U B' F' U F", "R U2 R2 U' R2 U R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-16',
     name: 'Corner stuck in BR (16)',
     group: 'Stuck pieces',
-    algs: ["B U F' U' F B'", "F R F' R' F R' F'"],
+    algs: ["B U B' F' U' F", "R' U R U R' U' R F' U' F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-17',
     name: 'Edge stuck in FL (17)',
     group: 'Stuck pieces',
-    algs: ["L F2 L' F2"],
+    algs: ["F U F2 U' F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-18',
     name: 'Corner stuck in BL (18)',
     group: 'Stuck pieces',
-    algs: ["F' L U2 L' F"],
+    algs: ["L U L' F' U F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-19',
     name: 'Corner stuck in BR (19)',
     group: 'Stuck pieces',
-    algs: ["F' B U F B'", 'R2 F R2 F2 U F'],
+    algs: ["R' U R F' U F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-20',
     name: 'Edge stuck in FL (20)',
     group: 'Stuck pieces',
-    algs: ["F2 R' F2 R"],
+    algs: ['F U2 F2 U2 F'],
     generated: true,
   },
   {
@@ -1119,14 +1119,14 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     id: 'f2l-adv-stuck-22',
     name: 'Corner stuck in BL (22)',
     group: 'Stuck pieces',
-    algs: ["F' L U' L' U2 F"],
+    algs: ["L U' L' F' U2 F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-23',
     name: 'Edge stuck in BL (23)',
     group: 'Stuck pieces',
-    algs: ["L F' U' F L'"],
+    algs: ["L U L' F' U2 F"],
     generated: true,
   },
   {
@@ -1140,63 +1140,63 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     id: 'f2l-adv-stuck-25',
     name: 'Edge stuck in FL (25)',
     group: 'Stuck pieces',
-    algs: ["R U2 F U' F' R'"],
+    algs: ["L' U2 L U2 F' U' F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-26',
     name: 'Corner stuck in BL (26)',
     group: 'Stuck pieces',
-    algs: ["F' B2 U F U' B2", "U L U' L' U2 F' U' F"],
+    algs: ["B' U2 B F' U' F", "U L U' L' U2 F' U' F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-27',
     name: 'Edge stuck in BL (27)',
     group: 'Stuck pieces',
-    algs: ["B U2 R2 B R2 B'", "R2 L U2 F2 L F2 R' L2"],
+    algs: ["R' U R L U' L' R U' R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-28',
     name: 'Corner stuck in BL (28)',
     group: 'Stuck pieces',
-    algs: ["R U' L2 U' R' U L2"],
+    algs: ["U' L U2 L' R U R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-29',
     name: 'Edge stuck in BL (29)',
     group: 'Stuck pieces',
-    algs: ["R B' U R' B", "F' L U' L' F"],
+    algs: ["L U2 L' F' U F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-30',
     name: 'Corner stuck in FL (30)',
     group: 'Stuck pieces',
-    algs: ["L F2 L2 U' L U F2"],
+    algs: ["L' U L U' R U R'"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-31',
     name: 'Edge stuck in BR (31)',
     group: 'Stuck pieces',
-    algs: ["B R U R' B'", "R U F R F' U' R'"],
+    algs: ["R' U R U2 F' U2 F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-32',
     name: 'Edge stuck in BR (32)',
     group: 'Stuck pieces',
-    algs: ["R B' R' B R U R'", "R U R2 U2 R F' U' F"],
+    algs: ["R U R2 U2 R F' U' F"],
     generated: true,
   },
   {
     id: 'f2l-adv-stuck-33',
     name: 'Edge stuck in FL (33)',
     group: 'Stuck pieces',
-    algs: ["L' U L2 F' L' U2 F"],
+    algs: ["F' U2 F2 U2 F' R U R'"],
     generated: true,
   },
   {
@@ -1210,7 +1210,7 @@ export const F2L_ADVANCED_CASES: AlgCase[] = [
     id: 'f2l-adv-stuck-35',
     name: 'Corner stuck in BR (35)',
     group: 'Stuck pieces',
-    algs: ["R2 U2 F' U2 F2 R2 F'"],
+    algs: ["R' U2 R U' F' U' F"],
     generated: true,
   },
   {

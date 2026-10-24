@@ -41,3 +41,15 @@ test('navigation works on the current layout', async ({ page, isMobile }) => {
   await expect(page).toHaveURL(/\/cubebuddy\/tutorial\/cfop$/);
   await expect(page.getByRole('heading', { name: 'CFOP tutorial' })).toBeVisible();
 });
+
+test('algorithm sources are credited (About & credits)', async ({ page }) => {
+  await page.goto('trainer');
+  await page.getByRole('link', { name: 'Where the algorithms come from' }).click();
+  await expect(page).toHaveURL(/\/cubebuddy\/about#algorithms$/);
+  await expect(page.getByRole('heading', { name: 'Where the algorithms come from' })).toBeInViewport();
+  await expect(page.getByRole('link', { name: 'J Perm’s algorithm sheets' })).toHaveAttribute(
+    'href',
+    'https://jperm.net/algs',
+  );
+  await expect(page.getByRole('link', { name: 'cubing.js' })).toBeVisible();
+});

@@ -27,6 +27,16 @@ function isEditable(target: EventTarget | null) {
 
 const dialogOpen = () => document.querySelector('dialog[open]') !== null;
 
+/** Cancel the click a touch tap produces after its pointerup, if it comes within a moment. */
+function swallowNextClick() {
+  const swallow = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+  window.addEventListener('click', swallow, { capture: true, once: true });
+  setTimeout(() => window.removeEventListener('click', swallow, { capture: true }), 500);
+}
+
 /**
  * Drives the timer state machine from the spacebar and touch/pointer input (SPEC §5.4).
  * Returns the state and a pointer handler for the timer area; the live clock renders itself (LiveTime).
@@ -132,6 +142,9 @@ export function useTimer({ holdMs, inspection, inspectionAlerts, disabled, onSol
     const onUp = () => {
       if (!pointerDown.current) return;
       pointerDown.current = false;
+      // Lifting the finger that stopped the timer closes the full-screen overlay, and the browser's click for
+      // that tap would then land on whatever was underneath (a link, a button). Swallow that one click (D-089).
+      if (stateRef.current.phase === 'stopped') swallowNextClick();
       release();
     };
     window.addEventListener('pointerup', onUp);

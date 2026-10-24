@@ -74,7 +74,8 @@ export const ALG_SETS: AlgSet[] = [
     id: 'ortega',
     puzzle: '2x2x2',
     name: 'Ortega (2x2)',
-    description: 'After the first face: 7 OLL cases, then 8 PBL cases.',
+    description:
+      'After the first face: 7 OLL cases, then 5 PBL cases. If the bad layer is on the bottom, flip the cube (x2) first.',
     goal: 'pbl',
     diagram: 'cll',
     stickering: 'full',
