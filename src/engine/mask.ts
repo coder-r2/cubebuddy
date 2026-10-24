@@ -27,3 +27,14 @@ export function highlightMask(puzzle: '3x3x3' | '2x2x2', { edges = [], corners =
   const edgeMask = CUBING_EDGES.map((name) => (brightEdges.has(sortedKey(name)) ? '-' : 'I')).join('');
   return `EDGES:${edgeMask},CORNERS:${cornerMask},CENTERS:------`;
 }
+
+export type PieceMark = '-' | 'D' | 'I';
+
+/** Mask built from a rule on each piece's colours (home faces), e.g. "last-layer pieces normal, rest dimmed". */
+export function pieceMask(puzzle: '3x3x3' | '2x2x2', mark: (colours: number[]) => PieceMark): string {
+  const coloursOf = (name: string) => [...name].map((letter) => FACES.indexOf(letter as never));
+  const cornerMask = CUBING_CORNERS.map((name) => mark(coloursOf(name))).join('');
+  if (puzzle === '2x2x2') return `CORNERS:${cornerMask}`;
+  const edgeMask = CUBING_EDGES.map((name) => mark(coloursOf(name))).join('');
+  return `EDGES:${edgeMask},CORNERS:${cornerMask},CENTERS:------`;
+}

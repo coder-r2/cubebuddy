@@ -11,16 +11,16 @@ import {
 } from './analyse';
 import { CORNER_FACELETS, EDGE_FACELETS, FACE_MOVES } from './cubies';
 import { applyMoves, isSolved, solvedFacelets, type Facelets } from './facelets';
-import {
-  OCLL_ALGS,
-  OLL_ALGS,
-  PLL_ALGS,
-  ORTEGA_OLL_ALGS,
-  PBL_ALGS,
-  CPLL_ALGS,
-  EPLL_ALGS,
-  EO_ALGS,
-} from './llAlgs';
+import { algsFor } from './algSource';
+
+const EO_ALGS = algsFor.eo();
+const OCLL_ALGS = algsFor.ocll();
+const OLL_ALGS = algsFor.oll();
+const CPLL_ALGS = algsFor.cpll();
+const EPLL_ALGS = algsFor.epll();
+const PLL_ALGS = algsFor.pll();
+const ORTEGA_OLL_ALGS = algsFor.ortegaOll();
+const PBL_ALGS = algsFor.pbl();
 import { invertAlg, parseAlg } from './notation';
 import { nextStep, solveAll, solveCross, solveLastLayerStep, solveNextPair } from './solvers';
 import { randomScramble, rng } from './testUtils';

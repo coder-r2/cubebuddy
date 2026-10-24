@@ -17,17 +17,7 @@ import {
 } from './analyse';
 import { CORNER_FACELETS, EDGE_MOVE, CORNER_MOVE, FACE_MOVES, readPieces } from './cubies';
 import { applyMoves, isSolved, solvedFacelets, type Facelets } from './facelets';
-import {
-  CPLL_ALGS,
-  EO_ALGS,
-  EPLL_ALGS,
-  OCLL_ALGS,
-  OLL_ALGS,
-  ORTEGA_OLL_ALGS,
-  PBL_ALGS,
-  PLL_ALGS,
-  type LLAlg,
-} from './llAlgs';
+import { algsFor, type LLAlg } from './algSource';
 import { FACES, parseAlg, type Move } from './notation';
 import { getCrossTable, getFaceTable, getPairTable, getSlotTable, moveFacePattern } from './tables';
 
@@ -178,27 +168,40 @@ function pairProblem(framed: Facelets, slot: Slot): PairProblem {
 }
 
 /** Express moves made after rotation `r` as moves on the unrotated cube. */
-function conjugate(moves: Move[], r: Move[]): Move[] {
+export function conjugate(moves: Move[], r: Move[]): Move[] {
   if (r.length === 0) return moves;
   const rotated = applyMoves(solvedFacelets(), r);
-  return moves.map((m) => ({
-    family: FACES[rotated[FACES.indexOf(m.family as never) * 9 + 4]!]!,
-    amount: m.amount,
-  }));
+  const map = (face: string) => FACES[rotated[FACES.indexOf(face as never) * 9 + 4]!]!;
+  return moves.map((m) => {
+    // Outer and wide turns follow their face; slices and rotations aren't needed by callers.
+    const wide = m.family.endsWith('w');
+    const face = wide ? m.family[0]! : m.family;
+    if (!FACES.includes(face as never)) throw new Error(`Can't conjugate ${m.family}`);
+    return { family: (wide ? `${map(face)}w` : map(face)) as Move['family'], amount: m.amount };
+  });
 }
 
 const MAX_PAIR_DEPTH = 16;
 
 /** Solve the unsolved pair with the shortest solution (greedy order, SPEC §6.3). Null if F2L is done. */
-export function solveNextPair(state: Facelets, colour = 0, style: F2LStyle = 'front-right'): Step | null {
+export function solveNextPair(
+  state: Facelets,
+  colour = 0,
+  style: F2LStyle = 'front-right',
+  only?: Slot,
+  /** Restrict the turns (face indices U0 R1 F2 D3 L4 B5, in the target-slot frame); used by the generator. */
+  faces?: number[],
+): Step | null {
   const { prefix, state: framed } = frameForCentre(state, colour);
   if (!crossSolved(framed)) throw new Error('Solve the cross first');
-  const problems = SLOTS.filter((slot) => !slotSolved(framed, slot)).map((slot) => pairProblem(framed, slot));
+  const problems = SLOTS.filter((slot) => !slotSolved(framed, slot) && (!only || slot === only)).map((slot) =>
+    pairProblem(framed, slot),
+  );
   if (problems.length === 0) return null;
 
   const cross = getCrossTable();
   const pair = getPairTable();
-  const order = MOVE_ORDER[style];
+  const order = faces ? faces.flatMap((f) => [f * 3, f * 3 + 1, f * 3 + 2]) : MOVE_ORDER[style];
   const start = Math.min(...problems.map((p) => pairHeuristic(p.values, p.preserved, cross, pair)));
   for (let bound = start; bound <= MAX_PAIR_DEPTH; bound++) {
     for (const problem of problems) {
@@ -298,7 +301,7 @@ export function solveLastLayerStep(state: Facelets, colour = 0, mode: LLMode = '
         'oll',
         'OLL',
         prefix,
-        bruteForce(s, OLL_ALGS, (t) => f2lSolved(t) && llOriented(t)),
+        bruteForce(s, algsFor.oll(), (t) => f2lSolved(t) && llOriented(t)),
       );
     }
     if (!llEdgesOriented(s)) {
@@ -306,14 +309,14 @@ export function solveLastLayerStep(state: Facelets, colour = 0, mode: LLMode = '
         'eo',
         'Orient edges',
         prefix,
-        bruteForce(s, EO_ALGS, (t) => f2lSolved(t) && llEdgesOriented(t)),
+        bruteForce(s, algsFor.eo(), (t) => f2lSolved(t) && llEdgesOriented(t)),
       );
     }
     return llStep(
       'ocll',
       'Orient corners',
       prefix,
-      bruteForce(s, OCLL_ALGS, (t) => f2lSolved(t) && llOriented(t)),
+      bruteForce(s, algsFor.ocll(), (t) => f2lSolved(t) && llOriented(t)),
     );
   }
 
@@ -323,10 +326,10 @@ export function solveLastLayerStep(state: Facelets, colour = 0, mode: LLMode = '
         'cpll',
         'Permute corners',
         prefix,
-        bruteForce(s, CPLL_ALGS, (t) => f2lSolved(t) && llOriented(t) && llCornersPermuted(t)),
+        bruteForce(s, algsFor.cpll(), (t) => f2lSolved(t) && llOriented(t) && llCornersPermuted(t)),
       );
     }
-    const algs = mode === 'full' ? PLL_ALGS : EPLL_ALGS;
+    const algs = mode === 'full' ? algsFor.pll() : algsFor.epll();
     const label = mode === 'full' ? 'PLL' : 'Permute edges';
     return llStep(
       mode === 'full' ? 'pll' : 'epll',
@@ -398,7 +401,11 @@ export function solveOrtegaStep(state: Facelets, colour = 0): Step | null {
   const { prefix, state: s } = frameForFace(state, face);
 
   if (!cornerFaceUniform(s, 0)) {
-    const match = bruteForce(s, ORTEGA_OLL_ALGS, (t) => cornerFaceUniform(t, 0) && cornerFaceUniform(t, 3));
+    const match = bruteForce(
+      s,
+      algsFor.ortegaOll(),
+      (t) => cornerFaceUniform(t, 0) && cornerFaceUniform(t, 3),
+    );
     return llStep('ortega-oll', 'OLL', prefix, match);
   }
 
@@ -411,7 +418,7 @@ export function solveOrtegaStep(state: Facelets, colour = 0): Step | null {
     const start = applyMoves(s, preD);
     const match = bruteForce(
       start,
-      [NO_ALG, ...PBL_ALGS],
+      [NO_ALG, ...algsFor.pbl()],
       () => true,
       (t) => {
         for (const d of DS) {

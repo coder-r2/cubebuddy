@@ -1,0 +1,106 @@
+import type { AlgCase } from './types';
+
+// Full OLL (57). Standard numbering; algs from widely used public references (SPEC §7.1).
+
+const GROUPS: [string, number[]][] = [
+  ['Dot', [1, 2, 3, 4, 17, 18, 19, 20]],
+  ['Square', [5, 6]],
+  ['Lightning', [7, 8, 11, 12, 39, 40]],
+  ['Fish', [9, 10, 35, 37]],
+  ['Knight move', [13, 14, 15, 16]],
+  ['Awkward', [29, 30, 41, 42]],
+  ['P shapes', [31, 32, 43, 44]],
+  ['T shapes', [33, 45]],
+  ['C shapes', [34, 46]],
+  ['W shapes', [36, 38]],
+  ['Corners oriented', [21, 22, 23, 24, 25, 26, 27]],
+  ['L shapes', [47, 48, 49, 50, 53, 54]],
+  ['Lines', [51, 52, 55, 56]],
+  ['Edges only', [28, 57]],
+];
+
+const NICKNAMES: Record<number, string> = {
+  21: 'H',
+  22: 'Pi',
+  23: 'Headlights',
+  24: 'Chameleon',
+  25: 'Bowtie',
+  26: 'Antisune',
+  27: 'Sune',
+  33: 'Key',
+  44: 'P',
+  45: 'T',
+  57: 'H (edges)',
+};
+
+const ALGS: Record<number, [string, ...string[]]> = {
+  1: ["R U2 R2 F R F' U2 R' F R F'"],
+  2: ["r U r' U2 r U2 R' U2 R U' r'", "F R U R' U' F' f R U R' U' f'"],
+  3: ["r' R2 U R' U r U2 r' U M'"],
+  4: ["M U' r U2 r' U' R U' R' M'"],
+  5: ["l' U2 L U L' U l"],
+  6: ["r U2 R' U' R U' r'"],
+  7: ["r U R' U R U2 r'"],
+  8: ["l' U' L U' L' U2 l"],
+  9: ["R U R' U' R' F R2 U R' U' F'"],
+  10: ["R U R' U R' F R F' R U2 R'"],
+  11: ["r U R' U R' F R F' R U2 r'"],
+  12: ["M' R' U' R U' R' U2 R U' R r'"],
+  13: ["F U R U' R2 F' R U R U' R'"],
+  14: ["R' F R U R' F' R F U' F'"],
+  15: ["l' U' l L' U' L U l' U l"],
+  16: ["r U r' R U R' U' r U' r'"],
+  17: ["F R' F' R2 r' U R U' R' U' M'"],
+  18: ["r U R' U R U2 r2 U' R U' R' U2 r"],
+  19: ["r' R U R U R' U' M' R' F R F'"],
+  20: ["r U R' U' M2 U R U' R' U' M'"],
+  21: ["R U2 R' U' R U R' U' R U' R'", "R U R' U R U' R' U R U2 R'"],
+  22: ["R U2 R2 U' R2 U' R2 U2 R"],
+  23: ["R2 D' R U2 R' D R U2 R", "R2 D R' U2 R D' R' U2 R'"],
+  24: ["r U R' U' r' F R F'"],
+  25: ["F' r U R' U' r' F R"],
+  26: ["R U2 R' U' R U' R'", "L' U' L U' L' U2 L"],
+  27: ["R U R' U R U2 R'", "L' U2 L U L' U L"],
+  28: ["r U R' U' r' R U R U' R'"],
+  29: ["R U R' U' R U' R' F' U' F R U R'"],
+  30: ["F R' F R2 U' R' U' R U R' F2"],
+  31: ["R' U' F U R U' R' F' R"],
+  32: ["L U F' U' L' U L F L'"],
+  33: ["R U R' U' R' F R F'"],
+  34: ["R U R2 U' R' F R U R U' F'"],
+  35: ["R U2 R2 F R F' R U2 R'"],
+  36: ["L' U' L U' L' U L U L F' L' F"],
+  37: ["F R' F' R U R U' R'"],
+  38: ["R U R' U R U' R' U' R' F R F'"],
+  39: ["L F' L' U' L U F U' L'"],
+  40: ["R' F R U R' U' F' U R"],
+  41: ["R U R' U R U2 R' F R U R' U' F'"],
+  42: ["R' U' R U' R' U2 R F R U R' U' F'"],
+  43: ["F' U' L' U L F"],
+  44: ["F U R U' R' F'", "f R U R' U' f'"],
+  45: ["F R U R' U' F'"],
+  46: ["R' U' R' F R F' U R"],
+  47: ["R' U' R' F R F' R' F R F' U R"],
+  48: ["F R U R' U' R U R' U' F'"],
+  49: ["r U' r2 U r2 U r2 U' r"],
+  50: ["r' U r2 U' r2 U' r2 U r'"],
+  51: ["F U R U' R' U R U' R' F'"],
+  52: ["R U R' U R U' B U' B' R'"],
+  53: ["l' U2 L U L' U' L U L' U l"],
+  54: ["r U2 R' U' R U R' U' R U' r'"],
+  55: ["R' F R U R U' R2 F' R2 U' R' U R U R'"],
+  56: ["r' U' r U' R' U R U' R' U R r' U r"],
+  57: ["R U R' U' M' U R U' r'", "R U R' U' r R' U R U' r'"],
+};
+
+const groupOf = (n: number) => GROUPS.find(([, members]) => members.includes(n))?.[0];
+
+export const OLL_CASES: AlgCase[] = Object.entries(ALGS).map(([key, algs]) => {
+  const n = Number(key);
+  return {
+    id: `oll-${n}`,
+    name: `OLL ${n}${NICKNAMES[n] ? ` – ${NICKNAMES[n]}` : ''}`,
+    group: groupOf(n),
+    algs,
+  };
+});

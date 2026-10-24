@@ -23,7 +23,7 @@ export function Layout() {
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="sticky top-0 z-30 border-b border-border bg-bg/90 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-border bg-bg/90 backdrop-blur print:hidden">
         <div className="mx-auto flex h-14 max-w-7xl items-center gap-2 px-4">
           <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
             <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="h-7 w-7" />
@@ -57,7 +57,7 @@ export function Layout() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 pt-6 pb-24 lg:pb-10">
+      <main className="mx-auto w-full max-w-7xl flex-1 px-4 pt-6 pb-24 lg:pb-10 print:max-w-none print:p-0">
         <Suspense fallback={<p className="text-muted">Loading…</p>}>
           <Outlet />
         </Suspense>
@@ -65,7 +65,7 @@ export function Layout() {
 
       <nav
         aria-label="Main"
-        className="fixed inset-x-0 bottom-0 z-30 flex border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 flex border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] lg:hidden print:hidden"
       >
         {BOTTOM_NAV.map((item) => (
           <NavLink key={item.to} to={item.to} end={item.end} className={bottomLink}>

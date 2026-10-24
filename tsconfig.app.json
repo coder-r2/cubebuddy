@@ -21,5 +21,6 @@
     "noUncheckedIndexedAccess": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/engine/generate.test.ts"]
 }

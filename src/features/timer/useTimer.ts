@@ -107,21 +107,25 @@ export function useTimer({ holdMs, inspection, inspectionAlerts, disabled, onSol
       e.preventDefault();
       if (!e.repeat) press();
     };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [disabled, dispatch, press]);
+
+  // Releases are always handled, even while disabled: the solve that just stopped may disable the timer
+  // (e.g. while the next scramble loads) before the stopping key comes back up.
+  useEffect(() => {
     const onKeyUp = (e: KeyboardEvent) => {
       if (isEditable(e.target)) return;
+      const { phase } = stateRef.current;
       // The key that stopped the timer may be any key; releasing it re-arms the timer.
-      if (e.code === 'Space' || stateRef.current.phase === 'stopped') {
+      if ((e.code === 'Space' && phase !== 'idle') || phase === 'stopped') {
         e.preventDefault();
         release();
       }
     };
-    window.addEventListener('keydown', onKeyDown);
     window.addEventListener('keyup', onKeyUp);
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('keyup', onKeyUp);
-    };
-  }, [disabled, dispatch, press, release]);
+    return () => window.removeEventListener('keyup', onKeyUp);
+  }, [release]);
 
   // The finger may lift over a different element (the full-screen overlay), so releases are global.
   useEffect(() => {

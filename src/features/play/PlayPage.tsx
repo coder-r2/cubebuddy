@@ -8,6 +8,7 @@ import { getEngine } from '../../engine/client';
 import { parseMove } from '../../engine/notation';
 import { moveForKey } from '../../lib/keymap';
 import { useSettings } from '../../stores/settings';
+import { choiceMap, useTrainerStore } from '../../stores/trainer';
 import { nextScramble } from '../timer/scrambles';
 import { HistoryPanel } from './HistoryPanel';
 import { PlayOptionsDialog } from './PlayOptionsDialog';
@@ -111,6 +112,20 @@ export default function PlayPage() {
     () => ({ colour: 0, f2lStyle: settings.f2lStyle, llMode: settings.llMode }),
     [settings.f2lStyle, settings.llMode],
   );
+
+  // Helpers use the algs chosen in the trainer (D-016).
+  const choices = useTrainerStore((s) => s.choices);
+  const trainerLoaded = useTrainerStore((s) => s.loaded);
+  const loadTrainer = useTrainerStore((s) => s.load);
+  useEffect(() => {
+    if (!trainerLoaded)
+      loadTrainer().catch((error: unknown) => console.error('Failed to load alg choices', error));
+  }, [trainerLoaded, loadTrainer]);
+  useEffect(() => {
+    engine
+      .setAlgChoices(choiceMap(choices))
+      .catch((error: unknown) => console.error('[engine] choices failed', error));
+  }, [engine, choices]);
 
   // Re-analyse after every change (SPEC §5.3); stale answers are ignored.
   useEffect(() => {

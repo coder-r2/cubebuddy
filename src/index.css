@@ -85,3 +85,20 @@ body {
     animation: none;
   }
 }
+
+/* Print sheets (D-027): light colours whatever the theme, no app chrome. */
+@media print {
+  @page {
+    margin: 12mm;
+  }
+  :root,
+  [data-theme='dark'] {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #f2f3f5;
+    --border: #c9ccd2;
+    --text: #000000;
+    --muted: #444a55;
+    color-scheme: light;
+  }
+}

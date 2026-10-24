@@ -4,6 +4,7 @@ import { highlightMask } from './mask';
 import { formatAlg, parseAlg } from './notation';
 import { nextStep, solveAll, slotColours, solveNextPair, type SolveOptions, type Step } from './solvers';
 import { warmUp } from './tables';
+import { setAlgChoices } from './algSource';
 
 /*
  * Engine API (SPEC §6.6). Plain functions so the worker and the tests share them; states are passed as
@@ -42,6 +43,11 @@ export const engine = {
   /** Build the search tables; returns build times in ms. */
   init(): Record<string, number> {
     return warmUp();
+  },
+
+  /** Use the user's chosen algs (caseId → alg) in the helpers (D-016). */
+  setAlgChoices(choices: Record<string, string>): void {
+    setAlgChoices(choices);
   },
 
   analyse(moves: string, puzzle: Puzzle, options: SolveOptions = {}): Analysis {
