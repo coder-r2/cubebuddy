@@ -143,7 +143,8 @@ export function createTimerStore(database: CubeBuddyDB = defaultDb) {
     async addSolve(input) {
       const sessionId = get().currentSessionId;
       if (!sessionId) throw new Error('No session selected');
-      const now = Date.now();
+      // Strictly increasing so same-millisecond solves keep their order (the index sorts by createdAt).
+      const now = Math.max(Date.now(), (get().solves.at(-1)?.createdAt ?? 0) + 1);
       const solve: Solve = {
         id: crypto.randomUUID(),
         sessionId,
