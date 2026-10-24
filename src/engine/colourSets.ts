@@ -9,6 +9,9 @@ export const COLOUR_SETS: Record<CrossColorMode, readonly number[]> = {
   neutral: [0, 3, 2, 5, 1, 4],
 };
 
+/** Sticker colours by home face (U R F D L B), as drawn in diagrams and the net editor. */
+export const STICKER_HEX = ['#ffffff', '#d1213a', '#00a35a', '#ffd500', '#ff6a13', '#0f55c4'];
+
 /** Colour names by home face (U R F D L B). */
 export const COLOUR_NAMES = ['white', 'red', 'green', 'yellow', 'orange', 'blue'];
 

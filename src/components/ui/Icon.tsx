@@ -35,6 +35,9 @@ const PATHS = {
   eye: 'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
   cloud: 'M17.5 19H7a5 5 0 1 1 1.6-9.7A6 6 0 0 1 20 11.5a3.8 3.8 0 0 1-2.5 7.5z',
   download: 'M12 3v12M7 10l5 5 5-5M5 21h14',
+  camera:
+    'M3 8a2 2 0 0 1 2-2h2l2-3h6l2 3h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
+  grid: 'M3 3h18v18H3zM9 3v18M15 3v18M3 9h18M3 15h18',
 } as const;
 
 export type IconName = keyof typeof PATHS;

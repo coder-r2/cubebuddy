@@ -7,6 +7,8 @@ import { warmUp } from './tables';
 import { setAlgChoices } from './algSource';
 import { chooseColour } from './colour';
 import { analyseLbl, nextLblStep, solveAllLbl, type LblReport } from './lbl';
+import { setupFor } from './setup';
+import { checkState } from './validate';
 
 /*
  * Engine API (SPEC §6.6). Plain functions so the worker and the tests share them; states are passed as
@@ -116,6 +118,16 @@ export const engine = {
       state = applyMoves(state, step.moves);
       return result;
     });
+  },
+
+  /**
+   * Moves from solved that make a scanned or hand-entered 3x3 (colours per sticker, white top, green front;
+   * D-097). Throws if the cube isn't valid.
+   */
+  setupFor(colours: number[]): string {
+    const problem = checkState(colours);
+    if (problem) throw new Error(problem.message);
+    return formatAlg(setupFor(Uint8Array.from(colours)));
   },
 
   /** Stage analysis for the beginner method (3x3). */

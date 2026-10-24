@@ -1,5 +1,6 @@
 import { memo, useMemo } from 'react';
 import type { DiagramKind, Slot } from '../data/algs/types';
+import { STICKER_HEX } from '../engine/colourSets';
 import { readPieces } from '../engine/cubies';
 import { applyMoves, STICKER_COORD, STICKER_NORMAL, type Facelets } from '../engine/facelets';
 import { parseAlg } from '../engine/notation';
@@ -10,7 +11,7 @@ import { parseAlg } from '../engine/notation';
  */
 
 // Home face → sticker colour (default scheme: white top, green front).
-const COLOURS = ['#ffffff', '#d1213a', '#00a35a', '#ffd500', '#ff6a13', '#0f55c4'];
+const COLOURS = STICKER_HEX;
 const GREY = '#8d939e';
 const FAINT = '#d6d9de';
 const STROKE = '#1f2329';
