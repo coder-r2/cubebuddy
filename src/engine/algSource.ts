@@ -7,6 +7,8 @@ import type { AlgCase, AlgSetId } from '../data/algs/types';
  */
 
 export interface LLAlg {
+  /** Case id in the alg database. */
+  id: string;
   name: string;
   alg: string;
 }
@@ -21,7 +23,7 @@ export function setAlgChoices(next: Record<string, string>) {
 const list = (setId: AlgSetId, keep: (c: AlgCase) => boolean = () => true): LLAlg[] =>
   getSet(setId)!
     .cases.filter(keep)
-    .map((c) => ({ name: c.name, alg: choices[c.id] ?? c.algs[0] }));
+    .map((c) => ({ id: c.id, name: c.name, alg: choices[c.id] ?? c.algs[0] }));
 
 export const algsFor = {
   eo: () => list('oll-2look', (c) => c.goal === 'eo'),

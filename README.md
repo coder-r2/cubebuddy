@@ -4,7 +4,7 @@ A free speedcubing companion that runs in your browser: a timer, a virtual cube 
 
 **Live:** https://coder-r2.github.io/cubebuddy/
 
-> 🚧 Under active development. Pages are being built one by one; unfinished ones show a "Coming soon" note.
+> 🚧 Under active development. Pages are being built one by one; unfinished ones (settings, accounts, learn) show a "Coming soon" note.
 
 ## Features
 

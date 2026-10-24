@@ -20,6 +20,9 @@ import { applyMoves, isSolved, solvedFacelets, type Facelets } from './facelets'
 import { algsFor, type LLAlg } from './algSource';
 import { FACES, parseAlg, type Move } from './notation';
 import { pairCost, solvePair, type TriggerOptions } from './f2lSearch';
+import { getSet } from '../data/algs/sets';
+import type { AlgCase } from '../data/algs/types';
+import { caseState } from './cases';
 import { getCrossTable, getFaceTable, moveFacePattern } from './tables';
 
 export type StepKind =
@@ -32,6 +35,8 @@ export interface Step {
   caseName?: string;
   /** The alg used for an LL step, without AUFs. */
   alg?: string;
+  /** Alg-database case id, for showing the case (LL steps and standard F2L cases). */
+  caseId?: string;
   /** F2L slot being solved, relative to the cross on the bottom. */
   slot?: Slot;
   moves: Move[];
@@ -80,7 +85,7 @@ export function solveCross(state: Facelets, colour = 0): Step {
 }
 
 // ---------------------------------------------------------------------------------------------------------
-// F2L pairs: IDA* in a frame where the target slot is front-right (SPEC §6.3).
+// F2L pairs: human-move search in a frame where the target slot is front-right (SPEC §6.3, D-084).
 
 const Y_FOR_SLOT: Record<Slot, Move[]> = {
   FR: [],
@@ -132,15 +137,37 @@ export function solveNextPair(
   if (!best) return null;
   const moves = solvePair(best.corner, best.edge, best.options);
   const rotation = Y_FOR_SLOT[best.slot];
+  const known = f2lCase(best.corner, best.edge);
   return {
     kind: 'pair',
     label: `F2L pair (${best.slot})`,
+    caseName: known?.name ?? STUCK,
+    caseId: known?.id,
     slot: best.slot,
     moves:
       style === 'front-right'
         ? [...prefix, ...rotation, ...moves]
         : [...prefix, ...conjugate(moves, rotation)],
   };
+}
+
+/** Name for a pair outside the 41 standard cases: a piece sits in another slot (SPEC §5.6). */
+export const STUCK = 'Stuck pieces (take them out first)';
+
+let f2lKeys: Map<number, AlgCase> | null = null;
+
+/** The standard F2L case (F2L Basic set) with the target corner and edge here, under any pre-AUF. */
+function f2lCase(corner: number, edge: number): AlgCase | undefined {
+  if (!f2lKeys) {
+    f2lKeys = new Map();
+    for (const algCase of getSet('f2l')!.cases) {
+      for (const auf of AUFS) {
+        const { corners, edges } = readPieces(applyMoves(caseState(algCase.algs[0]), auf));
+        f2lKeys.set(corners[SLOT_PIECES.FR.corner]! * 24 + edges[SLOT_PIECES.FR.edge]!, algCase);
+      }
+    }
+  }
+  return f2lKeys.get(corner * 24 + edge);
 }
 
 /** Colours (home faces) of the pieces belonging to `slot`, as seen in the current cube. */
@@ -205,6 +232,7 @@ function llStep(kind: StepKind, label: string, prefix: Move[], match: Match | nu
     label,
     caseName: match.entry?.name,
     alg: match.entry?.alg,
+    caseId: match.entry?.id || undefined,
     moves: [...prefix, ...match.moves],
   };
 }
@@ -314,7 +342,7 @@ const cornerFaceUniform = (s: Facelets, face: number) =>
 const DS = ['', 'D', "D'", 'D2'].map(parseAlg);
 const FLIPS = ['', 'x2'].map(parseAlg);
 const isRotation = (m: Move) => m.family === 'x' || m.family === 'y' || m.family === 'z';
-const NO_ALG: LLAlg = { name: '', alg: '' };
+const NO_ALG: LLAlg = { id: '', name: '', alg: '' };
 
 export function solveOrtegaStep(state: Facelets, colour = 0): Step | null {
   if (isSolved(state, true)) return null;

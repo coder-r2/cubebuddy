@@ -28,6 +28,11 @@ const PATHS = {
   'step-forward': 'M7 6v12l8-6zM17 6v12',
   info: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-4M12 8h.01',
   restart: 'M3 12a9 9 0 1 0 2.6-6.4L3 8M3 3v5h5',
+  check: 'M20 6 9 17l-5-5',
+  chevron: 'm9 6 6 6-6 6',
+  copy: 'M9 9h11v11H9zM5 15H4V4h11v1',
+  lightbulb: 'M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z',
+  eye: 'M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
 } as const;
 
 export type IconName = keyof typeof PATHS;

@@ -36,12 +36,20 @@ function Choice<T extends string | number>({
 }
 
 /** Free-play options (SPEC §5.3, §5.8); also on the Settings page from P5. */
-export function PlayOptionsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function PlayOptionsDialog({
+  open,
+  onClose,
+  title = 'Free-play options',
+}: {
+  open: boolean;
+  onClose: () => void;
+  title?: string;
+}) {
   const settings = useSettings((s) => s.settings);
   const update = useSettings((s) => s.update);
 
   return (
-    <Dialog open={open} onClose={onClose} title="Free-play options">
+    <Dialog open={open} onClose={onClose} title={title}>
       <div className="space-y-5">
         <Choice
           legend="Tapping a sticker turns its face"

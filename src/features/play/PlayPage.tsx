@@ -4,15 +4,13 @@ import { MovePad } from '../../components/MovePad';
 import { Icon } from '../../components/ui/Icon';
 import type { Puzzle } from '../../db/types';
 import type { Analysis, EngineStep } from '../../engine/api';
-import { getEngine } from '../../engine/client';
-import { parseMove } from '../../engine/notation';
-import { moveForKey } from '../../lib/keymap';
+import { useCubeKeys } from '../../lib/useCubeKeys';
+import { useHelperEngine } from '../../lib/useHelperEngine';
 import { useSettings } from '../../stores/settings';
-import { choiceMap, useTrainerStore } from '../../stores/trainer';
 import { nextScramble } from '../timer/scrambles';
 import { HistoryPanel } from './HistoryPanel';
 import { PlayOptionsDialog } from './PlayOptionsDialog';
-import { normalise, useFreePlay } from './useFreePlay';
+import { allowedOn2x2, moveDuration, normalise, useFreePlay } from './useFreePlay';
 
 const PUZZLE_KEY = 'cubebuddy:play:puzzle';
 
@@ -23,12 +21,6 @@ function storedPuzzle(): Puzzle {
     return '3x3x3';
   }
 }
-
-/** Families a 2x2 accepts (no slices or wide moves). */
-const allowedOn2x2 = (move: string) => /^[URFDLBxyz]['2]?$/.test(move);
-
-/** cubing.js animation time for a move at tempo 1 (quarter 1 s, half 1.5 s). */
-const moveDuration = (move: string) => (parseMove(move)?.amount === 2 ? 1500 : 1000);
 
 interface HelperButtons {
   status: string;
@@ -84,20 +76,13 @@ function helperButtons(analysis: Analysis | null, llMode: string): HelperButtons
   }
 }
 
-function isEditable(target: EventTarget | null) {
-  return (
-    target instanceof HTMLElement &&
-    (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
-  );
-}
-
 export default function PlayPage() {
   const settings = useSettings((s) => s.settings);
   const [puzzle, setPuzzle] = useState<Puzzle>(storedPuzzle);
   const cube = useRef<CubeViewHandle>(null);
   const play = useFreePlay(cube);
   const { sequence, addMoves, undo, redo, reset } = play;
-  const engine = useMemo(() => getEngine(), []);
+  const { engine } = useHelperEngine();
 
   const [analysis, setAnalysis] = useState<{ sequence: string; puzzle: Puzzle; value: Analysis } | null>(
     null,
@@ -112,20 +97,6 @@ export default function PlayPage() {
     () => ({ colour: 0, f2lStyle: settings.f2lStyle, llMode: settings.llMode }),
     [settings.f2lStyle, settings.llMode],
   );
-
-  // Helpers use the algs chosen in the trainer (D-016).
-  const choices = useTrainerStore((s) => s.choices);
-  const trainerLoaded = useTrainerStore((s) => s.loaded);
-  const loadTrainer = useTrainerStore((s) => s.load);
-  useEffect(() => {
-    if (!trainerLoaded)
-      loadTrainer().catch((error: unknown) => console.error('Failed to load alg choices', error));
-  }, [trainerLoaded, loadTrainer]);
-  useEffect(() => {
-    engine
-      .setAlgChoices(choiceMap(choices))
-      .catch((error: unknown) => console.error('[engine] choices failed', error));
-  }, [engine, choices]);
 
   // Re-analyse after every change (SPEC §5.3); stale answers are ignored.
   useEffect(() => {
@@ -249,39 +220,21 @@ export default function PlayPage() {
     }
   };
 
-  // Keyboard: cstimer layout (D-031/D-058), Ctrl+Z / Ctrl+Y / Backspace, Esc cancels playback.
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (isEditable(e.target) || document.querySelector('dialog[open]')) return;
-      if (e.key === 'Escape') {
-        if (busy) cancelPlayback();
-        else {
-          setMask(undefined);
-          setInfo(null);
-        }
-        return;
-      }
-      if (busy) return;
-      const ctrl = e.ctrlKey || e.metaKey;
-      if ((ctrl && e.key.toLowerCase() === 'z' && !e.shiftKey) || (!ctrl && e.key === 'Backspace')) {
-        e.preventDefault();
-        undo();
-        return;
-      }
-      if (ctrl && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) {
-        e.preventDefault();
-        redo();
-        return;
-      }
-      if (ctrl || e.altKey || e.repeat) return;
-      const move = moveForKey(e.code, settings.keymap);
-      if (!move) return;
-      e.preventDefault();
-      userMove(move);
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [busy, cancelPlayback, undo, redo, userMove, settings.keymap]);
+  const onEscape = useCallback(() => {
+    if (busy) cancelPlayback();
+    else {
+      setMask(undefined);
+      setInfo(null);
+    }
+  }, [busy, cancelPlayback]);
+  useCubeKeys({
+    keymap: settings.keymap,
+    onMove: userMove,
+    onUndo: undo,
+    onRedo: redo,
+    onEscape,
+    locked: busy,
+  });
 
   useEffect(() => cancelPlayback, [cancelPlayback]);
 

@@ -26,6 +26,12 @@ export const normalise = (move: string) => {
   return parsed ? formatMove(parsed) : null;
 };
 
+/** Families a 2x2 accepts (no slices or wide moves). */
+export const allowedOn2x2 = (move: string) => /^[URFDLBxyz]['2]?$/.test(move);
+
+/** cubing.js animation time for a move at tempo 1 (quarter 1 s, half 1.5 s). */
+export const moveDuration = (move: string) => (parseMove(move)?.amount === 2 ? 1500 : 1000);
+
 const inverse = (move: string) => formatMove(invertMove(parseMove(move)!));
 
 /**

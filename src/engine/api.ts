@@ -18,6 +18,10 @@ export interface EngineStep {
   label: string;
   caseName?: string;
   alg?: string;
+  caseId?: string;
+  slot?: Step['slot'];
+  /** F2L pair steps: the pair's edge colours (home faces), e.g. [2, 1] for the green–red pair. */
+  pairColours?: number[];
   moves: string[];
 }
 
@@ -31,11 +35,15 @@ export interface PieceHint {
 
 const stateOf = (moves: string): Facelets => applyMoves(solvedFacelets(), parseAlg(moves));
 
-const toEngineStep = (step: Step): EngineStep => ({
+/** `state` is the cube the step starts from. */
+const toEngineStep = (step: Step, state: Facelets, colour = 0): EngineStep => ({
   kind: step.kind,
   label: step.label,
   caseName: step.caseName,
   alg: step.alg,
+  caseId: step.caseId,
+  slot: step.slot,
+  pairColours: step.slot && slotColours(state, colour, step.slot).edge,
   moves: formatAlg(step.moves).split(' ').filter(Boolean),
 });
 
@@ -59,20 +67,33 @@ export const engine = {
 
   /** The next helper step (solve cross / next pair / LL step / AUF; 2x2: face / OLL / PBL), or null. */
   nextStep(moves: string, puzzle: Puzzle, options: SolveOptions = {}): EngineStep | null {
-    const step = nextStep(stateOf(moves), puzzle, options);
-    return step ? toEngineStep(step) : null;
+    const state = stateOf(moves);
+    const step = nextStep(state, puzzle, options);
+    return step ? toEngineStep(step, state, options.colour) : null;
   },
 
   /** Every remaining step (full CFOP / Ortega). */
   solveAll(moves: string, puzzle: Puzzle, options: SolveOptions = {}): EngineStep[] {
-    return solveAll(stateOf(moves), puzzle, options).map(toEngineStep);
+    let state = stateOf(moves);
+    return solveAll(state, puzzle, options).map((step) => {
+      const result = toEngineStep(step, state, options.colour);
+      state = applyMoves(state, step.moves);
+      return result;
+    });
   },
 
-  /** Highlight for "Find cross" / "Find next F2L pair" / "Find face". */
+  /** Highlight for "Find cross" / "Find next F2L pair" / "Find face", and the tutorial's last-layer hints. */
   findPieces(moves: string, puzzle: Puzzle, options: SolveOptions = {}): PieceHint | null {
     const state = stateOf(moves);
     const colour = options.colour ?? 0;
+    const top = (colour + 3) % 6; // the opposite face's colour
     if (puzzle === '2x2x2') {
+      const stage = analyse2x2(state, colour).stage;
+      if (stage === 'oll') {
+        const corners = CORNER_HOMES.filter((c) => c.includes(top));
+        return { label: 'Top-layer pieces', mask: highlightMask(puzzle, { corners }) };
+      }
+      if (stage !== 'face') return null;
       const corners = CORNER_HOMES.filter((c) => c.includes(colour));
       return { label: 'First-face pieces', mask: highlightMask(puzzle, { corners }) };
     }
@@ -89,6 +110,11 @@ export const engine = {
         label: `Next pair: ${step.slot} slot`,
         mask: highlightMask(puzzle, { corners: [corner], edges: [edge] }),
       };
+    }
+    if (report.stage === 'oll' || report.stage === 'pll') {
+      const corners = CORNER_HOMES.filter((c) => c.includes(top));
+      const edges = EDGE_HOMES.filter((e) => e.includes(top));
+      return { label: 'Last-layer pieces', mask: highlightMask(puzzle, { corners, edges }) };
     }
     return null;
   },
