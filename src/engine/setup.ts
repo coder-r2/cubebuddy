@@ -1,7 +1,9 @@
+import { CORNER_FACELETS } from './cubies';
 import { applyMoves, solvedFacelets, type Facelets } from './facelets';
 import { joinMoves } from './lbl';
 import { FACES, invertAlg, parseAlg, type Face, type Move } from './notation';
 import { conjugate, solveAll } from './solvers';
+import { solve2x2RUF } from './twoByTwo';
 
 /*
  * A scanned or hand-entered cube becomes a move sequence from solved (D-097), because the tutorials and
@@ -69,4 +71,24 @@ export function faceTurnsOnly(moves: readonly Move[]): Move[] {
 export function setupFor(state: Facelets): Move[] {
   const solution = solveAll(state, '3x3x3', { llMode: 'full' }).flatMap((step) => step.moves);
   return invertAlg(faceTurnsOnly(solution));
+}
+
+/** Position of the corner whose stickers are on D, L and B (it never moves under R, U and F). */
+const DBL = CORNER_FACELETS.findIndex((st) => st.every((s) => [3, 4, 5].includes(Math.floor(s / 9))));
+
+/**
+ * The same for a 2x2 (D-098), from its corner stickers as the user holds it (any way up, since a 2x2 has no
+ * centres). The cube is turned so the yellow–orange–blue corner is at home, solved optimally with R, U and F,
+ * and the setup ends with the rotation back, so the cube on screen is held the same way as the real one.
+ */
+export function setupFor2x2(colours: readonly number[]): Move[] {
+  const held = Uint8Array.from(colours, (c) => Math.max(c, 0));
+  for (const rotation of ROTATIONS) {
+    const turned = applyMoves(held, rotation);
+    if (!CORNER_FACELETS[DBL]!.every((s) => turned[s] === Math.floor(s / 9))) continue;
+    const framed = solvedFacelets();
+    for (const s of CORNER_FACELETS.flat()) framed[s] = turned[s]!;
+    return [...invertAlg(solve2x2RUF(framed)), ...invertAlg(rotation)];
+  }
+  throw new Error('No yellow–orange–blue corner');
 }

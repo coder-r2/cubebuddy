@@ -7,7 +7,7 @@ import { warmUp } from './tables';
 import { setAlgChoices } from './algSource';
 import { chooseColour } from './colour';
 import { analyseLbl, nextLblStep, solveAllLbl, type LblReport } from './lbl';
-import { setupFor } from './setup';
+import { setupFor, setupFor2x2 } from './setup';
 import { checkState } from './validate';
 
 /*
@@ -121,13 +121,13 @@ export const engine = {
   },
 
   /**
-   * Moves from solved that make a scanned or hand-entered 3x3 (colours per sticker, white top, green front;
-   * D-097). Throws if the cube isn't valid.
+   * Moves from solved that make a scanned or hand-entered cube (colours per sticker; a 3x3 held white top,
+   * green front, D-097; a 2x2 any way up, D-098). Throws if the cube isn't valid.
    */
-  setupFor(colours: number[]): string {
-    const problem = checkState(colours);
+  setupFor(colours: number[], puzzle: Puzzle = '3x3x3'): string {
+    const problem = checkState(colours, puzzle);
     if (problem) throw new Error(problem.message);
-    return formatAlg(setupFor(Uint8Array.from(colours)));
+    return formatAlg(puzzle === '2x2x2' ? setupFor2x2(colours) : setupFor(Uint8Array.from(colours)));
   },
 
   /** Stage analysis for the beginner method (3x3). */

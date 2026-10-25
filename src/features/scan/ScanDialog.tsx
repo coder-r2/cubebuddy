@@ -1,23 +1,27 @@
 import { useState } from 'react';
 import { Dialog } from '../../components/ui/Dialog';
 import { Icon } from '../../components/ui/Icon';
+import type { Puzzle } from '../../db/types';
 import { checkState } from '../../engine/validate';
 import { useHelperEngine } from '../../lib/useHelperEngine';
 import { CameraScanner } from './CameraScanner';
-import { classify } from './classify';
+import { classify, classify2x2 } from './classify';
 import { NetEditor } from './NetEditor';
 
 /*
  * Copy a real cube into the tutorial (D-019, D-097): scan it with the camera or enter the colours by hand,
- * review and fix them in the net editor, then the engine turns the colours into setup moves.
+ * review and fix them in the net editor, then the engine turns the colours into setup moves. Works for the
+ * 3x3 and, without centres, the 2x2 (D-098).
  */
 
 type Mode = 'camera' | 'edit';
 
-/** Centres at home, everything else not set. */
-const blank = () => Array.from({ length: 54 }, (_, i) => (i % 9 === 4 ? Math.floor(i / 9) : -1));
+/** 3x3: centres at home, everything else not set. 2x2: nothing set. */
+const blank = (puzzle: Puzzle) =>
+  Array.from({ length: 54 }, (_, i) => (puzzle === '3x3x3' && i % 9 === 4 ? Math.floor(i / 9) : -1));
 
 interface ScanDialogProps {
+  puzzle: Puzzle;
   open: boolean;
   /** How to start: with the camera, or straight in the editor. */
   start: Mode;
@@ -26,23 +30,24 @@ interface ScanDialogProps {
   onUse: (setup: string) => void;
 }
 
-export function ScanDialog({ open, start, onClose, onUse }: ScanDialogProps) {
+export function ScanDialog({ puzzle, open, start, onClose, onUse }: ScanDialogProps) {
   return (
     <Dialog open={open} onClose={onClose} title="Copy your cube" className="sm:max-w-xl">
-      {open && <ScanFlow start={start} onUse={onUse} />}
+      {open && <ScanFlow puzzle={puzzle} start={start} onUse={onUse} />}
     </Dialog>
   );
 }
 
-function ScanFlow({ start, onUse }: { start: Mode; onUse: (setup: string) => void }) {
+function ScanFlow({ puzzle, start, onUse }: { puzzle: Puzzle; start: Mode; onUse: (setup: string) => void }) {
   const { engine } = useHelperEngine();
+  const small = puzzle === '2x2x2';
   const [mode, setMode] = useState<Mode>(start);
-  const [colours, setColours] = useState<number[]>(blank);
+  const [colours, setColours] = useState<number[]>(() => blank(puzzle));
   const [doubtful, setDoubtful] = useState<number[]>([]);
   const [scanned, setScanned] = useState(false);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
-  const problem = checkState(colours);
+  const problem = checkState(colours, puzzle);
   // Missing stickers are only an error once the user tries to continue; until then they're just to-do.
   const [tried, setTried] = useState(false);
   const showProblem = problem && (tried || problem.kind !== 'unset');
@@ -50,8 +55,9 @@ function ScanFlow({ start, onUse }: { start: Mode; onUse: (setup: string) => voi
   if (mode === 'camera') {
     return (
       <CameraScanner
+        size={small ? 2 : 3}
         onDone={(samples) => {
-          const result = classify(samples);
+          const result = small ? classify2x2(samples) : classify(samples);
           setColours(result.colours);
           setDoubtful(result.doubtful);
           setScanned(true);
@@ -68,7 +74,7 @@ function ScanFlow({ start, onUse }: { start: Mode; onUse: (setup: string) => voi
     setBusy(true);
     setFailed(false);
     try {
-      onUse(await engine.setupFor(colours));
+      onUse(await engine.setupFor(colours, puzzle));
     } catch (error) {
       console.error('[scan] setup failed', error);
       setFailed(true);
@@ -82,9 +88,12 @@ function ScanFlow({ start, onUse }: { start: Mode; onUse: (setup: string) => voi
       <p className="text-sm text-muted">
         {scanned
           ? 'Check the colours against your cube and fix any that are wrong. Stickers with a dot were hard to read.'
-          : 'Hold your cube with white on top and green in front. Tap each sticker, then pick its colour.'}
+          : small
+            ? 'Hold your cube any way you like and keep it that way. Tap each sticker, then pick its colour.'
+            : 'Hold your cube with white on top and green in front. Tap each sticker, then pick its colour.'}
       </p>
       <NetEditor
+        size={small ? 2 : 3}
         colours={colours}
         onChange={(next) => {
           setColours(next);
@@ -124,7 +133,7 @@ function ScanFlow({ start, onUse }: { start: Mode; onUse: (setup: string) => voi
         <button
           type="button"
           onClick={() => {
-            setColours(blank());
+            setColours(blank(puzzle));
             setDoubtful([]);
             setScanned(false);
             setTried(false);

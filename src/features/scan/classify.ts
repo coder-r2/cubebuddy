@@ -4,6 +4,10 @@
  * in CIE Lab with lightness weighted down (shadows and glare change lightness far more than hue), and each
  * colour is limited to 9 stickers, assigned closest-first: when red and orange look alike, the stickers that
  * are most clearly one or the other are settled first and the doubtful ones take whatever is left.
+ *
+ * A 2x2 has no centres (D-098), so the references start as typical camera colours and are then refined: each
+ * round assigns the stickers (4 per colour) and moves every reference to the average of its stickers, so the
+ * references settle on this cube in this light.
  */
 
 export type RGB = readonly [number, number, number];
@@ -38,38 +42,77 @@ export interface Classified {
   doubtful: number[];
 }
 
-/** Classify 54 sticker samples (facelet order); sample `face * 9 + 4` is the centre of colour `face`. */
-export function classify(samples: readonly Lab[]): Classified {
-  const refs = [0, 1, 2, 3, 4, 5].map((face) => samples[face * 9 + 4]!);
+/** Give each sticker a colour, at most `each` per colour, closest pairs first. Other entries stay −1. */
+function assign(samples: readonly Lab[], stickers: readonly number[], refs: readonly Lab[], each: number) {
   const colours = new Array<number>(54).fill(-1);
-  const left = new Array<number>(6).fill(8);
-  const pairs: { sticker: number; colour: number; d: number }[] = [];
-  const doubtful: number[] = [];
-
-  for (let sticker = 0; sticker < 54; sticker++) {
-    if (sticker % 9 === 4) {
-      colours[sticker] = Math.floor(sticker / 9);
-      continue;
-    }
-    const ds = refs.map((ref) => distance(samples[sticker]!, ref));
-    ds.forEach((d, colour) => pairs.push({ sticker, colour, d }));
-    const [best, second] = [...ds].sort((a, b) => a - b);
-    if (second! - best! < 0.25 * best! + 3) doubtful.push(sticker);
-  }
-
+  const left = new Array<number>(6).fill(each);
+  const pairs = stickers.flatMap((sticker) =>
+    refs.map((ref, colour) => ({ sticker, colour, d: distance(samples[sticker]!, ref) })),
+  );
   pairs.sort((a, b) => a.d - b.d);
   for (const { sticker, colour } of pairs) {
     if (colours[sticker] !== -1 || left[colour] === 0) continue;
     colours[sticker] = colour;
     left[colour]!--;
   }
+  return colours;
+}
 
-  for (let sticker = 0; sticker < 54; sticker++) {
-    if (sticker % 9 === 4 || doubtful.includes(sticker)) continue;
+/** Stickers given a colour other than their nearest, or nearly tied between two. */
+function doubts(
+  samples: readonly Lab[],
+  stickers: readonly number[],
+  refs: readonly Lab[],
+  colours: number[],
+) {
+  return stickers.filter((sticker) => {
     const ds = refs.map((ref) => distance(samples[sticker]!, ref));
-    if (ds[colours[sticker]!]! > Math.min(...ds)) doubtful.push(sticker);
+    const [best, second] = [...ds].sort((a, b) => a - b);
+    return second! - best! < 0.25 * best! + 3 || ds[colours[sticker]!]! > best!;
+  });
+}
+
+/** Classify 54 sticker samples (facelet order); sample `face * 9 + 4` is the centre of colour `face`. */
+export function classify(samples: readonly Lab[]): Classified {
+  const refs = [0, 1, 2, 3, 4, 5].map((face) => samples[face * 9 + 4]!);
+  const stickers = Array.from({ length: 54 }, (_, i) => i).filter((i) => i % 9 !== 4);
+  const colours = assign(samples, stickers, refs, 8);
+  for (let face = 0; face < 6; face++) colours[face * 9 + 4] = face;
+  return { colours, doubtful: doubts(samples, stickers, refs, colours) };
+}
+
+// Typical sticker colours as a phone camera sees them indoors (white red green yellow orange blue).
+const TYPICAL: Lab[] = (
+  [
+    [215, 218, 212],
+    [178, 32, 44],
+    [24, 150, 72],
+    [222, 200, 40],
+    [232, 104, 34],
+    [24, 72, 170],
+  ] as const
+).map(rgbToLab);
+
+/** The facelets a 2x2 has (the corner stickers of a 3x3), in facelet order. */
+export const CORNER_SAMPLES = Array.from({ length: 54 }, (_, i) => i).filter((i) =>
+  [0, 2, 6, 8].includes(i % 9),
+);
+
+/** Classify a 2x2's 24 sticker samples (at the corner facelets; other entries are ignored). */
+export function classify2x2(samples: readonly Lab[]): Classified {
+  let refs = TYPICAL;
+  let colours = assign(samples, CORNER_SAMPLES, refs, 4);
+  for (let round = 0; round < 8; round++) {
+    refs = refs.map((_, colour) => {
+      const mine = CORNER_SAMPLES.filter((s) => colours[s] === colour).map((s) => samples[s]!);
+      return [0, 1, 2].map((k) => mine.reduce((sum, lab) => sum + lab[k]!, 0) / mine.length) as never;
+    });
+    const next = assign(samples, CORNER_SAMPLES, refs, 4);
+    const settled = next.every((c, i) => c === colours[i]);
+    colours = next;
+    if (settled) break;
   }
-  return { colours, doubtful: doubtful.sort((a, b) => a - b) };
+  return { colours, doubtful: doubts(samples, CORNER_SAMPLES, refs, colours) };
 }
 
 /** Average colour of a square region of RGBA pixel data. */

@@ -8,6 +8,9 @@ import { STICKER_NORMAL } from './facelets';
  * held white on top and green in front, so every centre is at home. A cube passes only if it can be reached
  * by turning: 9 stickers of each colour, real and distinct pieces, corner twists summing to 0 (mod 3), edge
  * flips to 0 (mod 2), and corner and edge permutations of the same parity.
+ *
+ * A 2x2 (D-098) uses the corner stickers only, may be held any way (it has no centres), needs 4 stickers of
+ * each colour, and only the corner checks apply: any corner permutation can be reached on a 2x2.
  */
 
 export interface StateProblem {
@@ -61,9 +64,17 @@ function parity(perm: number[]): number {
   return swaps % 2;
 }
 
+/** The stickers a 2x2 has, in the same facelet numbering. */
+export const CORNER_STICKERS = CORNER_FACELETS.flat().sort((a, b) => a - b);
+
 /** The first problem found, or null if the cube is valid. */
-export function checkState(colours: readonly number[]): StateProblem | null {
-  const unset = colours.flatMap((c, i) => (c < 0 ? [i] : []));
+export function checkState(
+  colours: readonly number[],
+  puzzle: '3x3x3' | '2x2x2' = '3x3x3',
+): StateProblem | null {
+  const small = puzzle === '2x2x2';
+  const used = small ? CORNER_STICKERS : colours.map((_, i) => i);
+  const unset = used.filter((i) => colours[i]! < 0);
   if (unset.length > 0) {
     return {
       kind: 'unset',
@@ -71,7 +82,7 @@ export function checkState(colours: readonly number[]): StateProblem | null {
       stickers: unset,
     };
   }
-  for (let face = 0; face < 6; face++) {
+  for (let face = 0; face < 6 && !small; face++) {
     if (colours[face * 9 + 4] !== face) {
       return {
         kind: 'centres',
@@ -81,14 +92,15 @@ export function checkState(colours: readonly number[]): StateProblem | null {
     }
   }
 
-  const counts = [0, 1, 2, 3, 4, 5].map((c) => colours.filter((x) => x === c).length);
-  const over = counts.flatMap((n, c) => (n > 9 ? [c] : []));
+  const each = small ? 4 : 9;
+  const counts = [0, 1, 2, 3, 4, 5].map((c) => used.filter((i) => colours[i] === c).length);
+  const over = counts.flatMap((n, c) => (n > each ? [c] : []));
   if (over.length > 0) {
     const describe = (list: number[]) => list.map((c) => `${counts[c]} ${COLOUR_NAMES[c]}`).join(' and ');
-    const under = counts.flatMap((n, c) => (n < 9 ? [c] : []));
+    const under = counts.flatMap((n, c) => (n < each ? [c] : []));
     return {
       kind: 'counts',
-      message: `There are ${describe(over)} and ${describe(under)} stickers; each colour needs exactly 9.`,
+      message: `There are ${describe(over)} and ${describe(under)} stickers; each colour needs exactly ${each}.`,
       stickers: [],
     };
   }
@@ -124,7 +136,7 @@ export function checkState(colours: readonly number[]): StateProblem | null {
 
   const edgeAt: number[] = [];
   const edgeFlip: number[] = [];
-  for (let pos = 0; pos < 12; pos++) {
+  for (let pos = 0; pos < 12 && !small; pos++) {
     const stickers = EDGE_FACELETS[pos]!;
     const c = stickers.map((s) => colours[s]!);
     const home = EDGE_HOME.get(key(c));
@@ -158,7 +170,7 @@ export function checkState(colours: readonly number[]): StateProblem | null {
       stickers: [],
     };
   }
-  if (parity(cornerAt) !== parity(edgeAt)) {
+  if (!small && parity(cornerAt) !== parity(edgeAt)) {
     return {
       kind: 'parity',
       message:

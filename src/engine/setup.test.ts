@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { applyMoves, solvedFacelets, type Facelets } from './facelets';
+import { engine } from './api';
+import { applyMoves, isSolved, solvedFacelets, type Facelets } from './facelets';
 import { FACES, parseAlg } from './notation';
-import { faceTurnsOnly, setupFor } from './setup';
+import { faceTurnsOnly, setupFor, setupFor2x2 } from './setup';
 import { randomScramble, rng } from './testUtils';
-import { checkState } from './validate';
+import { checkState, CORNER_STICKERS } from './validate';
 
 const apply = (alg: string, state = solvedFacelets()) => applyMoves(state, parseAlg(alg));
 const colours = (state: Facelets) => Array.from(state);
@@ -98,5 +99,64 @@ describe('setupFor', () => {
       expect(colours(applyMoves(solvedFacelets(), setup))).toEqual(colours(state));
     }
     expect(setupFor(solvedFacelets())).toEqual([]);
+  });
+});
+
+/** What a 2x2 shows: its corner stickers, everything else not set. */
+const corners = (state: Facelets) => Array.from(state, (c, i) => (CORNER_STICKERS.includes(i) ? c : -1));
+const ROTATIONS = ['', 'x', 'x2', "x'", 'z', "z'"].flatMap((a) =>
+  ['', 'y', 'y2', "y'"].map((b) => `${a} ${b}`),
+);
+
+describe('2x2', () => {
+  it('accepts every scrambled 2x2, held any way up', () => {
+    const random = rng(5);
+    for (let i = 0; i < 200; i++) {
+      const held = ROTATIONS[i % 24]!;
+      expect(checkState(corners(apply(`${randomScramble(random, 11)} ${held}`)), '2x2x2')).toBeNull();
+    }
+  });
+
+  it('only asks for corner stickers and counts 4 of each colour', () => {
+    const c = corners(apply("R U F'"));
+    expect(checkState(c, '2x2x2')).toBeNull();
+    c[0] = -1;
+    expect(checkState(c, '2x2x2')).toEqual({
+      kind: 'unset',
+      message: '1 sticker still needs a colour.',
+      stickers: [0],
+    });
+    const s = corners(solvedFacelets());
+    s[0] = 3;
+    expect(checkState(s, '2x2x2')?.message).toBe(
+      'There are 5 yellow and 3 white stickers; each colour needs exactly 4.',
+    );
+  });
+
+  it('rejects a twisted corner but not a swap of two corners', () => {
+    const twisted = corners(solvedFacelets());
+    const urf = [8, 9, 20];
+    [twisted[urf[0]!], twisted[urf[1]!], twisted[urf[2]!]] = [
+      twisted[urf[2]!]!,
+      twisted[urf[0]!]!,
+      twisted[urf[1]!]!,
+    ];
+    expect(checkState(twisted, '2x2x2')?.message).toMatch(/twisted/);
+    // Two corners swapped is a real 2x2 position (on a 3x3 it would need two edges swapped too).
+    expect(checkState(corners(apply("R U R' U' R' F R2 U' R' U' R U R' F'")), '2x2x2')).toBeNull();
+  });
+
+  it('gives moves that make the entered 2x2, held the same way, and the tutorial solves it', () => {
+    const random = rng(11);
+    for (let i = 0; i < 40; i++) {
+      const state = corners(apply(`${randomScramble(random, 11)} ${ROTATIONS[(i * 7) % 24]}`));
+      const setup = setupFor2x2(state);
+      expect(setup.filter((m) => FACES.includes(m.family as never)).length).toBeLessThanOrEqual(11);
+      expect(corners(applyMoves(solvedFacelets(), setup))).toEqual(state);
+
+      const alg = engine.setupFor(state, '2x2x2');
+      const steps = engine.solveAll(alg, '2x2x2');
+      expect(isSolved(apply(steps.flatMap((s) => s.moves).join(' '), apply(alg)), true)).toBe(true);
+    }
   });
 });

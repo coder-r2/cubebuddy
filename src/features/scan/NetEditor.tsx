@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { COLOUR_NAMES, STICKER_HEX } from '../../engine/colourSets';
 
 /*
- * 2D net of a 3x3 (D-019, D-097): tap a sticker, then pick its colour. Faces are laid out as a cross
- * (U above, then L F R B, then D below), each in the facelet reading order of facelets.ts, which is how
- * the face looks in the net. Centres are fixed: the cube is held white on top, green in front.
+ * 2D net of a 3x3 or 2x2 (D-019, D-097, D-098): tap a sticker, then pick its colour. Faces are laid out as a
+ * cross (U above, then L F R B, then D below), each in the facelet reading order of facelets.ts, which is how
+ * the face looks in the net. On the 3x3 the centres are fixed (white on top, green in front); a 2x2 shows
+ * only its corner stickers (facelets 0, 2, 6 and 8 of each face) and may be held any way up.
  */
 
 const FACE_NAMES = ['Top', 'Right', 'Front', 'Bottom', 'Left', 'Back'];
@@ -18,8 +19,12 @@ const FACE_CELL: [number, number][] = [
   [3, 1],
 ];
 const isCentre = (sticker: number) => sticker % 9 === 4;
+/** Facelets (0–8) of a face that the editor shows, in reading order. */
+const SHOWN = { 3: [0, 1, 2, 3, 4, 5, 6, 7, 8], 2: [0, 2, 6, 8] } as const;
 
 interface NetEditorProps {
+  /** Stickers along each side of a face. */
+  size: 2 | 3;
   colours: number[];
   onChange: (colours: number[]) => void;
   /** Stickers to mark as worth checking (camera doubts). */
@@ -28,11 +33,15 @@ interface NetEditorProps {
   problem?: readonly number[];
 }
 
-export function NetEditor({ colours, onChange, doubtful = [], problem = [] }: NetEditorProps) {
-  const [selected, setSelected] = useState<number | null>(() => {
-    const first = colours.findIndex((c, i) => c < 0 && !isCentre(i));
-    return first >= 0 ? first : null;
-  });
+export function NetEditor({ size, colours, onChange, doubtful = [], problem = [] }: NetEditorProps) {
+  // Stickers that can be set, in facelet order.
+  const editable = Array.from({ length: 54 }, (_, i) => i).filter(
+    (i) => (SHOWN[size] as readonly number[]).includes(i % 9) && !isCentre(i),
+  );
+  const each = size * size;
+  const [selected, setSelected] = useState<number | null>(
+    () => editable.find((i) => colours[i]! < 0) ?? null,
+  );
 
   const pick = (colour: number) => {
     if (selected === null) return;
@@ -40,11 +49,15 @@ export function NetEditor({ colours, onChange, doubtful = [], problem = [] }: Ne
     next[selected] = colour;
     onChange(next);
     // Move on to the next sticker without a colour, else the next one in reading order.
-    const order = Array.from({ length: 54 }, (_, k) => (selected + 1 + k) % 54).filter((i) => !isCentre(i));
+    const at = editable.indexOf(selected);
+    const order = editable.map((_, k) => editable[(at + 1 + k) % editable.length]!);
     setSelected(order.find((i) => next[i]! < 0) ?? order[0]!);
   };
 
-  const counts = [0, 1, 2, 3, 4, 5].map((c) => colours.filter((x) => x === c).length);
+  // Centres count too (each is one of its colour's 9).
+  const counts = [0, 1, 2, 3, 4, 5].map(
+    (c) => colours.filter((x, i) => x === c && (SHOWN[size] as readonly number[]).includes(i % 9)).length,
+  );
 
   return (
     <div className="space-y-4">
@@ -57,12 +70,16 @@ export function NetEditor({ colours, onChange, doubtful = [], problem = [] }: Ne
         {FACE_CELL.map(([col, row], face) => (
           <div
             key={face}
-            className="grid grid-cols-3 gap-0.5"
-            style={{ gridColumn: col + 1, gridRow: row + 1 }}
+            className="grid gap-0.5"
+            style={{
+              gridColumn: col + 1,
+              gridRow: row + 1,
+              gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`,
+            }}
             role="group"
             aria-label={`${FACE_NAMES[face]} face`}
           >
-            {Array.from({ length: 9 }, (_, i) => {
+            {SHOWN[size].map((i, k) => {
               const sticker = face * 9 + i;
               const colour = colours[sticker]!;
               const centre = isCentre(sticker);
@@ -82,7 +99,7 @@ export function NetEditor({ colours, onChange, doubtful = [], problem = [] }: Ne
                   aria-label={
                     centre
                       ? `${FACE_NAMES[face]} centre: ${name}`
-                      : `${FACE_NAMES[face]} face, row ${Math.floor(i / 3) + 1}, column ${(i % 3) + 1}: ${name}${marked === 'doubt' ? ' (check this one)' : ''}`
+                      : `${FACE_NAMES[face]} face, row ${Math.floor(k / size) + 1}, column ${(k % size) + 1}: ${name}${marked === 'doubt' ? ' (check this one)' : ''}`
                   }
                   data-sticker={sticker}
                   className={`relative aspect-square rounded-[3px] border border-black/25 aria-pressed:z-10 aria-pressed:ring-3 aria-pressed:ring-accent ${
@@ -116,7 +133,7 @@ export function NetEditor({ colours, onChange, doubtful = [], problem = [] }: Ne
               type="button"
               onClick={() => pick(colour)}
               disabled={selected === null}
-              aria-label={`${name} (${counts[colour]} of 9)`}
+              aria-label={`${name} (${counts[colour]} of ${each})`}
               className="flex h-11 items-center gap-2 rounded-lg border border-border px-2 text-sm font-medium capitalize hover:bg-surface-2 disabled:opacity-50"
             >
               <span
@@ -125,7 +142,7 @@ export function NetEditor({ colours, onChange, doubtful = [], problem = [] }: Ne
                 style={{ backgroundColor: STICKER_HEX[colour] }}
               />
               {name}
-              <span className={`ml-auto text-xs ${counts[colour] === 9 ? 'text-muted' : 'text-danger'}`}>
+              <span className={`ml-auto text-xs ${counts[colour] === each ? 'text-muted' : 'text-danger'}`}>
                 {counts[colour]}
               </span>
             </button>

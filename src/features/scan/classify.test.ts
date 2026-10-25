@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { applyMoves, solvedFacelets } from '../../engine/facelets';
 import { parseAlg } from '../../engine/notation';
 import { randomScramble, rng } from '../../engine/testUtils';
-import { averageRgb, classify, rgbToLab, type RGB } from './classify';
+import { averageRgb, classify, classify2x2, CORNER_SAMPLES, rgbToLab, type RGB } from './classify';
 
 // Typical sticker colours as a phone camera sees them indoors (U R F D L B: white red green yellow orange blue).
 const STICKERS: RGB[] = [
@@ -52,6 +52,27 @@ describe('classify', () => {
       for (let c = 0; c < 6; c++) expect(colours.filter((x) => x === c).length).toBe(9);
     }
     expect(mistakes / scans).toBeLessThanOrEqual(2);
+  });
+
+  it.each([
+    ['neutral light', [1, 1, 1]],
+    ['warm light', [1.08, 0.97, 0.78]],
+    ['cool light', [0.9, 1, 1.12]],
+    ['dim, warm light', [0.75, 0.66, 0.5]],
+  ] as const)('reads scrambled 2x2s without centres (%s)', (_, cast) => {
+    const random = rng(cast[2] * 100 + 1);
+    let mistakes = 0;
+    const scans = 60;
+    for (let n = 0; n < scans; n++) {
+      const state = applyMoves(solvedFacelets(), parseAlg(randomScramble(random, 11)));
+      const samples = Array.from(state, (colour, sticker) =>
+        rgbToLab(photograph(STICKERS[colour]!, Math.floor(sticker / 9), random, cast)),
+      );
+      const { colours } = classify2x2(samples);
+      mistakes += CORNER_SAMPLES.filter((i) => colours[i] !== state[i]).length;
+      for (let c = 0; c < 6; c++) expect(CORNER_SAMPLES.filter((i) => colours[i] === c).length).toBe(4);
+    }
+    expect(mistakes / scans).toBeLessThanOrEqual(1);
   });
 
   it('flags stickers it is unsure about', () => {

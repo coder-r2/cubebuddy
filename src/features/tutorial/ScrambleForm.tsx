@@ -11,8 +11,8 @@ interface ScrambleFormProps {
   busy: boolean;
 }
 
-/** Start screen: a random scramble, a typed one (checked token by token, SPEC §5.6) or, on the 3x3, a copy of
- * the user's own cube from the camera or the net editor (D-097). */
+/** Start screen: a random scramble, a typed one (checked token by token, SPEC §5.6) or a copy of the user's
+ * own cube from the camera or the net editor (D-097, D-098). */
 export function ScrambleForm({ puzzle, onStart, busy }: ScrambleFormProps) {
   const [text, setText] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -100,40 +100,39 @@ export function ScrambleForm({ puzzle, onStart, busy }: ScrambleFormProps) {
         </div>
       </form>
 
-      {puzzle === '3x3x3' && (
-        <div className="space-y-2">
-          <p className="text-sm font-medium">Or copy the colours of your own cube</p>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => setScan('camera')}
-              className="flex h-11 items-center justify-center gap-2 rounded-lg border border-border px-3 text-sm font-medium hover:bg-surface-2 disabled:opacity-50"
-            >
-              <Icon name="camera" className="h-4 w-4" />
-              Scan with camera
-            </button>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => setScan('edit')}
-              className="flex h-11 items-center justify-center gap-2 rounded-lg border border-border px-3 text-sm font-medium hover:bg-surface-2 disabled:opacity-50"
-            >
-              <Icon name="grid" className="h-4 w-4" />
-              Enter by hand
-            </button>
-          </div>
-          <ScanDialog
-            open={scan !== null}
-            start={scan ?? 'edit'}
-            onClose={() => setScan(null)}
-            onUse={(setup) => {
-              setScan(null);
-              onStart(setup);
-            }}
-          />
+      <div className="space-y-2">
+        <p className="text-sm font-medium">Or copy the colours of your own cube</p>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => setScan('camera')}
+            className="flex h-11 items-center justify-center gap-2 rounded-lg border border-border px-3 text-sm font-medium hover:bg-surface-2 disabled:opacity-50"
+          >
+            <Icon name="camera" className="h-4 w-4" />
+            Scan with camera
+          </button>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => setScan('edit')}
+            className="flex h-11 items-center justify-center gap-2 rounded-lg border border-border px-3 text-sm font-medium hover:bg-surface-2 disabled:opacity-50"
+          >
+            <Icon name="grid" className="h-4 w-4" />
+            Enter by hand
+          </button>
         </div>
-      )}
+        <ScanDialog
+          puzzle={puzzle}
+          open={scan !== null}
+          start={scan ?? 'edit'}
+          onClose={() => setScan(null)}
+          onUse={(setup) => {
+            setScan(null);
+            onStart(setup);
+          }}
+        />
+      </div>
     </div>
   );
 }
