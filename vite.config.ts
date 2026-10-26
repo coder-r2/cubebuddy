@@ -55,7 +55,11 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest}'],
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+        // The unlisted /transcript/ page is a standalone static file: keep it out of the offline cache
+        // and out of the SPA navigation fallback so it always loads as itself.
+        globIgnores: ['transcript/**'],
         navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/\/transcript(\/|$)/],
         cleanupOutdatedCaches: true,
       },
     }),

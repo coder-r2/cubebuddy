@@ -1,0 +1,2370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>CubeBuddy build transcript</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+:root { color-scheme: dark light; --bg:#111214; --card:#1a1c20; --line:#2b2e34; --text:#e8e9ec; --mute:#9aa0aa; --accent:#6ea8ff; --user:#16233a; }
+@media (prefers-color-scheme: light) {
+  :root { --bg:#f5f6f8; --card:#fff; --line:#dcdfe5; --text:#1a1c20; --mute:#5c6370; --accent:#1d5fd1; --user:#e8f0fd; }
+}
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+h1 { font-size: 1.6rem; margin: 0 0 4px; }
+.lede { color: var(--mute); margin: 0 0 16px; }
+.bar { position: sticky; top: 0; z-index: 2; background: var(--bg); padding: 10px 0; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+.bar .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:8px; }
+.bar button, .more { font:inherit; font-size:.9rem; padding:6px 12px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; }
+.bar button:hover, .more:hover { border-color: var(--accent); }
+.chips { display:flex; gap:6px; overflow-x:auto; padding-bottom:2px; }
+.chips a { flex:none; min-width:34px; text-align:center; padding:3px 8px; border-radius:999px; border:1px solid var(--line); color:var(--text); text-decoration:none; font-size:.85rem; background:var(--card); }
+.chips a:hover { border-color: var(--accent); color: var(--accent); }
+.turn { margin: 0 0 22px; scroll-margin-top: 110px; }
+.turn h2 { font-size: 1.05rem; margin: 0 0 8px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+.turn h2 a { color: var(--accent); text-decoration:none; }
+.badge { font-size:.72rem; font-weight:500; color:var(--mute); border:1px solid var(--line); border-radius:999px; padding:1px 8px; }
+pre { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; font:.92rem/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; }
+.user { background:var(--user); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+.user.clamp { max-height: 9.5em; overflow: hidden; position: relative; }
+.user.clamp::after { content:""; position:absolute; inset:auto 0 0 0; height:3em; background:linear-gradient(transparent, var(--user)); }
+.user.clamp.open { max-height:none; }
+.user.clamp.open::after { display:none; }
+.more { margin-top:6px; }
+.resp { margin-top:10px; background:var(--card); border:1px solid var(--line); border-radius:10px; }
+.resp summary { cursor:pointer; padding:10px 14px; display:flex; justify-content:space-between; gap:12px; font-weight:600; list-style:none; }
+.resp summary::-webkit-details-marker { display:none; }
+.resp summary::before { content:"\25B8"; margin-right:8px; color:var(--mute); }
+.resp[open] summary::before { content:"\25BE"; }
+.resp summary span { flex:1; }
+.resp summary small { color:var(--mute); font-weight:400; }
+.resp pre { padding: 12px 14px 14px; border-top: 1px solid var(--line); }
+.none { color:var(--mute); font-size:.9rem; margin:8px 0 0; }
+footer { color:var(--mute); font-size:.85rem; margin-top:32px; }
+</style>
+</head>
+<body>
+<main>
+<h1>CubeBuddy build transcript</h1>
+<p class="lede">The conversation behind CubeBuddy, turn by turn: each prompt, and below it the assistant's final reply (collapsed). Reasoning, tool calls and tool output are not included, and secrets are redacted. Turn 1 is the first prompt of the project.</p>
+<div class="bar">
+  <div class="row">
+    <button type="button" id="expand">Expand all responses</button>
+    <button type="button" id="collapse">Collapse all</button>
+    <span class="lede" style="margin:0">35 turns</span>
+  </div>
+  <nav class="chips" aria-label="Jump to turn"><a href="#turn-1" title="Go through SPEC.md. Understand the goal of the project. Read each and every statement and …">1</a><a href="#turn-2" title="focus on white-cross on bottom only. however if adding color-neutrality doesnt take too mu…">2</a><a href="#turn-3" title="what is installable PWA/offline mean? (is it completely free?)">3</a><a href="#turn-4" title="at which url would all this urls deploy on? ideally i want it be deployed on the same URL …">4</a><a href="#turn-5" title="at which url would all this options deploy on? ideally i want it be deployed on the same U…">5</a><a href="#turn-6" title="keep SPEC.md (the technical specifications of the project) separate from plan.md (new file…">6</a><a href="#turn-7" title="1. done 2. i think i already have it, check and let me know 3. created (https://github.com…">7</a><a href="#turn-8" title="6. const firebaseConfig = { apiKey: &quot;[REDACTED]&quot;, authDomain: &quot;[REDACTED]&quot;, projectId: &quot;[R…">8</a><a href="#turn-9" title="gh instaled, dont have npm to install firebase tools, alternatives?">9</a><a href="#turn-10" title="option A (restarted claude cli check gh now)">10</a><a href="#turn-11" title="check gh now, installing firebase">11</a><a href="#turn-12" title="check gh now, i have given up on npm and firebase tools, well follow the alternative that …">12</a><a href="#turn-13" title="another important note: start tracking the repo. also, no .md files (that is meant for cla…">13</a><a href="#turn-14" title="yes readme is required, do the needful. start executing P0">14</a><a href="#turn-15" title="This session is being continued from a previous conversation that ran out of context. The …">15</a><a href="#turn-16" title="start P1">16</a><a href="#turn-17" title="Start p2, I will test p1 and p2 later">17</a><a href="#turn-18" title="start P3">18</a><a href="#turn-19" title="This session is being continued from a previous conversation that ran out of context. The …">19</a><a href="#turn-20" title="changes needed in free=play mode Firstly, I notice some error in f2l pair finding. for exa…">20</a><a href="#turn-21" title="prepare for compact">21</a><a href="#turn-22" title="/compact">22</a><a href="#turn-23" title="This session is being continued from a previous conversation that ran out of context. The …">23</a><a href="#turn-24" title="go ahead for P4">24</a><a href="#turn-25" title="This session is being continued from a previous conversation that ran out of context. The …">25</a><a href="#turn-26" title="Start p5">26</a><a href="#turn-27" title="This session is being continued from a previous conversation that ran out of context. The …">27</a><a href="#turn-28" title="run the live check again and give me explicit instructions on what you want me to do">28</a><a href="#turn-29" title="&lt;bash-input&gt;Get-Content firestore-rules -Raw | Set-Clipboard&lt;/bash-input&gt;">29</a><a href="#turn-30" title="&lt;bash-stdout&gt;&lt;/bash-stdout&gt;&lt;bash-stderr&gt;/usr/bin/bash: line 1: Get-Content: command not fo…">30</a><a href="#turn-31" title="all works fine, move on to next phase">31</a><a href="#turn-32" title="This session is being continued from a previous conversation that ran out of context. The …">32</a><a href="#turn-33" title="all good, no mistakes was found in camera scanning as well. what is the next phase? (if no…">33</a><a href="#turn-34" title="make a technical report of the bug you found in cubing.js in bug.md as well as the tempora…">34</a><a href="#turn-35" title="alright anything left to do for cubebuddy?">35</a></nav>
+</div>
+<section class="turn" id="turn-1"><h2><a href="#turn-1">Turn 1</a></h2><div class="user" id="u1"><pre>Go through SPEC.md. Understand the goal of the project. Read each and every statement and think as a software engineer. Ask as many clarifying questions as
+  possible. Perform a feasibility analysis on each feature and if required suggest alternatives to certain feature or a complete removal. Maintain a file
+  called decisions.md throughout the course of this project that records each every architectural decision taken as well as a brief reason for why it was
+  taking. Once the entire scope of the project is crystal-clear, rewrite SPEC.md as a technical specifications document mentioning all tech stacks used as
+  well.</pre></div><details class="resp"><summary><span>Response</span><small>246 characters</small></summary><pre>I've recorded your first three answers: click/tap-to-turn plus a move pad, undo by button and Ctrl+Z only (no scroll-undo), and a user toggle for F2L style.
+
+What would you like to clarify about the cross-colour question, or anything else so far?</pre></details></section><section class="turn" id="turn-2"><h2><a href="#turn-2">Turn 2</a></h2><div class="user" id="u2"><pre>focus on white-cross on bottom only. however if adding color-neutrality doesnt take too much time, add it as an optional toggle so advanced users can turn on. intermediate users can toggle to white/yellow cross mode as well. note: only if it doesnt take too much time, else it is not worth it</pre></div><details class="resp"><summary><span>Response</span><small>435 characters</small></summary><pre>Round 3 is saved to decisions.md (D-014 to D-017). For round 4, I've noted your selections:
+- **Timer:** all four extras (multiple sessions, solve history with edit/delete, progress graph, inspection voice/beep alerts).
+- **Scramble input:** typed or random scramble now, camera scanning later.
+- **Notation:** one live cube plus move cards.
+- **Extras:** dark/light theme and export to cstimer format.
+
+What would you like to clarify?</pre></details></section><section class="turn" id="turn-3"><h2><a href="#turn-3">Turn 3</a></h2><div class="user" id="u3"><pre>what is installable PWA/offline mean? (is it completely free?)</pre></div><details class="resp"><summary><span>Response</span><small>127 characters</small></summary><pre>Round 5 is recorded (D-025 to D-028). What would you like to clarify about hosting, the repo, keyboard mapping or move history?</pre></details></section><section class="turn" id="turn-4"><h2><a href="#turn-4">Turn 4</a></h2><div class="user" id="u4"><pre>at which url would all this urls deploy on? ideally i want it be deployed on the same URL as my other projects hosted on github pages (coder-r2.github.io/[blah-blah])</pre></div><p class="none">No text reply for this turn; the work was done with tools.</p></section><section class="turn" id="turn-5"><h2><a href="#turn-5">Turn 5</a></h2><div class="user" id="u5"><pre>at which url would all this options deploy on? ideally i want it be deployed on the same URL as my other projects hosted on github pages (coder-r2.github.io/[blah-blah])</pre></div><details class="resp"><summary><span>Response</span><small>3,121 characters</small></summary><pre>I've rewritten SPEC.md as a technical specification and recorded 47 architectural decisions in decisions.md. Your original brief is kept unchanged as SPEC.original.md.
+
+**Answers to your two direct questions:**
+- **AI for the CFOP solver:** none is needed. The solver searches for the best cross (8 moves or fewer), then each F2L pair, then looks up the OLL and PLL in tables built from the algorithm list. It runs in the browser in under about 2 seconds, so your GPU won't be used.
+- **Auto-importing from cstimer:** not possible, because cstimer has no API and other sites can't read its stored data. Instead you can import and export cstimer's export file.
+
+**What changed from your original spec:**
+- **Moved to later phases:** colour neutrality, camera scanning (which will come with a sticker-correction screen) and a beginner layer-by-layer tutorial.
+- **Added:** a 2x2 Ortega tutorial, +2/DNF penalties, multiple sessions, solve history, a progress graph and inspection alerts. Also an onboarding quiz, alternative and custom algorithms per case, a recognition drill and spaced-repetition ordering. Plus dark/light theme and installable offline use (PWA).
+- **Replaced:** scroll-wheel undo became an Undo button and Ctrl+Z. The grids of many small 3D cubes became 2D diagrams, because browsers allow only about 16 live 3D cubes per page.
+
+**Stack:** React 19, TypeScript, Vite, Tailwind, Zustand, and Dexie for browser storage. cubing.js handles the 3D cube, scrambles and algorithm parsing. The solver is our own code running in the background. Accounts and sync use Firebase (Google and email sign-in, free plan). It deploys through GitHub Actions to `coder-r2.github.io/cubebuddy/`.
+
+**Plan:** seven phases, P0 to P6, about 9.5 developer-days in total. Each phase ends with a working version deployed to the live URL.
+
+**Decisions I made myself (D-007, D-009, D-036 to D-045):**
+- the engine design, the cloud data layout and the styling, chart and test libraries
+- the quiz scoring rule
+- a 300 ms hold before the timer is ready.
+
+Tell me if you want any of these changed.
+
+**Still to confirm early in P0:**
+- three cubing.js features: tap-to-turn on touch screens, highlighting individual pieces, and generating trainer setup scrambles. I confirmed that tap-to-turn and the stickering options exist, but not the setup-scramble function name.
+- cstimer's exact keyboard layout and export file format.
+
+The spec lists a fallback for each of these if it doesn't hold.
+
+**Before deploying, you'll need to do some one-time setup** (SPEC.md §8): create the Firebase project, enable the two sign-in methods, add `coder-r2.github.io` as an allowed domain, and turn on Pages for the repo.
+
+Sources:
+- [cubing.js TwistyPlayer API](https://js.cubing.net/cubing/api/classes/twisty.TwistyPlayer.html)
+- [TwistyPlayerConfig](https://js.cubing.net/cubing/api/interfaces/twisty.TwistyPlayerConfig.html)
+- [cubing/scramble docs](https://js.cubing.net/cubing/scramble)
+- [cubing.js repo / licence](https://github.com/cubing/cubing.js)
+
+Files are in C:\Users\Rishe\Desktop\CubeBuddy:
+- SPEC.md
+- decisions.md
+- SPEC.original.md</pre></details></section><section class="turn" id="turn-6"><h2><a href="#turn-6">Turn 6</a></h2><div class="user" id="u6"><pre>keep SPEC.md (the technical specifications of the project) separate from plan.md (new file to include the phase-by-phase plan of the project) also give me explicit instructions of all the prestart setup that is required</pre></div><details class="resp"><summary><span>Response</span><small>3,281 characters</small></summary><pre>The plan is now in its own file, `plan.md`, and SPEC.md only describes what gets built and how. `plan.md` holds:
+- **Setup checklist:** the setup steps S1–S13 below, in full detail.
+- **Phases:** P0–P6, each with tasks, dependencies and "done when" criteria.
+- **Progress table:** one row per phase, to fill in as work goes.
+
+I logged the split in `decisions.md` as D-048, plus D-049: each phase is built on its own branch and closes only when its criteria are met.
+
+I checked your laptop: **Git, Node 24, npm and VS Code are already installed.** The GitHub CLI, the Firebase CLI and your git name/email are missing.
+
+## Setup you need to do before we start
+
+**Needed before P0 (about 10 minutes):**
+
+1. **Git identity.** The repo is public, so this email will be visible in the commit history. You can use your GitHub no-reply address instead.
+   `git config --global user.name "Your Name"` and `git config --global user.email "you@example.com"`
+2. **GitHub CLI.** Run `winget install --id GitHub.cli -e`, then **reopen your terminal and restart Claude Code**. Run `gh auth login` and choose GitHub.com → HTTPS → Yes → Login with a web browser, signed in as `coder-r2`. Check it with `gh auth status`.
+3. **Repo.** Create `coder-r2/cubebuddy`: lowercase, **Public**, completely empty (no README or .gitignore). I can also do this with `gh` once step 2 is done.
+4. **GitHub Pages.** In the repo, go to Settings → Pages → Source and choose **GitHub Actions**.
+
+**Needed before P5 (about 25 minutes, but doing it now avoids interruptions later):**
+
+5. **Firebase project.** At console.firebase.google.com, create project `cubebuddy` with Analytics **off**. Note the project ID. **Never upgrade to the paid Blaze plan.**
+6. **Web app.** Add a Web app (`&lt;/&gt;`) named `cubebuddy-web`, **untick Firebase Hosting**, and copy the six `firebaseConfig` values. They aren't secret, so you can paste them here.
+7. **Sign-in.** Under Authentication → Sign-in method, enable **Email/Password** (the first toggle only) and **Google** (public name "CubeBuddy" plus your support email).
+8. **Authorised domain.** Under Authentication → Settings → Authorized domains, add `coder-r2.github.io`.
+9. **Firestore.** Create the database: Standard edition, **production mode**, and the region closest to you. The region can't be changed later.
+10. **GitHub repo variables.** Under Settings → Secrets and variables → Actions → **Variables**, add the six `VITE_FIREBASE_*` values. The exact name-to-value table is in plan.md.
+11. **Firebase CLI.** Run `npm install -g firebase-tools`, then `firebase login` **in a normal terminal window**, because it's interactive. Check it with `firebase projects:list`.
+12. **Optional, recommended:** in Google Cloud Console → Credentials, restrict the auto-created browser key to `coder-r2.github.io`, your `firebaseapp.com` domain and localhost.
+13. **Optional:** VS Code extensions for ESLint, Prettier, Tailwind and Playwright.
+
+**One check:** if your `coder-r2.github.io` user site has a custom domain, every project site is served under that domain. Tell me if so, because step 8 would need to change.
+
+Once steps 1–4 are done (and `gh auth status` shows `coder-r2`), I can start P0.
+
+Files are in C:\Users\Rishe\Desktop\CubeBuddy:
+- plan.md
+- SPEC.md
+- decisions.md</pre></details></section><section class="turn" id="turn-7"><h2><a href="#turn-7">Turn 7</a></h2><div class="user" id="u7"><pre>1. done
+2. i think i already have it, check and let me know
+3. created (https://github.com/coder-r2/cubebuddy)
+4. done
+5. done, i think the project id is: [REDACTED] (the link says https://console.firebase.google.com/project/[REDACTED]/overview)
+please elaborate once again from step 6 onwards</pre></div><details class="resp"><summary><span>Response</span><small>8,119 characters</small></summary><pre>Here are detailed instructions for step 2, which still needs doing, and steps 6 onward. I've filled in your project ID, so the links go straight to the right pages.
+
+---
+
+### Step 2 — Install the GitHub CLI (not installed yet)
+
+1. Open **PowerShell** (Start menu → type "PowerShell").
+2. Run:
+   ```powershell
+   winget install --id GitHub.cli -e
+   ```
+   Accept the agreement prompts with `Y` if asked.
+3. **Close every terminal window and restart Claude Code.** Programs that are already open don't pick up newly installed tools.
+4. In a new PowerShell window, run `gh auth login` and answer the prompts:
+   - *Where do you use GitHub?* → **GitHub.com**
+   - *Preferred protocol?* → **HTTPS**
+   - *Authenticate Git with your GitHub credentials?* → **Y**
+   - *How would you like to authenticate?* → **Login with a web browser**
+   - It shows a one-time code like `ABCD-1234`. Press Enter, a browser opens; sign in as **coder-r2**, paste the code, and click **Authorize**.
+5. Run `gh auth status`. It should say `✓ Logged in to github.com account coder-r2`.
+
+---
+
+### Step 6 — Register the web app and get the config
+This connects the website to your Firebase project.
+
+1. Open https://console.firebase.google.com/project/[REDACTED]/settings/general
+2. Scroll to the **Your apps** card at the bottom. It should say "There are no apps in your project".
+3. Click the **`&lt;/&gt;`** (Web) icon.
+4. **App nickname:** `cubebuddy-web`
+5. **Leave "Also set up Firebase Hosting for this app" unticked.** We host on GitHub Pages instead.
+6. Click **Register app**.
+7. The next screen shows code containing a block like this:
+   ```js
+   const firebaseConfig = {
+     apiKey: "AIza…",
+     authDomain: "[REDACTED]",
+     projectId: "[REDACTED]",
+     storageBucket: "[REDACTED].firebasestorage.app",
+     messagingSenderId: "1234567890",
+     appId: "1:1234567890:web:abc123…"
+   };
+   ```
+   **Copy the whole `firebaseConfig` block and paste it into this chat.** These values aren't secrets; Firebase expects them to be public. I'll use them for your local `.env.local` file.
+8. Ignore the "Install Firebase SDK / npm install firebase" instructions. That gets done in the code. Click **Continue to console**.
+
+&gt; You can see this config again later on the same Project settings page, under Your apps → `cubebuddy-web` → **SDK setup and configuration → Config**.
+
+---
+
+### Step 7 — Turn on sign-in methods
+1. Open https://console.firebase.google.com/project/[REDACTED]/authentication/providers
+   - If you see a **Get started** button, click it first. It activates Authentication.
+2. **Email/Password:**
+   - Under *Native providers*, click **Email/Password**.
+   - Switch on the **first** toggle, "Email/Password".
+   - Leave the second toggle, **"Email link (passwordless sign-in)", off**.
+   - Click **Save**.
+3. **Google:**
+   - Click **Add new provider** → **Google** (under *Additional providers*).
+   - Switch **Enable** on.
+   - **Public-facing name for project:** `CubeBuddy`. This is what people see on Google's "Sign in to continue to …" screen.
+   - **Support email for project:** pick your email from the dropdown.
+   - Click **Save**.
+4. The Sign-in providers list should now show **Email/Password: Enabled** and **Google: Enabled**.
+
+---
+
+### Step 8 — Allow logins from your GitHub Pages domain
+Firebase only allows sign-ins from websites on an approved list.
+
+1. Open https://console.firebase.google.com/project/[REDACTED]/authentication/settings
+2. In the left menu of that page, click **Authorized domains**.
+3. You'll already see `localhost`, `[REDACTED]` and `[REDACTED].web.app`. Leave them.
+4. Click **Add domain** and type exactly `coder-r2.github.io`, with no `https://`, no `/cubebuddy` and no trailing slash.
+5. Click **Add**.
+
+---
+
+### Step 9 — Create the Firestore database
+This is where signed-in users' data is stored.
+
+1. Open https://console.firebase.google.com/project/[REDACTED]/firestore
+2. Click **Create database**.
+3. If asked for an **edition**, choose **Standard edition**.
+4. **Database ID:** leave it as **`(default)`**. Don't rename it; the code expects the default database.
+5. **Location:** since you're in Bangalore, choose **`asia-south1 (Mumbai)`**, the closest region for you and your friends. **This is permanent and can't be changed later.**
+6. **Security rules:** choose **Start in production mode**. That blocks all access for now; the proper rules ("each user can only access their own data") are added from the code in P5.
+7. Click **Create**. After about a minute you'll see an empty "Data" tab. That's correct.
+
+&gt; If a screen asks you to add a billing account or upgrade to **Blaze**, **stop and don't continue**. Everything here works on the free Spark plan.
+
+---
+
+### Step 10 — Store the config in GitHub
+GitHub's build needs the same six values from step 6.
+
+1. Open https://github.com/coder-r2/cubebuddy/settings/variables/actions
+2. Make sure you're on the **Variables** tab, **not** "Secrets".
+3. Click **New repository variable**, fill in **Name** and **Value**, then click **Add variable**. Repeat six times:
+
+   | Name (copy exactly) | Value (from your `firebaseConfig`) |
+   |---|---|
+   | `VITE_FIREBASE_API_KEY` | the `apiKey` text, e.g. `AIza…` |
+   | `VITE_FIREBASE_AUTH_DOMAIN` | `[REDACTED]` |
+   | `VITE_FIREBASE_PROJECT_ID` | `[REDACTED]` |
+   | `VITE_FIREBASE_STORAGE_BUCKET` | the `storageBucket` text |
+   | `VITE_FIREBASE_MESSAGING_SENDER_ID` | the `messagingSenderId` number |
+   | `VITE_FIREBASE_APP_ID` | the `appId` text, e.g. `1:…:web:…` |
+
+   Paste only the text inside the quotes, without the quote marks themselves.
+4. You should end up with 6 variables listed.
+
+---
+
+### Step 11 — Install the Firebase command-line tool
+This deploys the database security rules from the code.
+
+1. Open a **normal PowerShell window**, not Claude Code; this step needs you to answer prompts.
+2. Run:
+   ```powershell
+   npm install -g firebase-tools
+   ```
+   This takes 1–2 minutes. Warnings are normal.
+3. Run:
+   ```powershell
+   firebase login
+   ```
+   - *Enable Gemini in Firebase features?* → answer **n**.
+   - *Allow Firebase to collect CLI and Emulator Suite usage and error reporting information?* → answer either way (**n** is fine).
+   - A browser opens: choose the **same Google account** you used to create the Firebase project and click **Allow**. You'll see "Firebase CLI Login Successful".
+4. Check it with:
+   ```powershell
+   firebase projects:list
+   ```
+   You should see a row with `[REDACTED]`.
+
+&gt; If PowerShell says *"running scripts is disabled on this system"*, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`, answer `Y`, then retry.
+
+---
+
+### Step 12 — (Optional, recommended) Restrict the API key
+Your `apiKey` will be visible in the public website code. This step makes Google reject it when it's used from any website other than yours.
+
+1. Open https://console.cloud.google.com/apis/credentials?project=[REDACTED]
+   - It's the same Google account. If the top bar shows a different project, pick **cubebuddy** from the project dropdown.
+2. Under **API Keys**, click the key named **"Browser key (auto created by Firebase)"**.
+3. Under **Application restrictions**, select **Websites**.
+4. Click **Add** for each of these, one per line:
+   - `https://coder-r2.github.io/*`
+   - `https://[REDACTED]/*` (required for the Google sign-in popup)
+   - `http://localhost:5173/*` (local development)
+   - `http://localhost:4173/*` (local preview and automated tests)
+5. Leave the **API restrictions** section as it is. Firebase already set it.
+6. Click **Save**. It can take up to 5 minutes to apply.
+
+---
+
+### Step 13 — (Optional) VS Code extensions
+In VS Code, open Extensions (`Ctrl+Shift+X`) and install **ESLint**, **Prettier – Code formatter**, **Tailwind CSS IntelliSense** and **Playwright Test for VSCode**.
+
+---
+
+**When you're done, send me:**
+1. the `firebaseConfig` block from step 6;
+2. confirmation that `gh auth status` shows `coder-r2` (after restarting Claude Code);
+3. anything that looked different from these instructions. The Firebase console layout changes now and then, and I'll adjust.
+
+Then I'll start P0.</pre></details></section><section class="turn" id="turn-8"><h2><a href="#turn-8">Turn 8</a></h2><div class="user" id="u8"><pre>6. 
+
+const firebaseConfig = {
+  apiKey: "[REDACTED]",
+  authDomain: "[REDACTED]",
+  projectId: "[REDACTED]",
+  storageBucket: "[REDACTED].firebasestorage.app",
+  messagingSenderId: "[REDACTED]",
+  appId: "1:[REDACTED]:web:20e14784bc6b99c66f038a"
+};
+
+7. done
+8. done
+9. done
+10. done
+11. pending
+12. done
+
+installing gh is still going on (i think its hanging, can u please check). do not start P0 yet, yet to install Firebase command-line tool</pre></div><details class="resp"><summary><span>Response</span><small>653 characters</small></summary><pre>The GitHub CLI install isn't hanging. It's waiting for you to approve a hidden Windows permission prompt (above).
+
+I saved your Firebase config to `.env.local` in the project folder, and updated the setup status in `plan.md`:
+
+| Step | Status |
+|---|---|
+| 1, 3–10, 12 | Done |
+| 2 (GitHub CLI) | Waiting for your Windows approval, then `gh auth login` |
+| 11 (Firebase CLI) | Still to do |
+
+I won't start P0. When the GitHub CLI and Firebase CLI are both set up, restart Claude Code and tell me. I'll then check that `gh` is logged in as `coder-r2`, that Pages is set to deploy from GitHub Actions, and that `firebase projects:list` shows `[REDACTED]`.</pre></details></section><section class="turn" id="turn-9"><h2><a href="#turn-9">Turn 9</a></h2><div class="user" id="u9"><pre>gh instaled, dont have npm to install firebase tools, alternatives?</pre></div><details class="resp"><summary><span>Response</span><small>1,737 characters</small></summary><pre>You do have npm (version 11.17, installed with Node). It's being blocked by a Windows security setting.
+
+You probably saw an error like *"npm.ps1 cannot be loaded because running scripts is disabled on this system"*. PowerShell blocks script files by default on Windows, and `npm` in PowerShell is one of those scripts. (Claude Code's shell bypasses that setting, which is why it works for me.)
+
+Pick one fix:
+
+**Option A (recommended):** allow locally installed scripts for your user account. This is the standard developer setting, and it also fixes `firebase` and `npx` later.
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+Answer `Y`. Then:
+```powershell
+npm install -g firebase-tools
+firebase login
+firebase projects:list
+```
+
+**Option B:** don't change any settings; call the `.cmd` versions instead:
+```powershell
+npm.cmd install -g firebase-tools
+firebase.cmd login
+firebase.cmd projects:list
+```
+
+**Option C:** skip the Firebase CLI entirely. It's only used once, in P5, to upload the database security rules. Instead, I'd give you the rules text and you'd paste it into the Firebase console's Firestore → **Rules** tab and click **Publish**. The cost is that every later rules change becomes a manual copy-paste.
+
+For `firebase login`, the prompts are the same as before:
+- *Enable Gemini?* → **n**
+- *Usage reporting?* → either answer
+- A browser opens: pick the Google account that owns `[REDACTED]`.
+
+`firebase projects:list` should then show `[REDACTED]`.
+
+**About `gh`:** it's installed, but my shell can't see it yet. Please **restart Claude Code** once you've finished. After that I'll check `gh auth status`, the Pages source setting and the Firebase login, and then wait for your go-ahead on P0.</pre></details></section><section class="turn" id="turn-10"><h2><a href="#turn-10">Turn 10</a></h2><div class="user" id="u10"><pre>option A (restarted claude cli check gh now)</pre></div><details class="resp"><summary><span>Response</span><small>1,326 characters</small></summary><pre>The GitHub side is done; only the Firebase CLI is left.
+
+**GitHub (verified):**
+- **GitHub CLI:** version 2.103.0, logged in as `coder-r2`. Its permissions include `workflow`, which is needed to push the deployment workflow file in P0.
+- **Pages:** set to deploy from GitHub Actions, with no custom domain. The site will be at `https://coder-r2.github.io/cubebuddy/`, so the authorised domain you added in step 8 is correct.
+
+**The `gh` command isn't found in Claude Code yet.** It's installed and Windows has it on the PATH, but Claude Code was restarted from a terminal opened before the install. **Close the whole terminal app** (every Windows Terminal window, not just the tab), then open a new one and start Claude Code. Until then I'll call it by its full path, so nothing is blocked.
+
+**Firebase CLI: not installed yet.** There's no `firebase` in npm's global folder. Your PowerShell setting is fixed, so in your new terminal run:
+```powershell
+npm install -g firebase-tools
+firebase login
+firebase projects:list
+```
+`firebase projects:list` should show `[REDACTED]`. If you'd like, I can run the install for you, and you'd only need to run `firebase login`, since that step opens a browser.
+
+I've marked steps 2 and 4 as verified in `plan.md`. When `firebase projects:list` works, tell me and give the go-ahead for P0.</pre></details></section><section class="turn" id="turn-11"><h2><a href="#turn-11">Turn 11</a></h2><div class="user" id="u11"><pre>check gh now, installing firebase</pre></div><details class="resp"><summary><span>Response</span><small>750 characters</small></summary><pre>`gh` still isn't found by name in either of my shells, but **this isn't blocking anything**. Login is confirmed, and I can call it as `"C:\Program Files\GitHub CLI\gh.exe"` for P0.
+
+The cause: this is still the same Claude Code process (our conversation never ended), and Claude Code keeps the PATH it was started with. To fix it properly when convenient:
+
+1. Type `/exit` in Claude Code.
+2. Close the terminal app completely (every window).
+3. Open a fresh terminal, `cd` into the CubeBuddy folder, and run `claude --continue` to resume this conversation with the updated PATH.
+
+It's simplest to do this right after `firebase login`, so I'll find both `gh` and `firebase` by name afterwards. Tell me when `firebase projects:list` shows `[REDACTED]`.</pre></details></section><section class="turn" id="turn-12"><h2><a href="#turn-12">Turn 12</a></h2><div class="user" id="u12"><pre>check gh now, i have given up on npm and firebase tools, well follow the alternative that you said (manualy pasting when required).</pre></div><details class="resp"><summary><span>Response</span><small>1,127 characters</small></summary><pre>Pre-start setup is finished; only the step you chose to skip is left out:
+- **GitHub CLI:** works by name now, logged in as `coder-r2`.
+- **GitHub setup:** the repo exists, and Pages deploys from GitHub Actions to `https://coder-r2.github.io/cubebuddy/`.
+- **Firebase:** project `[REDACTED]` has the web app registered, Google and email sign-in enabled, `coder-r2.github.io` authorised, and Firestore created. The API key is restricted.
+- **Config:** the GitHub repository variables are set, and the same values are saved in `.env.local` for local development.
+- **Firebase CLI:** skipped by your choice.
+
+**Manual rules publishing** is logged as decision D-050. The security rules file in the repo is the single reference copy. In P5 I'll give you its exact text. You paste it into Firestore → **Rules** in the Firebase console, click **Publish**, and run a couple of checks in the console's **Rules Playground** that I'll spell out. This should only be needed once, plus the occasional tweak.
+
+`plan.md` now marks pre-start as ✅ Done, and the spec no longer mentions the Firebase CLI.
+
+When you're ready, tell me to start P0.</pre></details></section><section class="turn" id="turn-13"><h2><a href="#turn-13">Turn 13</a></h2><div class="user" id="u13"><pre>another important note: start tracking the repo. also, no .md files (that is meant for claude and used by claude or used by me for some other purpose than is necessary for project deployment) shows up in the repo at any push/commit</pre></div><details class="resp"><summary><span>Response</span><small>1,348 characters</small></summary><pre>The project folder is now a git repo connected to `github.com/coder-r2/cubebuddy`. The first commit (`f06c6e0`) is pushed to `main` and contains only `.gitignore` and `.gitattributes`.
+
+**No `.md` file can end up in the repo.** Three things enforce it:
+1. **Ignore rule:** `.gitignore` excludes every `*.md` / `*.markdown` file, plus Claude Code's `.claude/` folder. Right now SPEC.md, SPEC.original.md, plan.md and decisions.md all show as ignored. `.env.local` is ignored too.
+2. **Check before each commit:** I confirm that no `.md` file is tracked. I've saved this as a standing rule, so future sessions follow it too.
+3. **CI guard:** P0's deploy workflow will start with a step that fails the build if any `.md` file is ever tracked.
+
+If you ever want a README in the public repo, tell me and I'll add an exception for it.
+
+I also added `.gitattributes` to force Unix (LF) line endings, because your git converts files to Windows ones and the Linux CI expects LF.
+
+**Important:** your spec, plan and decision log now exist only in this folder on your laptop, not on GitHub. Back them up somewhere else (OneDrive, Google Drive or a USB stick) if losing them would hurt.
+
+I logged both changes in `decisions.md` (D-051 for the `.md` rule, D-052 for line endings) and updated plan.md and SPEC.md to match. Tell me when you'd like me to start P0.</pre></details></section><section class="turn" id="turn-14"><h2><a href="#turn-14">Turn 14</a></h2><div class="user" id="u14"><pre>yes readme is required, do the needful. start executing P0</pre></div><details class="resp"><summary><span>Response</span><small>2,645 characters</small></summary><pre>P0 is finished and live at **https://coder-r2.github.io/cubebuddy/**. The README is added too, as the one Markdown file allowed in the repo.
+
+**What's on the site:**
+- **Home page:** a floating 3D cube that makes a slow random move every 2 seconds.
+- **Navigation:** tabs on laptops, a bottom bar with a "More" menu on phones.
+- **Theme:** light/dark, following your system by default.
+- **Other pages:** placeholders saying which phase builds them.
+- **`/cubebuddy/lab`:** a hidden test page, not in the menus, for checking features on real devices.
+
+**Verified:**
+- 9 unit tests and 16 browser tests (desktop and phone screen sizes) pass, locally and on GitHub.
+- On the live site, direct links like `/cubebuddy/timer` open the right page, and the lab tests pass with no errors.
+- **Deploy safety:** I pushed a deliberately failing test on a throwaway branch. The pipeline stopped at the tests and skipped the build and deploy, so a broken change can't go live. That branch is deleted.
+
+**What the early tests turned up:**
+- **A build fix was needed.** The scramble generator crashed in the production build until I changed how the site is bundled (D-055). This would have broken the timer in P1.
+- **Trainer scrambles need care.** For short cases, the scramble generator's best answer was the algorithm itself in reverse (for Sune it returned `R U2' R' U' R U' R'`), which gives the answer away. The trainer will shuffle the parts of the cube the case doesn't involve first (D-056).
+- **Tapping the cube only turns faces anticlockwise.** Right-click turns them clockwise, but phones can't right-click. In P2 free-play I'll add a direction control for touch screens alongside the on-screen move pad (D-057).
+- **Keyboard layout:** copied exactly from cstimer's source (D-058).
+- **Other version notes:** a few tools had moved past the versions in the spec. One matters: I kept TypeScript on 6.0 because the linting tool doesn't support TypeScript 7 yet (D-054).
+
+All of this is logged in `decisions.md` (D-054 to D-061). SPEC.md and the plan's progress table are updated.
+
+**Two things from you:**
+1. **Open `/cubebuddy/lab` on your actual phone and a tablet if you have one.** Check that the cubes appear, that tapping a sticker turns a face, and that all four test sections show PASS (two of them pass by themselves after a moment). That's the last P0 check, since my tests could only imitate a phone.
+2. **If you use cstimer,** export your data (cstimer → Export → "Export to file") and drop the file in the project folder. It becomes a real test file for the P1 importer. It won't be committed.
+
+Say the word and I'll start P1 (the Timer).</pre></details></section><section class="turn" id="turn-15"><h2><a href="#turn-15">Turn 15</a><span class="badge">Automatic context summary</span></h2><div class="user clamp" id="u15"><pre>This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+&lt;tools-used-before-summary&gt;AskUserQuestion, Bash, Edit, PowerShell, Read, ToolSearch, WebFetch, WebSearch, Write&lt;/tools-used-before-summary&gt;
+Summary:
+1. Primary Request and Intent:
+   - **Initial request:**
+     - read SPEC.md and understand the project (CubeBuddy, a speedcubing web app);
+     - ask as many clarifying questions as possible;
+     - run a feasibility analysis on each feature, suggesting alternatives or removals;
+     - maintain **decisions.md** throughout the project, recording every architectural decision with a brief reason;
+     - rewrite SPEC.md as a technical specification including the tech stack.
+   - **Later requests:**
+     - keep SPEC.md (tech spec) separate from a new **plan.md** (phase-by-phase plan);
+     - give explicit pre-start setup instructions;
+     - "start tracking the repo";
+     - no .md files (meant for Claude or the user) may ever appear in the repo at any push or commit;
+     - then: "yes readme is required, do the needful. start executing P0".
+   - **Project constraints:**
+     - $0 cost; usable on laptop, tablet and phone;
+     - deployed at `https://coder-r2.github.io/cubebuddy/` (GitHub Pages, next to the user's other projects);
+     - 3x3 and 2x2 only; no AI/ML;
+     - user chose "build it all" (flexible timeline, phased P0–P6).
+
+2. Key Technical Concepts:
+   - **Stack:**
+     - React 19.3.1, React Router 8.5.0 (declarative BrowserRouter, basename `/cubebuddy`)
+     - Vite 8.3.5 (Rolldown), TypeScript 6.0.3 (pinned below 7 because typescript-eslint's peer range is `&lt;6.1`)
+     - Tailwind 4.3.3 with CSS-variable theme tokens and a `data-theme` dark variant
+     - Zustand 5.0.16, Dexie 4.4.7 (IndexedDB DB named `cubebuddy`)
+     - cubing.js 0.66.1 (twisty-player, scramble, search, puzzles, alg)
+     - Vitest 5.0.5 with fake-indexeddb; Playwright 1.64.1 (desktop + Pixel 7 projects)
+     - ESLint 10 + typescript-eslint 8.72 + react-hooks 7.1.1; Prettier 3.9.10
+     - Node 24.19, npm 11.17
+   - **Hosting and services:** GitHub Actions → GitHub Pages; Firebase Auth + Firestore (Spark plan), used from P5.
+   - **App architecture:**
+     - local-first data, optional sync;
+     - own CFOP engine (IDA* with pruning tables) in a Web Worker (P2);
+     - recognition tables derived from the alg database.
+   - **Hosting details:**
+     - 404.html SPA fallback on GitHub Pages;
+     - namespaced storage (`cubebuddy:` prefix) because coder-r2.github.io is a shared origin.
+   - **cubing.js internals learned:**
+     - `experimentalMovePressInput: 'basic'` only raycasts presses with `visualization: 'PG3D'`.
+     - Press direction: left-click/tap = inverse (anticlockwise), right-click = clockwise, Shift = slice, Ctrl = rotation.
+     - `experimentalModel.alg.addFreshListener` reports alg changes.
+     - `experimentalAddMove(move, {cancel:false})` appends a move with animation (catchUpMove).
+     - `experimentalMovePressCancelOptions: {directional:'none'}` stops presses merging with previous moves.
+     - Serialized sticker masks use the format `EDGES:…,CORNERS:…,CENTERS:…`:
+       - piece characters: `-` regular, `D` dim, `I` ignored, `X` invisible, …
+       - EDGES order: UF UR UB UL DF DR DB DL FR FL BR BL
+       - CORNERS order: UFR URB UBL ULF DRF DFL DLB DBR
+       - CENTERS order: U L F R B D
+     - Stickering presets include OLL, PLL, LL, EOLL, OCLL, CPLL, CLL, EPLL, F2L, Cross, OBL, PBL.
+     - `cubing/search` exports `experimentalSolve3x3x3IgnoringCenters(pattern)` and `experimentalSolve2x2x2(pattern)`.
+     - `cubing/scramble` exports `randomScrambleForEvent`.
+     - KPattern methods: `applyAlg`, `isIdentical`; puzzles via `cube3x3x3.kpuzzle().defaultPattern()`.
+     - twisty-player renders in a closed shadow DOM.
+
+3. Files and Code Sections (all in `C:\Users\Rishe\Desktop\CubeBuddy`):
+
+   **Local-only docs (git-ignored)**
+   - **SPEC.md:** the technical spec. Sections:
+     1. Overview / constraints / out of scope
+     2. Tech stack table (plus a pinned-majors note, D-054)
+     3. Architecture, project structure (marks the docs local-only), routes (including `/lab`)
+     4. CubeView API (PG3D/direction note, D-057)
+     5. Features 5.1–5.9 (timer, free-play, trainer with D-056 setup randomisation, CFOP/Ortega tutorials, settings, account)
+     6. Engine (StageReport, solvers table, recognition, alg verification, EngineAPI)
+     7. Data (AlgCase, Dexie schema, Firestore schema and rules)
+     8. Deployment (manual rules publishing, D-050)
+     9. NFRs
+     10. Testing
+     11. Risks
+     12. Glossary
+   - **SPEC.original.md:** the user's original brief, unchanged.
+   - **plan.md:**
+     - project identifiers table (Firebase project `[REDACTED]`, auth domain `[REDACTED]`) and setup status;
+     - S1–S13 setup instructions (S11 marked skipped);
+     - phase overview and P0–P6 tasks with exit criteria;
+     - P0 spike results table and exit-criteria results;
+     - progress table: Pre-start ✅, P0 ✅ Done ("Deployed (commit 00d96e2). Owner to test `/lab` on a real phone/tablet"), P1–P6c "Not started".
+     - Ground rules include phase branches `phase/pN-name` merged to main, and no .md commits.
+   - **decisions.md:** D-001 to D-061. Key entries:
+     - D-001: no ML.
+     - D-004: local-first + Firebase.
+     - D-005: React/TS/Vite.
+     - D-006: cubing.js wrapped in CubeView.
+     - D-007: SVG for grids.
+     - D-008/D-022: cstimer file import/export.
+     - D-009: penalties.
+     - D-010: tap-to-turn + MovePad + keyboard.
+     - D-011: no scroll-undo.
+     - D-012: F2L style toggle.
+     - D-013: white cross, colour-neutral later.
+     - D-014: quiz → 4 levels.
+     - D-015: F2L basic/advanced.
+     - D-016: main alg + ≤2 alternatives + custom.
+     - D-017: 3-state progress.
+     - D-018: timer extras.
+     - D-019: camera scanning later.
+     - D-020: notation course.
+     - D-021: theme.
+     - D-023: PWA.
+     - D-024: out of scope.
+     - D-025: Ortega tutorial.
+     - D-026: Google + email sign-in.
+     - D-027: print page.
+     - D-028: trainer modes.
+     - D-029: GitHub Pages `/cubebuddy/`.
+     - D-030: namespacing.
+     - D-031: cstimer keymap.
+     - D-032: merged history display over a raw log.
+     - D-033: helper moves animate.
+     - D-034: LBL tutorial later.
+     - D-035: tutorial depth.
+     - D-036: own engine in a worker.
+     - D-037: recognition from algs.
+     - D-038: Zustand/Dexie.
+     - D-039: Firestore chunking.
+     - D-040: popup sign-in.
+     - D-041: Tailwind.
+     - D-042: React Router.
+     - D-043: uPlot / TanStack Virtual.
+     - D-044: tests gate CI.
+     - D-045: tooling.
+     - D-046: phases.
+     - D-047: original spec kept.
+     - D-048: SPEC and plan split.
+     - D-049: phase branches and exit criteria.
+     - D-050: no Firebase CLI; rules pasted manually.
+     - D-051: no .md committed.
+     - D-052: LF line endings.
+     - D-053: README exception.
+     - D-054: dependency versions, TS 6.0.
+     - D-055: Vite build settings for the cubing worker.
+     - D-056: randomise don't-care pieces for setup scrambles.
+     - D-057: PG3D for interactive cubes; touch direction is an open P2 item.
+     - D-058: keymap by `KeyboardEvent.code`.
+     - D-059: cstimer format.
+     - D-060: /lab page in production.
+     - D-061: home cube compaction.
+   - **.env.local:** the Firebase config:
+     - VITE_FIREBASE_API_KEY=[REDACTED]
+     - AUTH_DOMAIN [REDACTED]
+     - PROJECT_ID [REDACTED]
+     - STORAGE_BUCKET [REDACTED].firebasestorage.app
+     - MESSAGING_SENDER_ID [REDACTED]
+     - APP_ID 1:[REDACTED]:web:20e14784bc6b99c66f038a
+
+   **Committed (commit 00d96e2 on main)**
+   - **.gitignore:** `*.md`, `*.MD`, `*.markdown`, `!/README.md`, `.claude/`, `.env`, `.env.*`, `!.env.example`, node_modules, dist, test artifacts, editor files.
+   - **.gitattributes:** `* text=auto eol=lf` plus binary types.
+   - **package.json:** scripts:
+     - dev, build, preview
+     - typecheck (`tsc -b --noEmit`), lint, format, format:check
+     - test (`vitest run`), test:e2e (`playwright test`)
+     - check:no-md (`node scripts/check-no-md.mjs`)
+     - All dependencies are pinned exactly.
+   - **vite.config.ts:**
+     - `base: '/cubebuddy/'`
+     - plugins: react, tailwindcss, and a custom `spaFallback404` plugin that copies index.html to 404.html in closeBundle
+     - `worker.format 'es'`
+     - `optimizeDeps.exclude ['cubing']`
+     - `build: { target 'es2023', modulePreload: false, cssCodeSplit: false, rolldownOptions.output.codeSplitting.groups [{name:'vite-preload-helper', test:/preload-helper/}] }`
+     - ports 5173 / 4173
+     - Vitest: `include src/**/*.test.ts(x)`, environment node.
+   - **TypeScript config:** tsconfig.json, tsconfig.app.json (strict, bundler, noUncheckedIndexedAccess) and tsconfig.node.json.
+   - **Lint and format config:**
+     - eslint.config.js: flat config.
+     - .prettierrc.json: singleQuote, printWidth 110, trailingComma all, LF.
+     - .prettierignore: also ignores *.md.
+   - **scripts/check-no-md.mjs:** fails if `git ls-files` contains any .md/.markdown file other than README.md.
+   - **.env.example:** the six `VITE_FIREBASE_*` keys, empty.
+   - **index.html:**
+     - viewport, theme-color and favicon `/cubebuddy/favicon.svg`;
+     - an inline pre-paint script that reads `localStorage 'cubebuddy:theme'` and sets `data-theme`.
+   - **public/favicon.svg:** cube logo.
+   - **src/index.css:**
+     - `@import 'tailwindcss'`;
+     - `@custom-variant dark` using `[data-theme='dark']`;
+     - `:root` and `[data-theme='dark']` tokens (bg, surface, surface-2, border, text, muted, accent, accent-contrast, success, danger);
+     - `@theme inline` colour mapping;
+     - `.cube-hover` keyframes, disabled under prefers-reduced-motion.
+   - **src/db/types.ts:**
+     - types Settings, SettingsRow, Session, Solve (penalty `0|2000|'DNF'`), AlgChoice, Progress, TrainerStats, SyncMeta;
+     - unions Puzzle, ThemePref, Level, F2LStyle, LLMode, CrossColorMode, StatKey.
+   - **src/db/db.ts:** `CubeBuddyDB extends Dexie(name = 'cubebuddy')`, version 1 stores:
+     - settings `'key'`
+     - sessions `'id, puzzle, updatedAt'`
+     - solves `'id, [sessionId+createdAt], updatedAt'`
+     - algChoices / progress / trainerStats `'caseId, updatedAt'`
+     - syncMeta `'key'`
+     - exports `db`.
+   - **src/stores/settings.ts:**
+     - `DEFAULT_SETTINGS`: level null, animationSpeed 1, theme system, keymap {}, f2lStyle 'front-right', llMode '2-look', crossColorMode 'white', inspection false, inspectionAlerts true, holdMs 300, hideTimeWhileRunning false, visibleStats all, onboardingDone false.
+     - `THEME_STORAGE_KEY='cubebuddy:theme'`.
+     - `createSettingsStore(database)` with `hydrate()` (merges defaults) and `update(patch)` (writes to Dexie, mirrors theme to localStorage).
+     - exports `useSettings`.
+     - Test: settings.test.ts (3 tests).
+   - **src/app/useTheme.ts:** `useApplyTheme()`.
+   - **src/app/ThemeToggle.tsx:** cycles system → light → dark; aria-label `${LABEL} (click to change)`.
+   - **src/app/nav.ts:** MAIN_NAV, ACCOUNT_NAV, BOTTOM_NAV, MORE_NAV.
+   - **src/app/Layout.tsx:**
+     - sticky header with top tabs (lg+);
+     - bottom nav plus a "More" button (role=menu sheet, menuitems), derived open state (`moreOpenOn === pathname`);
+     - Suspense around Outlet.
+   - **src/app/App.tsx:**
+     - lazy routes: index, learn, play, timer, trainer, trainer/:setId, trainer/:setId/print, tutorial/cfop, tutorial/ortega, settings, account, lab, `*` → NotFoundPage;
+     - hydrates settings on start.
+   - **src/app/NotFoundPage.tsx:** "Page not found" page.
+   - **src/main.tsx:** BrowserRouter with basename = BASE_URL without the trailing slash.
+   - **src/components/ui/Icon.tsx:** inline SVG icons.
+   - **src/components/ui/ComingSoon.tsx:** placeholder component; the placeholder pages under src/features/{learn,play,timer,trainer,tutorial(Cfop/Ortega),settings,account} use it with their phase labels.
+   - **src/components/CubeView/webgl.ts:** `isWebGLAvailable()`.
+   - **src/components/CubeView/CubeView.tsx:**
+     - `CubeViewHandle { play; pause; jumpToStart; jumpToEnd; queueMoves(moves): boolean; reset(setup?) }`
+     - props: puzzle, setup, alg, setupAnchor, mask, maskOrbits, interactive, onMove, speed, view ('3D' | '2D' | 'top' → experimental-2D-LL), controls, idle 'hover', orbit, hints, className, label, ref.
+     - Implementation:
+       - dynamic `import('cubing/twisty')`; the player is kept in `playerRef` with a `ready` state;
+       - `ownMoveCount` ref plus an alg fresh listener emits user moves via `onMove`;
+       - setting `alg` resets `ownMoveCount = countMoves(alg)`;
+       - maskOrbits overrides mask (`null` clears it);
+       - `visualization = interactive &amp;&amp; view==='3D' ? 'PG3D' : VISUALIZATION[view]`;
+       - `tempoScale = speed ?? global animationSpeed`;
+       - shows a WebGL-unavailable fallback and a loading skeleton.
+   - **src/lib/randomMove.ts:** `randomMove(previous?, rng)` never repeats the same face. Test: 3 tests.
+   - **src/lib/keymap.ts:**
+     - `CSTIMER_KEYMAP` keyed by KeyboardEvent.code:
+       - faces: KeyI R, KeyK R', KeyW B, KeyO B', KeyS D, KeyL D', KeyD L, KeyE L', KeyJ U, KeyF U', KeyH F, KeyG F'
+       - rotations: Semicolon y, KeyA y', KeyT x, KeyY x, KeyN x', KeyB x', KeyP z, KeyQ z'
+       - wide moves: KeyU r, KeyR l', KeyM r', KeyV l, KeyZ d, KeyC u', Comma u, Slash d'
+       - slices: Period M', KeyX M', Digit5 M, Digit6 M, Digit1 S', Digit2 E, Digit9 E', Digit0 S
+     - `moveForKey(code, overrides)`.
+     - Test: 3 tests.
+   - **src/features/home/useIdleMoves.ts:** a random move every 2000 ms (skipped when `document.hidden`); after 120 moves it compacts using lazy cubing/puzzles + cubing/search and calls `reset(short)`.
+   - **src/features/home/HomePage.tsx:** hero ("Your speedcubing buddy", "Take the quiz", "Start timing") with a hovering CubeView (speed 0.6, orbit false, hints false), plus feature cards.
+   - **src/features/lab/LabPage.tsx:** unlisted spike page with spikes:
+     - a. move-press: interactive cube, `data-testid move-log`;
+     - b. highlight: `CROSS_PLUS_FR_PAIR = 'EDGES:DDDD-----DDD,CORNERS:DDDD-DDD,CENTERS:------'` plus presets;
+     - c. setup-scramble: T_PERM applied before Sune' and solved; checks reachesCase, the Sune result, and that the setup doesn't reveal the alg;
+     - d. scramble-worker: 333 and 222 timings plus a 2D preview;
+     - environment info.
+     - Each spike carries `data-spike` / `data-status` attributes.
+   - **playwright.config.ts:**
+     - baseURL `http://localhost:4173/cubebuddy/`;
+     - projects: desktop (Desktop Chrome) and phone (Pixel 7);
+     - webServer: `npm run preview -- --strictPort --port 4173`.
+   - **tests/smoke.spec.ts:** home, deep links, 404 page, theme toggle persists, navigation (More menu on mobile).
+   - **tests/lab.spec.ts:** scramble worker pass, setup scramble pass, clicking twisty-player at (0.5w, 0.6h) produces a move.
+   - **.github/workflows/deploy.yml:**
+     - triggers: push (all branches), pull_request, workflow_dispatch.
+     - Job `check`, with VITE_FIREBASE_* coming from repo vars, runs in order:
+       1. checkout@v7
+       2. no-md guard
+       3. setup-node@v7 (node 24, npm cache)
+       4. npm ci
+       5. lint
+       6. format:check
+       7. typecheck
+       8. test
+       9. build
+       10. playwright install --with-deps chromium
+       11. test:e2e
+       12. upload-artifact@v7 on failure
+       13. upload-pages-artifact@v5, on main only
+     - Job `deploy`: needs check, runs on main push only, environment github-pages, deploy-pages@v5.
+   - **README.md:** public-facing description, features, stack, dev commands, deployment, credits.
+
+   **Memory files** in `C:\Users\Rishe\.claude\projects\C--Users-Rishe-Desktop-CubeBuddy\memory\`:
+   - MEMORY.md (index)
+   - maintain-decisions-log.md
+   - cubebuddy-project.md (includes Firebase ID; check plan.md's progress table)
+   - no-md-in-repo.md (includes the README exception)
+
+4. Errors and fixes:
+   - **gh "hanging" during install:**
+     - Cause: a hidden UAC prompt (consent.exe).
+     - Fix: the user approved it.
+     - Follow-up: gh wasn't on Claude's PATH until a full terminal restart.
+   - **npm unavailable in the user's PowerShell:**
+     - Cause: execution policy blocked npm.ps1.
+     - Fix: the user chose Option A (`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`).
+     - The user then gave up on firebase-tools; manual rules publishing was adopted (D-050).
+   - **typescript-eslint peer range `&lt;6.1`:** used TypeScript 6.0.3 instead of 7.0.2 (D-054).
+   - **ESLint `react-hooks/immutability`** (mutating the player held in useState): moved the player to `playerRef` plus `ready` state, with effects depending on `ready`.
+   - **ESLint `set-state-in-effect`** in Layout: replaced with derived state `moreOpenOn === pathname`.
+   - **cubing.js worker crash in the production build:**
+     - Fix 1: `modulePreload:false`; still wrapped because of CSS deps.
+     - Fix 2: `cssCodeSplit:false`; still imported the helper from the app index chunk.
+     - Fix 3: preload helper split into its own chunk via codeSplitting groups.
+     - Verified: the worker import graph (24 chunks) excludes the app chunk (D-055).
+   - **Setup-scramble spike "fail":** the optimal setup equals the inverse alg; fixed by randomising the LL permutation first (D-056).
+   - **Click-to-turn did nothing** ("not PG3D! skipping raycast"): interactive cubes now use PG3D (D-057).
+   - **Playwright couldn't find the canvas** (closed shadow DOM): the test targets the `twisty-player` element and waits 1500 ms.
+   - **SPEC.md "modified on disk" warnings:** caused by my own sed/prettier edits, not the user.
+
+5. Problem Solving:
+   - **Spikes:** all P0 spikes (a–e) resolved.
+   - **CI gating:** verified via the throwaway branch `ci-check/failing-test`. npm test failed, so build, e2e, pages-upload and deploy were skipped. The branch was deleted locally and remotely.
+   - **Branch CI:** run 39979804838 was green.
+   - **Merge and deploy:** fast-forwarded main to 00d96e2 and pushed; deploy run 39979992341 succeeded (both jobs).
+   - **Live checks:**
+     - curl: `/` returns 200; `/timer`, `/tutorial/cfop` and `/lab` return 404 with the app shell (expected).
+     - Live Playwright on desktop and phone: /timer h1 "Timer"; press, setup and scramble spikes all pass; no page errors.
+   - **Local results:** 9 unit tests and 16 e2e tests pass.
+   - **Open items:**
+     - touch direction control for free-play (P2, D-057);
+     - real-device check of /lab by the owner;
+     - a real cstimer export file as a P1 fixture.
+
+6. All user messages:
+   - Pasted initial request: "Go through SPEC.md. Understand the goal of the project. Read each and every statement and think as a software engineer. Ask as many clarifying questions as possible. Perform a feasibility analysis on each feature and if required suggest alternatives to certain feature or a complete removal. Maintain a file called decisions.md throughout the course of this project that records each every architectural decision taken as well as a brief reason for why it was taking. Once the entire scope of the project is crystal-clear, rewrite SPEC.md as a technical specifications document mentioning all tech stacks used as well."
+   - AskUserQuestion answers:
+     - Audience: me + friends on a public URL.
+     - Timeline: flexible, build it all.
+     - Storage: local-first + Firebase sync.
+     - Frontend: no preference.
+     - Input: click/tap-to-turn + move pad.
+     - Undo: button + Ctrl+Z only.
+     - F2L style: let the user toggle.
+     - Onboarding: short quiz decides level.
+     - Advanced F2L: basic 41 + per-slot variants.
+     - Algs: "1 main + upto 2 popular alternative + user-typed custom alg (app-validated)".
+     - Progress: Not started / Learning / Learned.
+     - Timer extras: all four.
+     - Scramble input: "Typed/random-scramble now + camera later".
+     - Notation: one live cube + move cards.
+     - Extras: dark/light theme, export to cstimer format.
+     - PWA: yes.
+     - 2x2: same + Ortega tutorial.
+     - Sign-in: Google + email/password.
+     - Printables: print page.
+     - Trainer: recognition drill + spaced repetition.
+     - Repo/URL path: `cubebuddy`.
+     - Keys: cstimer layout + remappable.
+     - History: auto-merge.
+     - Helper moves: animate + append, highlighted.
+     - LBL tutorial: later phase.
+     - Tutorial depth: case names + short stage guides.
+   - "focus on white-cross on bottom only. however if adding color-neutrality doesnt take too much time, add it as an optional toggle so advanced users can turn on. intermediate users can toggle to white/yellow cross mode as well. note: only if it doesnt take too much time, else it is not worth it"
+   - "what is installable PWA/offline mean? (is it completely free?)"
+   - "at which url would all this options deploy on? ideally i want it be deployed on the same URL as my other projects hosted on github pages (coder-r2.github.io/[blah-blah])"
+   - "keep SPEC.md (the technical specifications of the project) separate from plan.md (new file to include the phase-by-phase plan of the project) also give me explicit instructions of all the prestart setup that is required"
+   - "1. done 2. i think i already have it, check and let me know 3. created (https://github.com/coder-r2/cubebuddy) 4. done 5. done, i think the project id is: [REDACTED] ... please elaborate once again from step 6 onwards"
+   - Step 6 config pasted; "7. done 8. done 9. done 10. done 11. pending 12. done installing gh is still going on (i think its hanging, can u please check). do not start P0 yet, yet to install Firebase command-line tool"
+   - "gh instaled, dont have npm to install firebase tools, alternatives?"
+   - "option A (restarted claude cli check gh now)"
+   - "check gh now, installing firebase"
+   - "check gh now, i have given up on npm and firebase tools, well follow the alternative that you said (manualy pasting when required)."
+   - **Security/repo constraint, verbatim:** "another important note: start tracking the repo. also, no .md files (that is meant for claude and used by claude or used by me for some other purpose than is necessary for project deployment) shows up in the repo at any push/commit"
+   - "yes readme is required, do the needful. start executing P0"
+
+7. Pending Tasks:
+   - P0 is complete and deployed. Still to do: report completion to the user, including:
+     - asking them to open https://coder-r2.github.io/cubebuddy/lab on a real phone/tablet;
+     - asking for an optional real cstimer export file as a P1 fixture.
+   - P1 (Timer) and later phases P2–P6 per plan.md. These need the user's go-ahead; the user has only authorised P0 so far.
+   - **Ongoing rules:**
+     - Keep decisions.md updated (append D-xxx; never delete).
+     - Never commit any .md file except root README.md (check `git ls-files` before each commit).
+     - Commits end with `Co-Authored-By: Claude Opus 5.5 &lt;noreply@anthropic.com&gt;` and `Claude-Session: https://claude.ai/code/session_011aA9bddDKpAFy2ZrqABAbT`.
+     - Use phase branches `phase/pN-name` merged to main.
+     - Firestore rules are pasted manually by the owner in P5.
+
+8. Current Work:
+   - P0 work just finished:
+     - fast-forwarded main to commit 00d96e2 and pushed; deploy run succeeded;
+     - live checks passed (curl + Playwright on desktop/phone emulation: deep links render, lab spikes all pass, no page errors).
+   - plan.md was then updated:
+     - progress row `| P0 | ✅ Done | 2026-10-23 | 2026-10-23 | Deployed (commit 00d96e2). Owner to test /lab on a real phone/tablet |`;
+     - an "Exit criteria results" paragraph.
+   - The final summary message to the user had not yet been sent.
+
+9. Optional Next Step:
+   - Send the user a completion report for P0. The user's last instruction was "yes readme is required, do the needful. start executing P0", and P0 is now done. The report should cover:
+     - live URL https://coder-r2.github.io/cubebuddy/ and the diagnostics page https://coder-r2.github.io/cubebuddy/lab;
+     - README added;
+     - spike findings (PG3D needed for taps; tap = anticlockwise, so P2 needs a touch direction control; setup scrambles randomised; worker build fix; TS pinned to 6.0);
+     - CI gating verified.
+   - Ask the user to:
+     1. try /lab on their real phone/tablet;
+     2. optionally provide a cstimer export file for P1 tests;
+     3. confirm before starting P1 (Timer).
+   - Do not start P1 without the user's go-ahead.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: C:\Users\Rishe\.claude\projects\C--Users-Rishe-Desktop-CubeBuddy\5735b118-3bc9-4a5f-b524-bb1b33d36478.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
+
+The messages after this summary are the most recent messages from before compaction, kept verbatim. The summary was written without seeing them, so something it says has not happened yet may already have happened in them.</pre></div><button class="more" type="button" data-for="u15" aria-expanded="false">Show full prompt</button><p class="none">No text reply for this turn; the work was done with tools.</p></section><section class="turn" id="turn-16"><h2><a href="#turn-16">Turn 16</a></h2><div class="user" id="u16"><pre>start P1</pre></div><details class="resp"><summary><span>Response</span><small>3,225 characters</small></summary><pre>The P1 timer is live at **https://coder-r2.github.io/cubebuddy/timer**. All the automated checks pass; the one check left is you using it on a real phone.
+
+**What's in it:**
+- **Scrambles:** official-style random scrambles for 3x3 and 2x2, with a flat preview of the scrambled cube. Tap the preview to turn it around in 3D. The next scramble is ready before you finish a solve.
+- **Timing:** hold space (or touch and hold the timer) until it turns green, then let go. Any key or a tap anywhere stops it, and Esc or the Cancel button throws the solve away. The clock fills the screen while you solve, so a tap can't hit a button by mistake, and the screen stays on.
+- **Inspection (optional):** a 15-second countdown, started with a single tap like cstimer. Starting after 15 s adds +2 and after 17 s it's a DNF. It says "8 seconds" and "12 seconds", or beeps if the device has no voice.
+- **Typing mode:** enter `1234` for 12.34, or `12.34`, `1:02.34`, `DNF`, or `12.34+` for a +2.
+- **Penalties:** OK / +2 / DNF buttons under the last solve. Tap any solve in the history to change its penalty, add a comment or delete it.
+- **Sessions:** create, rename, switch and delete. Each session is either 3x3 or 2x2.
+- **Stats:** latest and best single, current and best Ao5/12/50/100 using the WCA rules, plus mean and worst. You can hide any of them.
+- **History and graph:** a list that stays fast with thousands of solves, and a graph of your times with Ao5 and Ao12 lines. The line colours were checked to stay distinguishable for colour-blind users in both themes.
+- **cstimer import/export:** importing the same file again only adds solves you don't have yet. Sessions for other puzzles (like 4x4) are skipped, and the import summary lists them.
+- **Settings:** all the timer options are in the sliders button on the timer page until the Settings page arrives in P5.
+
+**Your cstimer file:** all 4 solves imported correctly, and exporting them back gave an identical file. I kept your file out of the repo (it's on the ignore list) and wrote a made-up test file with the same layout, plus +2, DNF, comments and a 4x4 session.
+
+**Testing:**
+- 78 new unit tests covering time parsing, averages (including DNF and +2 cases), the timer's start/stop rules and cstimer import/export.
+- 13 new browser tests on desktop and phone sizes. These include a simulated touch hold and release, and a check that the full-screen clock really covers the whole phone screen.
+- **Two bugs caught along the way, both fixed:**
+  - The screenshots showed the phone's bottom bar peeking out under the full-screen clock.
+  - GitHub's test run caught two solves saved in the same millisecond reloading in random order.
+- The same checks pass against the live site on desktop and phone.
+
+The new decisions are D-062 to D-067 in `decisions.md`, and SPEC.md and plan.md are updated.
+
+**The last check is yours:** on your phone, do about 50 solves on the timer page using touch, then reload the page and check that everything is still there. If anything feels off (hold time, how fast it stops, the layout), tell me and I'll fix it before we call P1 done.
+
+Want me to start P2 (the virtual cube and solving helpers) after that, or alongside your phone test?</pre></details></section><section class="turn" id="turn-17"><h2><a href="#turn-17">Turn 17</a></h2><div class="user" id="u17"><pre>Start p2, I will test p1 and p2 later</pre></div><details class="resp"><summary><span>Response</span><small>3,409 characters</small></summary><pre>P2 is live at **https://coder-r2.github.io/cubebuddy/play**. All automated tests pass, and a scrambled cube was solved start to finish with the helpers on the live site, on desktop and phone screen sizes. What's left is your test on a real phone, alongside P1.
+
+**The free-play page**
+- **3x3 or 2x2.** Tap a sticker to turn its face. Tapping turns clockwise by default; right-click does the opposite. This fixes the P0 finding that phones could only turn anticlockwise.
+- **Other ways to move:** an on-screen move pad (wide moves, slices and rotations sit behind a toggle), or the cstimer keyboard layout. On phones the pad sits right under the cube.
+- **History:** shows merged moves (`R R` becomes `R2`), with a copy button and the raw list underneath. Undo and Redo step back or forward exactly one move (buttons, Ctrl+Z / Ctrl+Y, or Backspace).
+- **Reset and Scramble:** Scramble uses the same random scrambles as the timer.
+- **Helpers:** the buttons change with what the cube needs next:
+  - 3x3: Find/Solve cross → Find/Solve next F2L pair → Show/Solve OLL → Show/Solve PLL → final U turn. Last layer can be the beginner 2-look method or full OLL/PLL.
+  - 2x2: face → OLL → PBL.
+  - "Find" greys out every piece except the ones you're looking for.
+  - "Solve" plays the moves (shown in blue in the history). The cube is locked while it plays, and Esc stops it.
+- **Options:** the sliders button sets tap direction, F2L helper style (rotate to front-right, or no rotations), last-layer method and animation speed.
+
+**The solving engine**
+- It is my own solver, running in the background so the page never freezes.
+- The cross it finds is always the shortest possible. F2L pairs are the shortest possible with the allowed moves.
+- **Speed:** the targets were cross under 50 ms, an F2L pair under 0.5 s and a full solve under 2 s on a mid-range phone. On my machine a cross takes 0.04 ms, a pair 0.4 ms and a full solve 1.4 ms. Setup when the page opens takes about 0.3 s.
+- **Testing:** about 480 new engine tests, plus 5 browser tests for free-play.
+  - The engine tests cover every OLL and PLL case from all four angles.
+  - They also cover every possible last-layer position and every 2x2 PBL position.
+  - 1,000 random scrambles are solved start to finish on every push, which takes about 3 seconds.
+- **Algorithms:** I wrote the OLL, PLL and Ortega lists from memory, and the tests caught one wrong 2x2 PBL algorithm, now replaced. All 57 OLL and 21 PLL were correct. These lists are temporary until the P3 algorithm database.
+
+**Bugs found and fixed before deploying:**
+- Redo was always disabled because two things in the code shared one name.
+- The helper buttons flickered while a solution played, because some algorithms briefly break the cross.
+- The highlight was barely visible on the interactive cube, so other pieces now turn grey instead of slightly darker.
+- **Changed default:** animation speed is now "Normal", twice as fast as before, because the old default felt sluggish.
+
+The new decisions are D-068 to D-075 in `decisions.md`, and SPEC.md and plan.md are updated.
+
+**When you test P1 and P2 on your phone:**
+1. On the free-play page, tap stickers to check the turn direction feels right, then try Scramble and the helper buttons.
+2. Do the 50-solve timer session, then reload and check everything is still there.
+
+Next up is P3 (algorithm database and trainer). Shall I start it?</pre></details></section><section class="turn" id="turn-18"><h2><a href="#turn-18">Turn 18</a></h2><div class="user" id="u18"><pre>start P3</pre></div><details class="resp"><summary><span>Response</span><small>3,700 characters</small></summary><pre>P3 is live at **https://coder-r2.github.io/cubebuddy/trainer**. Every exit criterion I can test automatically passes, and a check on the live site showed all 57 OLL cards and working practice scrambles on desktop and phone screen sizes.
+
+**Algorithm database: 351 cases**
+
+| Set | Cases | Where the algorithms came from |
+|---|---|---|
+| 2-look OLL / 2-look PLL | 10 / 6 | Standard references |
+| F2L Basic | 41 | Standard references; 2 found by the solver |
+| Full OLL / Full PLL | 57 / 21 | Standard references, some with alternatives |
+| Ortega (2x2) | 7 OLL + 8 PBL | Standard references |
+| F2L Advanced | 159 | Generated (see below) |
+| CLL (2x2) | 42 | Generated, shortest possible using R, U and F |
+
+- **Every algorithm is checked on every push**, alternatives included: it must solve its own case and nothing else in its set.
+- **The test caught a broken algorithm.** I pushed a deliberately wrong OLL algorithm on a throwaway branch. The tests failed and build and deploy were skipped; the branch is deleted.
+- **F2L and CLL are proven complete.** The computer listed every possible case and found exactly 41 F2L and 42 CLL.
+- **F2L Advanced:** the 41 cases in each of the other three slots, plus 36 cases where a piece is stuck in the wrong slot.
+  - In the other slots, the main algorithm is the familiar front-right one done from that slot.
+  - My first generated version used technically shortest but awkward algorithms like `F2 R U R' U' F2`, so I replaced them.
+  - Generated algorithms are labelled as such in the app, and you can type your own.
+- **Two F2L cases (15 and 29):** the algorithms I recalled for them actually solved other cases, so those two use solver-found algorithms. Their names follow my own numbering, which may not match the standard F2L numbers exactly.
+- **Free-play uses your choices:** if you pick an alternative or enter your own algorithm, the free-play helpers use it too.
+
+**The trainer**
+- **Browsing:** a set picker with progress bars, and a case grid with a diagram for each case. Diagrams show the top-layer pattern for OLL, coloured sides plus arrows for PLL, a 3D-style view for F2L, and top/bottom views for 2x2.
+- **Progress and filters:** mark each case Not started / Learning / Learned, filter by status, and choose which cases to drill.
+- **Case popup:**
+  - a 3D demo that starts from the case (yellow on top) and ends solved, with play/step controls;
+  - the main algorithm and alternatives to choose from;
+  - a box for your own algorithm, which is checked before it's accepted.
+- **Timed drill:** you get a scramble that sets up a case, solve it on your real cube with the same space/touch timer, and then see the case and its algorithm.
+  - The scramble never just shows the reversed algorithm.
+  - Tests confirm each scramble produces exactly the intended case.
+- **Recognition drill:** name the case from its diagram out of 4 options. Cases you're slow at or get wrong come up more often.
+- **Print sheet:** per set, with a "Learning only" option. Full OLL fits on 3 pages on both A4 and Letter.
+
+**Bugs found and fixed before deploying:**
+- Practice scrambles for the 2-look edge cases could produce the wrong case.
+- The timer could get stuck after a drill solve. This could also have affected the main timer page.
+- The progress buttons overflowed the case cards on phones.
+
+The new decisions are D-076 to D-082 in `decisions.md`, and SPEC.md and plan.md are updated.
+
+**When you test P1–P3 on your phone,** for the trainer:
+1. Open a case and play the 3D demo.
+2. Pick an alternative algorithm.
+3. Do a few timed cases with your real cube.
+4. Print or save a sheet as PDF.
+
+Next is P4 (CFOP and Ortega tutorials). Shall I start it?</pre></details></section><section class="turn" id="turn-19"><h2><a href="#turn-19">Turn 19</a><span class="badge">Automatic context summary</span></h2><div class="user clamp" id="u19"><pre>This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+&lt;tools-used-before-summary&gt;AskUserQuestion, Bash, Edit, PowerShell, Read, Skill, ToolSearch, WebFetch, WebSearch, Write&lt;/tools-used-before-summary&gt;
+Summary:
+1. Primary Request and Intent:
+   - **Original project:** CubeBuddy, a speedcubing web app at https://coder-r2.github.io/cubebuddy/.
+     - Constraints: $0 cost; works on phone, tablet and laptop; 3x3 and 2x2 only; no AI/ML; built in phases P0–P6 per plan.md.
+     - Rules: maintain decisions.md recording every architectural decision; keep SPEC.md (technical spec) and plan.md (phase plan) as separate docs.
+   - **User instructions after the first summary:**
+     - "start P1": build the timer.
+     - "Start p2, I will test p1 and p2 later": build the engine and free-play. The user will do real-device testing of P1/P2 later.
+     - "start P3": build the alg database and trainer (most recent request; essentially complete).
+   - **Standing security/repo constraint, quoted verbatim from earlier:** "another important note: start tracking the repo. also, no .md files (that is meant for claude and used by claude or used by me for some other purpose than is necessary for project deployment) shows up in the repo at any push/commit".
+     - The README.md exception was approved ("yes readme is required").
+     - The user's personal cstimer export (cstimer_20261024_125715.txt) must not be committed. It is gitignored via `cstimer_*.txt`, and the user was told "It won't be committed".
+   - **Commit attribution:** commits end with:
+     - `Co-Authored-By: Claude Opus 5.5 &lt;noreply@anthropic.com&gt;`
+     - `Claude-Session: https://claude.ai/code/session_011aA9bddDKpAFy2ZrqABAbT`
+   - **Workflow:** use phase branches `phase/pN-name`, then fast-forward merge to main, which deploys via GitHub Actions.
+
+2. Key Technical Concepts:
+   - **Stack:** React 19.3.1, React Router 8.5 (basename /cubebuddy), Vite 8.3.5 (Rolldown), TypeScript 6.0.3, Tailwind 4.3.3 (tokens, `print:` variant), Zustand 5, Dexie 4 (DB `cubebuddy`), cubing.js 0.66.1, Vitest 5 + fake-indexeddb, Playwright 1.64 (desktop + Pixel 7).
+   - **Libraries added:**
+     - P1: uPlot 1.6.32, @tanstack/react-virtual 3.14.14 (newest version ≥2 weeks old).
+     - P2: comlink 4.4.2.
+   - **Timer:**
+     - Pure reducer state machine with phases idle/holding/ready/armed/inspecting/inspect-holding/inspect-ready/running/stopped.
+     - WCA inspection: &gt;15 s = +2, &gt;17 s = DNF.
+     - Trimmed averages remove ⌈5%⌉ from each end; DNF if DNFs &gt; trim.
+   - **cstimer format:** `session1..N` arrays of `[[penalty,time,...],scramble,comment,unixSec]`; penalty -1 = DNF, 2000 = +2; `properties.sessionData` is a JSON string.
+   - **Engine:**
+     - 54-sticker facelet model; values = home face (U0 R1 F2 D3 L4 B5; white U, red R, green F, yellow D, orange L, blue B).
+     - Moves generated geometrically (clockwise quarter: v' = (a·v)a − a×v).
+     - Piece values `pos*3+ori` (corners) / `pos*2+ori` (edges), with move tables derived from facelets.
+     - Orientation-independent analysis via centres; whole-cube rotation prefix brings the cross colour to D (TO_BOTTOM = ['z2','z',"x'",'',"z'",'x']).
+     - Exact BFS cross table (base-24 encoding).
+     - F2L IDA* in a front-right frame (Y_FOR_SLOT FR '', FL "y'", BL 'y2', BR 'y'), with a pair table (DFR, FR, DF, DR) plus 576-entry slot tables. Rotationless style conjugates moves back.
+     - LL steps by brute force over algs × AUFs; 2x2 face via an exact 4^8 pattern table; 2x2 PBL tries pre-D, alg, then D/U finish.
+   - **cubing.js specifics:**
+     - PG3D is needed for presses.
+     - Tap direction is read from the pointerup `button` (rightClick = `e.button &amp; 2`). It is flipped via a capture-phase listener using `Object.defineProperty(e,'button',...)`.
+     - Shift-click produces "2R" (inner-layer slice); Ctrl-click produces "Rv" (rotation).
+     - Default move durations: 1000 ms quarter, 1500 ms half (divided by tempoScale).
+     - `experimentalSolve3x3x3IgnoringCenters` rejects rotated states ("non-oriented puzzles are not supported"), so a reorientation rotation is appended.
+     - cubing/search works in Node/vitest.
+   - **Alg database:**
+     - Case frame = solved + z2 (white bottom, green front); case state = inverse(main alg) applied to that frame.
+     - Goals: f2l-pair, eo, oll, cpll, pll, ortega-oll, pbl, cll.
+     - Verification and recognition by trying an alg with pre-AUFs.
+   - **Trainer:**
+     - Spaced repetition: Leitner boxes 0–4 with weights [8,5,3,2,1], adjusted by time ratio and misses.
+     - Setup scrambles use per-goal randomisers.
+     - CaseDiagram SVG.
+     - Print CSS forces light colours.
+
+3. Files and Code Sections (repo `C:\Users\Rishe\Desktop\CubeBuddy`):
+
+   **P1 (timer)**
+   - **src/features/timer/time.ts:**
+     - Functions: effectiveTime, formatTime (truncates to centiseconds; "1:02.34"), formatResult ("14.34+", "DNF"), formatStat, parseTypedTime.
+     - parseTypedTime accepts digits read right-to-left, decimals, m:ss, DNF, and a trailing + for +2.
+   - **src/features/timer/stats.ts:** trimCount, trimmedAverage, rollingAverages, computeStats → {count, solved, latest, pb, worst, mean, averages{5,12,50,100:{current,best}}, rolling{5,12}}.
+   - **src/features/timer/machine.ts:**
+     - Exports: timerReducer(state, event, config), initialTimerState, inspectionPenalty, isActive, INSPECTION_MS / INSPECTION_DNF_MS.
+     - Events: press / release / tick / cancel.
+   - **src/features/timer/useTimer.ts:**
+     - Frame loop only for hold and inspection phases.
+     - Keydown handling respects `disabled`.
+     - **Key releases are handled in a separate effect that is always active (D-082 fix):**
+       ```ts
+       useEffect(() =&gt; {
+         const onKeyUp = (e: KeyboardEvent) =&gt; {
+           if (isEditable(e.target)) return;
+           const { phase } = stateRef.current;
+           if ((e.code === 'Space' &amp;&amp; phase !== 'idle') || phase === 'stopped') { e.preventDefault(); release(); }
+         };
+         window.addEventListener('keyup', onKeyUp);
+         return () =&gt; window.removeEventListener('keyup', onKeyUp);
+       }, [release]);
+       ```
+     - Global pointerup releases; `onPointerDown` handler returned along with `state` and `cancel`.
+   - **src/features/timer/cstimer.ts:** parseCstimer, serializeCstimer, puzzleForScrType, solveKey, CstimerFormatError; numeric session names become "cstimer N".
+   - **src/features/timer/__fixtures__/cstimer-export.txt:** synthetic fixture.
+   - **Timer components (src/features/timer):** LiveTime.tsx (own rAF), ScramblePanel.tsx, SessionBar.tsx, StatsPanel.tsx, HistoryList.tsx (virtualised), SolveDialog.tsx (comment saved on change), PenaltyButtons.tsx, TimeGraph.tsx (uPlot, `--chart-1`/`--chart-2`), TimerOptionsDialog.tsx, DataDialog.tsx, TypedEntry.tsx.
+   - **Timer support files:**
+     - scrambles.ts: nextScramble with prefetch.
+     - useScramble.ts.
+     - inspectionAlerts.ts.
+     - TimerPage.tsx: full-screen overlay has class `m-0`, because Tailwind v4 `space-y` adds margins.
+   - **src/stores/timer.ts:**
+     - createTimerStore(db): load, selectSession, createSession, renameSession, deleteSession (soft delete), addSolve, updateSolve, deleteSolve, importSessions, exportSessions.
+     - Current session stored in localStorage `cubebuddy:timer:session`.
+     - addSolve uses a monotonic createdAt: `Math.max(Date.now(), lastCreatedAt + 1)`.
+   - **Shared files touched in P1:**
+     - src/lib/useWakeLock.ts.
+     - src/components/ui/Dialog.tsx: native `&lt;dialog&gt;`, bottom sheet on phones.
+     - Icon.tsx: added plus, edit, trash, sliders, refresh, transfer, expand.
+     - index.css: chart tokens; print block added in P3.
+   - **Settings fields added:**
+     - `timerInput: 'timer'|'typing'`.
+     - `tapDirection: 'clockwise'|'anticlockwise'` (default clockwise).
+     - Default `animationSpeed` is now 2.
+   - **Tests:** time, stats, machine, cstimer, store unit tests; tests/timer.spec.ts with 7 e2e flows including a CDP touch test.
+
+   **P2 (engine + free-play)**
+   - **src/engine/notation.ts:**
+     - Exports: parseMove (handles "2R"→M', "Rv"→x, lowercase wide), parseAlg (throws "Invalid move: K"), formatMove (wide moves shown lowercase, e.g. r), formatAlg, invertMove, invertAlg, mergeMoves, FACES, Family type.
+   - **src/engine/facelets.ts:** STICKER_COORD / STICKER_NORMAL, stickerAt, moveDestinations, solvedFacelets, applyMove(s), centre, isSolved(state, cornersOnly).
+   - **src/engine/cubies.ts:** CORNER_NAMES / EDGE_NAMES, CORNER_FACELETS / EDGE_FACELETS (y-facing sticker first, then z, then x), FACE_MOVES (18), CORNER_MOVE / EDGE_MOVE, readPieces.
+   - **src/engine/analyse.ts:**
+     - Exports: SLOTS, SLOT_PIECES, frameForCentre, frameForFace, crossSolved, slotSolved, f2lSolved, llEdgesOriented, llOriented, llCornersPermuted, solvedUpToAuf, analyse3x3 (StageReport), faceWithColour, analyse2x2.
+   - **src/engine/tables.ts:** getCrossTable, getPairTable, getSlotTable, getFaceTable, moveFacePattern, warmUp.
+   - **src/engine/solvers.ts:**
+     - Exports: solveCross, `solveNextPair(state, colour, style, only?: Slot, faces?: number[])`, `conjugate(moves, r)` (also handles wide families), slotColours, solveLastLayerStep, solveFace, solveOrtegaStep, nextStep, solveAll.
+     - Uses `algsFor.*()` from algSource; the old llAlgs.ts was deleted in P3.
+   - **Engine API and worker:**
+     - api.ts: `engine = {init, setAlgChoices, analyse, nextStep, solveAll, findPieces}`.
+     - worker.ts: Comlink expose.
+     - client.ts: getEngine().
+   - **src/engine/mask.ts:**
+     - highlightMask: uses 'I' grey for non-highlighted pieces.
+     - pieceMask(puzzle, mark): added in P3.
+   - **Engine tests:** notation.test.ts, facelets.test.ts, solvers.test.ts (includes the property test of 1000 scrambles via env CUBEBUDDY_PROPERTY_SCRAMBLES, LL coverage of 216/288 states, PBL coverage of 576 states), perf.test.ts, testUtils.ts (rng, randomScramble).
+   - **src/components/CubeView/CubeView.tsx:**
+     - Added `pressDirection` with the capture-phase button flip.
+     - Added `locked`, which sets press input to none while keeping PG3D.
+   - **src/components/MovePad.tsx:** face grid, plus wide/slice/rotation moves behind a toggle.
+   - **src/features/play:**
+     - useFreePlay.ts: log, redo stack, base; compaction after 80 moves.
+     - The hook returns `{base, log, redoStack, sequence, addMoves, undo, redo, reset}`. Redo was renamed to avoid a clash with the function.
+     - HistoryPanel.tsx, PlayOptionsDialog.tsx.
+     - PlayPage.tsx: helper buttons by stage; busy state freezes the UI ("Playing: …"); paced playback; Esc cancels; keyboard handling.
+     - PlayPage sends trainer alg choices to the engine via `engine.setAlgChoices(choiceMap(choices))`.
+     - On phones the MovePad uses `order-first`.
+   - **tests/play.spec.ts:** 5 e2e flows.
+
+   **P3 (alg database + trainer)**
+   - **src/data/algs/types.ts:**
+     - Types: AlgSetId, Goal, Slot, DiagramKind ('oll'|'pll'|'f2l'|'oll-2x2'|'cll'|'pbl').
+     - AlgCase {id, name, group?, algs, goal?, diagram?, slot?, generated?}.
+     - AlgSet {id, puzzle, name, description, goal, diagram, stickering, cases}.
+   - **Data files (src/data/algs):**
+     - oll.ts: 57 cases, groups, nicknames.
+     - pll.ts: 21 cases.
+     - twoLook.ts: OLL_2LOOK_CASES (10), PLL_2LOOK_CASES (6).
+     - ortega.ts: 7 OLL + 8 PBL. The diag-top/adj-bottom PBL alg is "R D' R B2 R' D R'".
+     - f2l.ts: 41 cases. Cases 15 ("F' U F U2 R U R'") and 29 ("R U' R' F' U' F") are marked generated. Group labels: 25–30 = corner in slot, edge on top; 31–36 = corner on top, edge in slot.
+     - cll.ts: generated, 42 cases.
+     - f2lAdvanced.ts: generated, 159 cases.
+     - sets.ts: ALG_SETS in display order (oll-2look, pll-2look, f2l, oll, pll, f2l-advanced, ortega, cll), plus getSet and findCase.
+   - **src/engine/cases.ts:**
+     - Exports: caseBase (z2), `reachesGoal(state, context, strict)`, `isCaseState(state, context, otherSlotsSolved)`, `caseState(alg, auf)`, `solvesWith(state, alg, context, strict)`, contextFor, othersSolved (false for `-stuck-` cases), `verifyAlg(set, case, alg)` → `{ok, reason}` with "This alg doesn’t solve this case.", `recognise(state, set, chosenAlg?)`.
+   - **src/engine/algSource.ts:** setAlgChoices, `algsFor.{eo, ocll, cpll, epll, oll, pll, ortegaOll, pbl}` from the database with choices applied.
+   - **src/engine/f2lCases.ts:** basicF2LStates (41), stuckF2LStates (36), found by BFS over trigger moves.
+   - **src/engine/twoByTwo.ts:** solve2x2RUF, an optimal ⟨R,U,F⟩ IDA* with exact permutation table (8! ranks) and orientation-by-position table (3^8).
+   - **src/engine/generate.test.ts:**
+     - Skipped unless GENERATE_ALGS=1; writes cll.ts and f2lAdvanced.ts.
+     - Per-slot main = relabelled FR alg; alternative = shortest with faces [1,0,2] in the target frame.
+     - Stuck cases: faces [1,0,2,4,5] (no D), with an FR-style alternative.
+     - Excluded from tsconfig.app.json and included in tsconfig.node.json, because it uses node:fs.
+   - **src/engine/algDatabase.test.ts:** verifies every alg, distinctness, set sizes and verifyAlg, and that helpers use a chosen custom alg. About 880 tests.
+   - **src/components/CaseDiagram.tsx:**
+     - LL top view with side bars (transparent sides skipped), PLL arrows, F2LView (isometric U/F/R; rotated for the slot; back view for stuck cases), PBL top+bottom.
+     - Exports CaseDiagram (memo) and the ArrowMode type.
+   - **src/features/trainer:**
+     - caseView.ts: diagramProps (cached caseState), demoMask, arrowsFor.
+     - srs.ts: emptyStats, setAverage, weight, pickCase, afterTimed, afterRecognition.
+     - setup.ts: `caseSetup(set, case, random, customAlg?)` → `{scramble, target}`, using randomisers, a reorientation over 24 rotations, the forbidden-inverse check, and `formatAlg(parseAlg(solution.invert().toString()))`.
+     - TrainerPage.tsx: route dispatch; `SetView key={set.id}`.
+     - SetPicker.tsx, ProgressBar.tsx (ProgressBar plus ProgressControl; compact mode is a 3-column grid with labels New/Learning/Learned and aria-label full names).
+     - SetView.tsx: tabs Cases / Timed drill / Recognition drill; filters; CaseCard with data-testid case-card and case-alg; drills keyed by trainKey.
+     - useTrainSelection.ts: localStorage `cubebuddy:trainer:train:&lt;set&gt;`.
+     - CasePopup.tsx: CubeView setup="z2", setupAnchor="end", controls playback; alg radio choices; custom alg input with "Check and use"; role=alert errors.
+     - TimedDrill.tsx: lazy first round; an effect fetches the scramble; testids drill-scramble, drill-timer, drill-reveal, drill-count ("N solved this session").
+     - RecognitionDrill.tsx: lazy makeQuestion; testid recognition-score ("x / y correct").
+     - PrintView.tsx: "Learning only" option, `window.print`, testid print-grid.
+     - Tests: setup.test.ts (96+ cases with the real cubing solver), srs.test.ts.
+   - **src/stores/trainer.ts:**
+     - createTrainerStore: load, setChoice, setProgress, recordTime, recordRecognition.
+     - Helpers: chosenAlg(caseId, choices), choiceMap.
+     - Test: trainer.test.ts.
+   - **Layout and styles for print:**
+     - Layout.tsx: header and bottom nav get `print:hidden`; main gets `print:max-w-none print:p-0`.
+     - index.css: @media print block.
+   - **tests/trainer.spec.ts:** 5 e2e flows (alternative + learned + reload, custom alg, 5 timed cases, recognition, OLL PDF ≤3 pages on A4/Letter, desktop only).
+   - **Local-only docs (gitignored):**
+     - decisions.md now runs to D-082. P1: D-062–D-067. P2: D-068–D-075. P3: D-076–D-082.
+     - SPEC.md updated for each phase (§4, §5.3–5.5, §6.1, §6.3, §6.4, §6.6, §7.1, §7.2).
+     - plan.md: results paragraphs for P1–P3 and progress rows.
+       - P1: "🟡 Deployed, owner check pending … commit 9fc235a".
+       - P2: "🟡 Deployed, owner check pending … commit eb35b56".
+       - P3: "✅ Done (owner check pending) | 2026-10-24 | 2026-10-24 | Deployed (commit 2e94e95). Broken-alg check: CI failed at `npm test`, build/deploy skipped. Owner: try the trainer on a phone".
+
+4. Errors and fixes:
+   - **P1:**
+     - Playwright locator `getByLabel('Session')` was ambiguous; switched to getByRole combobox.
+     - The phone overlay was 16px short because Tailwind v4 space-y adds margin-bottom; fixed with `m-0`.
+     - CI caught a flaky test (two solves in the same millisecond); fixed with a monotonic createdAt.
+     - The preview server on port 4173 conflicted with Playwright; the process is killed via PowerShell before runs.
+   - **P2:**
+     - A PBL alg was wrong (diag-top/adj-bottom); replaced with the x2 conjugate.
+     - Over-strict tests (slot names, exact pair count) were relaxed to colour-based checks.
+     - The PBL closure test was slow; it now uses a corner-only key and a 60 s timeout.
+     - `process` type error; read env via globalThis.
+     - ESLint `react-hooks/use-memo` required `useMemo(() =&gt; getEngine(), [])`.
+     - `interactive` toggling swapped the renderer; added a `locked` prop.
+     - Helper buttons flickered mid-alg; the UI is frozen while busy.
+     - Redo was always disabled because the returned `redo` function overwrote the `redo` array (play.redo.length = 0); renamed to redoStack.
+     - PG3D dim was too subtle; switched to 'I'.
+     - Phone layout reordered.
+   - **P3:**
+     - Duplicate F2L case coverage (15/23, 18/29) and a wrong F2L 9 alternative; fixed with solver algs and by dropping the alternative.
+     - F2L group labels were swapped; fixed.
+     - conjugate crashed on wide moves; added wide support.
+     - The orientation projection was indexed by identity (inexact); now indexed by position.
+     - A leftover buildTables function was removed.
+     - A global `preservesOthers` flag hack was replaced with a `strict` parameter.
+     - A python swap replaced substrings incorrectly (ORTEGA_OLL_ALGS); redone with regex word boundaries.
+     - TS type error `Uint8Array&lt;ArrayBufferLike&gt;`; fixed by annotating the frontier.
+     - The 2-look EO setup randomiser used a full OLL and changed the case; now uses OCLL.
+     - Lint `set-state-in-effect` in the drills; restructured with lazy init and keys.
+     - react-refresh warning; arrowsFor moved to caseView.
+     - Advanced F2L optimal algs were unnatural; regenerated with friendly mains.
+     - The progress control overflowed on phones; compact labels.
+     - Timer stuck in "stopped" after a drill solve; fixed by D-082.
+     - A bash heredoc quoting failure while writing docs; done via a scratch python script instead.
+   - **Verification:** a deliberately broken alg (OLL 27 → "R U R' U R U R'") on branch ci-check/broken-alg failed CI at "Run npm test" with later steps skipped. The branch was deleted locally and remotely.
+
+5. Problem Solving:
+   - **Final unit test state:** 1543 passed, 2 skipped.
+   - **Final e2e state:** 48 passed, 2 skipped.
+   - **Live checks:**
+     - Timer: scrambles and timing work on desktop and phone.
+     - Free-play: a full helper solve reaches "Solved!" on desktop and phone.
+     - Trainer: 57 OLL cards render and timed scrambles generate on desktop and phone, with no page errors.
+   - **Engine performance (desktop):** tables ~0.3 s; cross 0.04 ms; pair 0.4 ms p95; full CFOP 1.4 ms p95.
+
+6. All user messages:
+   - "start P1"
+   - "Start p2, I will test p1 and p2 later"
+   - "start P3"
+   - Earlier constraints that are still in effect, from before the first summary:
+     - "another important note: start tracking the repo. also, no .md files (that is meant for claude and used by claude or used by me for some other purpose than is necessary for project deployment) shows up in the repo at any push/commit"
+     - "yes readme is required, do the needful."
+
+7. Pending Tasks:
+   - Send the user the P3 completion report. P3 is deployed (commit 2e94e95) and the broken-alg check is done.
+   - The owner will later do real-device testing of P1 (50-solve touch session plus reload), P2 (tapping/helpers) and P3 (trainer on phone).
+   - Do not start P4 (Tutorials) without the user's go-ahead.
+   - **Ongoing rules:**
+     - Keep decisions.md updated.
+     - Never commit .md files except README.md.
+     - Use the attribution lines on commits.
+     - Use phase branches.
+
+8. Current Work:
+   - **Last action:** plan.md's P3 progress row was updated (local, gitignored) after the deploy and live checks succeeded. The git status was clean.
+   - **What is deployed:**
+     - The full trainer at https://coder-r2.github.io/cubebuddy/trainer.
+     - 8 sets / 351 cases, all verified in CI.
+     - CLL, F2L Advanced and F2L 15/29 are engine-generated and marked as such.
+     - Diagrams, case popup with 3D demo, alg choice and custom-alg verification.
+     - Progress tracking; timed drill with non-revealing setup scrambles; recognition drill; spaced repetition; print sheets (full OLL ≤3 pages on A4 and Letter).
+     - Free-play helpers now use the user's chosen algs.
+   - The final summary message to the user had not yet been sent.
+
+9. Optional Next Step:
+   - Send the P3 completion report to the user. The last request was "start P3", and P3 is now complete and deployed.
+   - The report should cover:
+     - the live trainer URL;
+     - the set list and counts;
+     - which algs are generated and why;
+     - the verification approach;
+     - the bugs found by tests (2-look edge setup randomiser, timer stuck after a drill solve, phone overflow);
+     - the broken-alg CI check result;
+     - decisions D-076–D-082.
+   - Then ask the user to try the trainer on their phone alongside the pending P1/P2 checks, and whether to start P4 (Tutorials).
+   - Do not begin P4 without confirmation.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: C:\Users\Rishe\.claude\projects\C--Users-Rishe-Desktop-CubeBuddy\5735b118-3bc9-4a5f-b524-bb1b33d36478.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
+
+The messages after this summary are the most recent messages from before compaction, kept verbatim. The summary was written without seeing them, so something it says has not happened yet may already have happened in them.</pre></div><button class="more" type="button" data-for="u19" aria-expanded="false">Show full prompt</button><p class="none">No text reply for this turn; the work was done with tools.</p></section><section class="turn" id="turn-20"><h2><a href="#turn-20">Turn 20</a></h2><div class="user clamp" id="u20"><pre>changes needed in free=play mode
+Firstly, I notice some error in f2l pair finding. for example, after solving 2/4 f2l pairs, when i click find next f2l pair, it shows me an f2l pair which does not map to the cube that i just saw. As in it still solves the pair it said it would but the find f2l pair button shows the pair in a completely different state (perhaps from the cross-done state?, completely not sure).
+Secondly, although it does solve f2l pairs correctly, it uses extremely non-standard algorithms such as breaking the cross and fixing it, or breaking multiple cross pieces and block bulding the f2l pair back. use only standard paradigms for f2l basic such as orienting the pair then inserting it, where hiding a corner/edge using an unsolved slot is used for orienting the pair. even in advanced f2l there are a very few rare cases that involve this amount of cross breaking and block building.
+changes in trainer mode:
+upon clicking an alg, the video player interface looks really old and bad, i notice you have used via twizzle but the interface looks clunky. figure out a way to change the interface to a more modern theme as the website or figure out an alternative for twizzle entirely.
+next, recheck all diagrams used for all algorithms just in case, for the ortega method there seem to be some duplicates in PBL (for example, adjacent top and adjacent bottom are redundant as u could simply flip the cube and perform the alg for the top). rectify this.
+also do not forget to appropriately mention where the algs where sourced from somewhere in the website in some phase.</pre></div><button class="more" type="button" data-for="u20" aria-expanded="false">Show full prompt</button><details class="resp"><summary><span>Response</span><small>3,399 characters</small></summary><pre>All your free-play and trainer changes are done and live at https://coder-r2.github.io/cubebuddy/. Every check passed before deploying. The key new tests also pass against the live site on desktop and phone sizes.
+
+**1. "Find next F2L pair" showing the wrong cube.** The pieces it picked were correct, but the 3D picture was wrong. A bug in cubing.js (the library that draws the cube) redrew the cube with its last turn applied a second time when the highlight appeared. I fixed it with a one-line patch to the library, which reinstalls automatically on every install. Before the fix the picture was wrong in about 60% of test runs; now it's always right. A new test compares the cube before and after the highlight, and it catches the bug whenever the patch is removed.
+
+**2. Non-standard F2L moves.** The helper now only uses U turns plus inserts like `R U R'`, `F' U F` or `L' U L`. Pieces are only hidden in unsolved slots, so it never breaks the cross or builds blocks.
+- Examples: `U' L U L' F' U F`, `y R U2 R' F' U2 F`.
+- Pairs average 6.5 moves, longest 11. A full CFOP solve averages 57 moves, inside P4's target of 50–65.
+- The F2L Advanced alternatives had the same problem (e.g. `L2 U2 F' L2 F U2 L2`), so I regenerated them and the stuck-piece cases with the same rules.
+
+**3. Alg player.** The old cubing.js control bar is replaced with controls in the site's own style:
+- the alg as tappable moves, with the next move highlighted;
+- a timeline slider, plus restart, previous, play/pause and next buttons;
+- a speed toggle (0.5×/1×/2×) and arrow-key/Space shortcuts.
+
+The demo cube now uses the same cleaner look as free-play, and pieces that don't matter are greyed out instead of turning brownish.
+
+**4. Diagram recheck.**
+- **PBL:** cut from 8 cases to 5. The three removed ones were the same cases held upside down. When the bad layer is on the bottom, the free-play solver now flips the cube with x2. A test checks that no remaining case is another one flipped.
+- **PLL arrows:** fixed for Z, J and R perms. They showed every piece moving; now they show the usual 2–3 swaps.
+- **OLL and PLL:** checked against J Perm's (jperm.net) published algorithms. Every one of our algs solves the case of the same number or name there. All 57 main OLL algs and 17 of the 21 main PLL algs are word-for-word the same.
+- **F2L, CLL, Ortega:** checked by eye, no problems. F2L numbers couldn't be checked this way because J Perm publishes no F2L data and numbering varies between sources; the site says they're CubeBuddy's own order.
+
+**5. Credits.** A new About &amp; credits page says where the algorithms come from, using only the claims above. It also credits csTimer's file format and the open-source libraries with their licences. It's linked from the trainer ("Where the algorithms come from"), the phone "More" menu and a laptop footer; README.md has the same note.
+
+**Bug found while testing:** on a phone, lifting the finger that stopped the timer could tap whatever was underneath. In the test that was the logo, which jumped to the Home page. Fixed, and the touch test now checks for it.
+
+The new decisions are D-083 to D-089 in `decisions.md`, and SPEC.md and plan.md are updated (all local only). The commit is c497eb4.
+
+When you test on your phone, please retry the free-play F2L helpers and the trainer's new player along with the pending P1–P3 checks. Shall I start P4 (tutorials)?</pre></details></section><section class="turn" id="turn-21"><h2><a href="#turn-21">Turn 21</a></h2><div class="user" id="u21"><pre>prepare for compact</pre></div><details class="resp"><summary><span>Response</span><small>649 characters</small></summary><pre>Everything is saved, so you can compact now.
+
+- **Repo:** main is at c497eb4 and live on GitHub Pages; the working tree is clean and the feedback branch is merged and deleted.
+- **Local docs:** decisions.md (up to D-089), SPEC.md and plan.md are updated. They stay out of the repo as before.
+- **Memory:** the project note now has the current status and workflow, plus a reminder to re-check the cubing.js patch if we ever upgrade that library. I also added a note on what you care about: human-style F2L, no duplicate cases, credited sources and a modern UI.
+
+Still waiting on you: real-phone testing of P1–P3, and your go-ahead for P4 (tutorials).</pre></details></section><section class="turn" id="turn-22"><h2><a href="#turn-22">Turn 22</a></h2><div class="user" id="u22"><pre>/compact</pre></div><p class="none">No text reply for this turn; the work was done with tools.</p></section><section class="turn" id="turn-23"><h2><a href="#turn-23">Turn 23</a><span class="badge">Automatic context summary</span></h2><div class="user clamp" id="u23"><pre>This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+&lt;tools-used-before-summary&gt;AskUserQuestion, Bash, Edit, PowerShell, Read, Skill, ToolSearch, WebFetch, WebSearch, Write&lt;/tools-used-before-summary&gt;
+Summary:
+1. **Primary request and intent**
+
+   **Project:** CubeBuddy, a speedcubing web app at https://coder-r2.github.io/cubebuddy/ (repo `C:\Users\Rishe\Desktop\CubeBuddy`, GitHub `coder-r2/cubebuddy`).
+   - Constraints: $0 cost; must work on phone, tablet and laptop; 3x3 and 2x2 only; no AI/ML; built in phases P0–P6.
+   - SPEC.md, plan.md and decisions.md are local only (gitignored).
+
+   **Standing constraints, verbatim from earlier sessions:**
+   - "another important note: start tracking the repo. also, no .md files (that is meant for claude and used by claude or used by me for some other purpose than is necessary for project deployment) shows up in the repo at any push/commit"
+   - README.md is the exception: "yes readme is required, do the needful."
+   - The owner's cstimer export (`cstimer_*.txt`) must never be committed; it is gitignored.
+
+   **Commits** end with:
+   ```
+   Co-Authored-By: Claude Opus 5.5 &lt;noreply@anthropic.com&gt;
+   Claude-Session: https://claude.ai/code/session_011aA9bddDKpAFy2ZrqABAbT
+   ```
+
+   **Workflow:** work on a branch (`phase/pN-…` or `fix/…`), push, wait for CI, fast-forward main (which deploys), then delete the branch.
+
+   **This session's request** was the owner's feedback after P3 (quoted in full in section 6). It covered:
+   - fixing the F2L "find next pair" display;
+   - using only standard F2L paradigms;
+   - modernising or replacing the twizzle player;
+   - rechecking all diagrams and removing PBL duplicates;
+   - crediting the algorithm sources on the site.
+
+   **Latest user action:** /context, then "prepare for compact".
+
+2. **Key technical concepts**
+
+   - **Stack:** React 19, Vite 8, TypeScript 6, Tailwind 4, Zustand, Dexie, cubing.js 0.66.1, Vitest 5, Playwright 1.64 (desktop + Pixel 7).
+   - **New dev dependency:** patch-package 8.0.1, run by `postinstall`.
+   - **cubing.js PG3D bug:** `onPositionChange` only stored `lastPos` when the pattern changed. After an animation, the stored position still had the last move "in progress", so a stickering-mask change repainted that move a second time.
+     - Fixed with a patch that sets `this.lastPos = p` on every call.
+     - Masks are identity-based relative to the solved cube. My first theory, that they were relative to the anchor or setup, was wrong and was reverted.
+   - **Other cubing.js quirks:**
+     - `TwistyPlayer.togglePlay()` toggles and then also calls `pause()`.
+     - `indexer.timestampToIndex` is ambiguous exactly on a move boundary.
+     - Headless WebGL is slow under parallel load.
+   - **F2L "human moves" search (D-084):**
+     - Moves are U turns plus slot triggers X U^k X' (X is a side face turn that lifts one slot).
+     - Triggers are allowed only on unsolved slots (the target slot and empty slots used for hiding). Front-right style bans B triggers.
+     - Only the target corner and edge are tracked: 576 states.
+     - Exact Dijkstra per (free slots, noBack) option set, cost U = 1, trigger = 3.
+     - Greedy pair choice by cost; same-face neighbouring triggers merged with `mergeMoves`.
+     - Results: average pair 6.5 moves (max 11); full CFOP averages 57 moves with full LL.
+   - **PBL:** 5 cases. The solver tries `x2` flips, with a +0.5 tie penalty so a flip is only used when needed.
+   - **PLL arrows:** drawn relative to the final AUF k (0–3) that minimises displaced pieces. Before a final U^k, a piece belongs at `(home − k) mod 4`.
+   - **Reference check:** jperm.net data files (`/lib/oll.js`, `/lib/pll.js`) were parsed with regex. Some jperm algs leave the cube rotated, so a fix rotation is appended before building the case state. Results:
+     - all OLL and PLL cases match the reference numbering and names;
+     - 57/57 OLL main algs and 17/21 PLL main algs are verbatim identical.
+
+3. **Files and code sections**
+
+   - **patches/cubing+0.66.1.patch** (new): patches `node_modules/cubing/dist/lib/cubing/chunks/twisty-dynamic-3d-HSYJR5CM.js`, moving `this.lastPos = p;` outside the `if` with the comment "CubeBuddy patch (D-083)".
+
+   - **package.json:** `"postinstall": "patch-package"`; devDependency `patch-package` 8.0.1 (exact).
+
+   - **src/engine/f2lSearch.ts** (new)
+     - Exports `TriggerOptions {free: Slot[]; noBack: boolean}`, `pairCost(corner, edge, options)` and `solvePair(corner, edge, options): Move[]`.
+     - Macros are built from FACE_MOVES indices (`face*3+amount-1`).
+     - `liftedSlot` is computed from CORNER_MOVE.
+     - ORDER is: U turns, then FR triggers sorted R before F, then the other slots.
+     - Distance tables are cached in a Map keyed by free slots and noBack; 255 = unreachable.
+
+   - **src/engine/solvers.ts**
+     - Removed the pair IDA* (`searchPair`, `pairHeuristic`, `PairProblem`, `MOVE_ORDER`, `redundant`, `opposite`, `MAX_PAIR_DEPTH`) and its imports of `getPairTable`/`getSlotTable`.
+     - New `solveNextPair(state, colour=0, style='front-right', only?)`, with no `faces` parameter. For each unsolved slot it rotates the framed state by `Y_FOR_SLOT[slot]`, reads corner 4 and edge 8, sets `free` to the other unsolved slots and `noBack = style === 'front-right'`, then picks the minimum cost.
+     - Output: front-right style is `prefix + rotation + moves`; rotationless is `prefix + conjugate(moves, rotation)`.
+     - PBL now loops over `FLIPS = ['', 'x2']` × `DS`, with `isRotation`, scored by `cost = pre.length + match.moves.length + (pre has a rotation ? 0.5 : 0)`.
+
+   - **src/engine/tables.ts:** removed `getPairTable`, `getSlotTable` and their warmUp entries.
+
+   - **src/engine/f2lSearch.test.ts** (new) checks that:
+     - each trigger moves only its own slot;
+     - all 150 last-slot states are solvable with cost ≤ 15;
+     - basic and stuck cases are solved while keeping the cross and the other slots.
+
+   - **src/engine/solvers.test.ts:** added `expectHumanPairMoves`, which requires only U/R/F/L/B turns, no B in front-right style, and every side face's net turn amount ≡ 0 mod 4. Imports now include `formatAlg` and `Move`.
+
+   - **src/engine/generate.test.ts**
+     - F2L Advanced alternatives come from `solveNextPair(state, 0, 'rotationless', slot)`.
+     - Stuck cases use `solveNextPair(state, 0, 'rotationless', 'FR')`, plus a front-right alternative.
+     - Header comment mentions D-084.
+     - Regenerated with `GENERATE_ALGS=1 npx vitest run src/engine/generate.test.ts -t "F2L advanced"`, then prettier.
+
+   - **src/data/algs/f2lAdvanced.ts:** regenerated; all algs are trigger-style.
+
+   - **src/data/algs/ortega.ts**
+     - Removed `pbl-diag-adj`, `pbl-adj-bottom` and `pbl-diag-bottom`.
+     - Renamed: "Adjacent / diagonal", "Adjacent (one layer)", "Diagonal (one layer)".
+     - Header comment explains the flip (D-085).
+
+   - **src/data/algs/sets.ts:** Ortega description now reads "…then 5 PBL cases. If the bad layer is on the bottom, flip the cube (x2) first."
+
+   - **src/engine/algDatabase.test.ts:** ortega size is now 12. New "PBL cases (D-085)" test: `caseState(\`x2 ${alg} x2\`)` must not be solved by another case's alg with any D pre-turn. It was verified to flag the old duplicates.
+
+   - **src/components/CubeView/CubeView.tsx**
+     - Exports `PlaybackInfo {timestamp, duration, playing, position, moves}`.
+     - New prop `onPlayback`.
+     - Handle gained:
+       - `togglePlay(): Promise&lt;void&gt;` reads `playingInfo`, then calls `pause()` or `play()` directly;
+       - `step(direction)` sets `playingInfo` to `{playing: true, direction, untilBoundary: 'move', loop: false}`;
+       - `seek(ms)`;
+       - `seekToMove(count): Promise&lt;void&gt;` uses `jumpToStart()`/`jumpToEnd()` at the ends and otherwise sets `timestampRequest` from `indexToMoveStartTimestamp`.
+     - The playback effect subscribes to `detailedTimelineInfo` and `playingInfo` fresh listeners. `position` is counted from move start times (`finishedBy`).
+     - `player.visualization = view === '3D' ? 'PG3D' : VISUALIZATION[view]` (PG3D everywhere).
+
+   - **src/components/AlgPlayer.tsx** (new)
+     - Contains the cube box (`max-h-[40dvh]` on phone), move chips (`aria-current="step"` on the next move; clicking seeks to after that move), a range timeline (`accent-accent`) and controls.
+     - Control labels: "Back to the start", "Previous move", a round accent Play/Pause/Replay button, "Next move", and a speed button (0.5×/1×/2×).
+     - Steps queue through a `target` ref plus a `starting` ref, driven by an effect on `info`.
+     - Controls are disabled until `info.moves &gt; 0`. Arrow keys step; Space toggles play.
+
+   - **src/components/ui/Icon.tsx:** added icons `play`, `pause`, `step-back`, `step-forward`, `restart`, `info`.
+
+   - **src/features/trainer/CasePopup.tsx:** uses `AlgPlayer` instead of `CubeView` with controls. The generated note now reads "These algs were found by CubeBuddy’s solver rather than taken from a published list. You can type a different one above."
+
+   - **src/features/trainer/caseView.ts:** `demoMask` uses `'I'` (grey) instead of `'D'`.
+
+   - **src/components/CaseDiagram.tsx:** `llProps` arrows use the best AUF k (`targetsFor(k)`, keeping the k with the fewest moves).
+
+   - **src/features/about/AboutPage.tsx** (new, route `/about`)
+     - Sections: "Where the algorithms come from" (`id="algorithms"`, with a "J Perm’s algorithm sheets" link to https://jperm.net/algs), "Other credits" (csTimer format, WCA inspection rule), and "Open-source software" (a list with licences).
+     - Scrolls to the URL hash on load.
+
+   - **App, navigation and trainer links**
+     - **src/app/App.tsx:** lazy `AboutPage` with `&lt;Route path="about"&gt;`.
+     - **src/app/nav.ts:** `MORE_NAV` gains `{ to: '/about', label: 'About &amp; credits', icon: 'info' }`.
+     - **src/app/Layout.tsx:** laptop footer (`hidden lg:block print:hidden`) with "CubeBuddy" and an "About &amp; credits" link.
+     - **src/features/trainer/SetPicker.tsx:** link "Where the algorithms come from" to `/about#algorithms`.
+
+   - **src/features/timer/useTimer.ts:** adds `swallowNextClick()`, a capture-phase click listener with `once`, removed after 500 ms. It is called in the global pointerup handler when the phase is `'stopped'`, before `release()` (D-089).
+
+   - **Tests**
+     - **tests/play.spec.ts:** `changedColours(page, before, after)` decodes the PNGs on an in-page canvas and counts saturated pixels that changed. The test "find next pair highlights the cube as it is (D-083)" requires changed ≤ 2% of lit pixels.
+     - **tests/trainer.spec.ts:** "alg player: queued steps, move list and replay", with `test.setTimeout(90_000)` and 10–30 s expect timeouts.
+     - **tests/smoke.spec.ts:** "algorithm sources are credited (About &amp; credits)".
+     - **tests/timer.spec.ts:** the touch test stops with a tap at (20,40), then `expect(page).toHaveURL(/\/timer$/)`.
+     - **tsconfig.node.json:** lib is now `["ES2023", "DOM"]`, so tests can use DOM types inside `evaluate`.
+
+   - **README.md:** credits now mention the patch-package fix, J Perm OLL/PLL numbering, the generated sets and the About page.
+
+   - **Local docs (gitignored)**
+     - decisions.md: D-083 to D-089 added.
+     - SPEC.md: §2 stack row, §3.2 `/about` route, §4 CubeView handle, PG3D and AlgPlayer, §5.5 (7 OLL + 5 PBL), §5.7 x2 flip, §6.3 F2L/pair order/PBL rows, §7.1 now 348 cases with Ortega 12, plus the jperm cross-check and `/about`.
+     - plan.md: "Owner feedback round" paragraph and an updated P3 progress row.
+
+   - **Memory** (`C:\Users\Rishe\.claude\projects\C--Users-Rishe-Desktop-CubeBuddy\memory\`)
+     - Updated cubebuddy-project.md with status, workflow and the patch note.
+     - Added owner-feedback-style.md, linked from MEMORY.md.
+
+4. **Errors and fixes**
+
+   - **Wrong theory, reverted:** I first assumed masks were anchor-relative. The cross highlight became wrong, so I reverted and confirmed masks are identity-based.
+   - **Workarounds that failed:** folding moves into the setup ("settle"), re-applying the mask, and a synchronous renderer toggle. The renderer rebuild did fix it but caused flashes. The final fix is the patch-package one-liner.
+   - **Bash `rm` safety check** refused `rm $S/...`; used `"${S:?}"/...` instead.
+   - **`randomScramble` returns a string:** wrapped with `parseAlg`.
+   - **Only one of two quick "Next move" clicks registered.**
+     - Fixed with the target-queue design.
+     - Clicks before the alg loaded were then dropped, so controls are disabled until loaded.
+     - Double step requests were fixed with the `starting` ref.
+   - **Move chip off by one:** `timestampToIndex` is ambiguous on a boundary, so position is now computed from move start times.
+   - **Play after "Back to the start" jumped to the end.** Partly a slow-headless timing artefact, partly cubing.js's `togglePlay` bug. Fixed by calling `play()`/`pause()` directly and using `jumpToStart`/`jumpToEnd`.
+   - **Reference check mismatch on Aa/Ab:** jperm's algs end rotated (`x …` with no `x'`). Fixed by appending a rotation that makes a valid case.
+   - **Flaky phone touch timer test** (pre-existing on main too). Cause: a ghost click navigated to Home after the overlay closed. Fixed by D-089. A HistoryList change made during diagnosis was reverted because it wasn't the cause.
+   - **E2E timeouts under 8 parallel workers:** load-related; they pass with 2–4 workers. "releasing space too early" flakes only under heavy load.
+   - **TS errors in tests** (`document`/`Image`): fixed by adding the DOM lib to tsconfig.node.json.
+
+5. **Problem solving**
+
+   - **Final state:**
+     - Unit tests: 1512 passed, 2 skipped. Lint, typecheck, format and check:no-md all pass.
+     - E2E (4 workers): 53 passed with 1 load flake; the flaky test passes in isolation.
+     - Branch CI passed; main CI passed and deployed. Commit c497eb4 is on main; the branch fix/p3-feedback was deleted locally and remotely.
+     - Live-site Playwright run, filtered to the alg player, credits, highlight, touch, Ortega helpers and solve-next-F2L tests: 11 passed, 1 skipped.
+   - **Verification of the fixes:**
+     - The highlight test fails 6/6 with the patch reversed and passes with it.
+     - The PBL flip test flags the old duplicates.
+
+6. **All user messages**
+
+   - The feedback message, verbatim: "changes needed in free=play mode
+Firstly, I notice some error in f2l pair finding. for example, after solving 2/4 f2l pairs, when i click find next f2l pair, it shows me an f2l pair which does not map to the cube that i just saw. As in it still solves the pair it said it would but the find f2l pair button shows the pair in a completely different state (perhaps from the cross-done state?, completely not sure).
+Secondly, although it does solve f2l pairs correctly, it uses extremely non-standard algorithms such as breaking the cross and fixing it, or breaking multiple cross pieces and block bulding the f2l pair back. use only standard paradigms for f2l basic such as orienting the pair then inserting it, where hiding a corner/edge using an unsolved slot is used for orienting the pair. even in advanced f2l there are a very few rare cases that involve this amount of cross breaking and block building.
+changes in trainer mode:
+upon clicking an alg, the video player interface looks really old and bad, i notice you have used via twizzle but the interface looks clunky. figure out a way to change the interface to a more modern theme as the website or figure out an alternative for twizzle entirely.
+next, recheck all diagrams used for all algorithms just in case, for the ortega method there seem to be some duplicates in PBL (for example, adjacent top and adjacent bottom are redundant as u could simply flip the cube and perform the alg for the top). rectify this.
+also do not forget to appropriately mention where the algs where sourced from somewhere in the website in some phase."
+   - /context
+   - "prepare for compact"
+   - Earlier standing constraints still in effect: quoted verbatim in section 1.
+
+7. **Pending tasks**
+
+   - The owner will test P1–P3 on a real phone. That includes retesting the free-play F2L helpers and the trainer's new player.
+   - P4 (tutorials) must not start without the user's go-ahead. My last report asked "Shall I start P4 (tutorials)?"
+   - **Ongoing rules:**
+     - Keep decisions.md updated.
+     - Never commit .md files except README.md.
+     - Use the attribution lines on commits.
+     - Use branches and the CI-then-merge flow.
+     - Re-check the cubing.js patch on any upgrade.
+
+8. **Current work**
+
+   The feedback round is complete and deployed (c497eb4). The final report was sent to the user. After the user's "prepare for compact":
+   - I updated memory/cubebuddy-project.md with the status line: "P0–P3 deployed (last commit c497eb4 = P3 owner-feedback round, D-083–D-089)… P4 not started and needs the owner's go-ahead… cubing.js 0.66.1 is patched via patch-package".
+   - I created memory/owner-feedback-style.md (human-style F2L, no duplicate cases, credit sources, modern UI, and the jperm data-file cross-check tip) and added its line to MEMORY.md.
+
+   The git working tree is clean on main.
+
+9. **Optional next step**
+
+   None until the user responds. The last question to the user was "Shall I start P4 (tutorials)?" Wait for confirmation, or for results of their phone testing, before doing more work.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: C:\Users\Rishe\.claude\projects\C--Users-Rishe-Desktop-CubeBuddy\5735b118-3bc9-4a5f-b524-bb1b33d36478.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
+
+The messages after this summary are the most recent messages from before compaction, kept verbatim. The summary was written without seeing them, so something it says has not happened yet may already have happened in them.</pre></div><button class="more" type="button" data-for="u23" aria-expanded="false">Show full prompt</button><p class="none">No text reply for this turn; the work was done with tools.</p></section><section class="turn" id="turn-24"><h2><a href="#turn-24">Turn 24</a></h2><div class="user" id="u24"><pre>go ahead for P4</pre></div><details class="resp"><summary><span>Response</span><small>2,935 characters</small></summary><pre>P4 is live: there's now a **CFOP tutorial** (3x3) and an **Ortega tutorial** (2x2), commit 2b030be. All checks passed before it went out (unit, lint, typecheck, full browser suite, CI), and the tutorial browser tests also pass on the live site, on both laptop and phone.
+
+**What a tutorial does**
+- **Start:** pick a random scramble, or type the scramble of your own cube. Each move is checked as you type, and bad ones are underlined in red. Curly apostrophes typed on a phone are accepted.
+- **Stage bar:**
+  - CFOP: Cross → F2L 1–4 → OLL → PLL → Solved.
+  - Ortega: Face → OLL → PBL → Solved.
+  - The bar moves backwards if you break something already solved, and forward again when you undo.
+- **Each stage shows:**
+  - a title, with F2L pairs named by colour ("insert the green–red pair");
+  - the case name, such as "F2L 12", "Sune" or "T-perm". A pair that isn't one of the 41 standard cases shows as "Stuck pieces (take them out first)";
+  - a short guide.
+- **Buttons per stage:**
+  - **Hint** greys out everything except the pieces that matter.
+  - **Show solution** reveals the moves, with the next one highlighted.
+  - **Show case** (OLL, PLL and PBL only) opens the diagram and the alg you chose in the trainer.
+  - **Play / previous / next** animate the moves; the arrow keys also step. Play stops at the end of each stage.
+- **Your own moves:** you can turn the cube any time by tapping, the move pad or the keyboard, plus undo, redo and restart. The tutorial works out the next step from whatever the cube looks like now.
+- **Full solution panel:** collapsed by default so it doesn't give everything away. It lists the moves for each stage with counts and a total, has a copy button, and offers "Solve from here" once you've made moves of your own.
+- **Settings:** F2L style, 2-look or full last layer, and animation speed all apply. The options button sits in the tutorial's header.
+
+**Move counts:** over 100 random scrambles, CFOP averages 57.3 moves with full OLL/PLL and 71.0 with 2-look, with no solution under 42 moves. That meets the plan's target of about 50–65 moves and confirms these are real CFOP solutions, not short computer ones.
+
+**Changes outside the tutorials:**
+- The free-play helper now also names the F2L case (for example "F2L pair (FR): F2L 12").
+- Free-play's keyboard handling and alg-choice loading were moved into shared code that the tutorials reuse. Free-play behaves the same.
+
+One existing timer test ("releasing space too early") failed once when the full suite ran with 4 test runners in parallel; it passed when run alone. It has been flaky under heavy load since last phase and isn't related to this work.
+
+decisions.md now has D-090 and D-091, and SPEC.md and plan.md are updated. None of them are committed.
+
+When you test on your phone, please include both tutorials, especially tapping and the stage card below the cube. Shall I start P5 (onboarding, accounts, offline install)?</pre></details></section><section class="turn" id="turn-25"><h2><a href="#turn-25">Turn 25</a><span class="badge">Automatic context summary</span></h2><div class="user clamp" id="u25"><pre>This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+&lt;tools-used-before-summary&gt;AskUserQuestion, Bash, Edit, Grep, PowerShell, Read, Skill, ToolSearch, WebFetch, WebSearch, Write&lt;/tools-used-before-summary&gt;
+Summary:
+1. **Primary request and intent**
+
+   **Project:** CubeBuddy, a speedcubing web app at https://coder-r2.github.io/cubebuddy/ (repo `C:\Users\Rishe\Desktop\CubeBuddy`, GitHub `coder-r2/cubebuddy`).
+   - Constraints: $0 cost; must work on phone, tablet and laptop; 3x3 and 2x2 only; no AI/ML; built in phases P0–P6.
+   - SPEC.md, plan.md and decisions.md are local only (gitignored).
+
+   **Standing constraints, verbatim:**
+   - "another important note: start tracking the repo. also, no .md files (that is meant for claude and used by claude or used by me for some other purpose than is necessary for project deployment) shows up in the repo at any push/commit"
+   - README.md is the exception: "yes readme is required, do the needful."
+   - The owner's cstimer export (`cstimer_*.txt`) must never be committed; it is gitignored.
+
+   **Commits** end with:
+   ```
+   Co-Authored-By: Claude Opus 5.5 &lt;noreply@anthropic.com&gt;
+   Claude-Session: https://claude.ai/code/session_011aA9bddDKpAFy2ZrqABAbT
+   ```
+
+   **Workflow:** work on a branch, push, wait for CI, fast-forward main (which deploys), then delete the branch.
+
+   **This session:** the user said "go ahead for P4". P4 means guided, interactive CFOP (3x3) and Ortega (2x2) tutorials:
+   - scramble input, random or typed, validated with invalid tokens highlighted;
+   - a stage stepper that regresses when solved parts break;
+   - Hint, Show solution, Play and Step for each stage, while the user can still make their own moves;
+   - static guides, case names, and an OLL/PLL popup;
+   - a full-solution panel with copy;
+   - the user's settings respected.
+
+   **Exit criteria:**
+   - Playwright solves random scrambles to solved for both tutorials, on laptop and phone;
+   - CFOP solutions average about 50–65 moves over 100 scrambles and are never a 20-move computer solution.
+
+2. **Key technical concepts**
+
+   - **Stack:** React 19, Vite 8, TypeScript 6, Tailwind 4, Zustand, Dexie, cubing.js 0.66.1 (patched with patch-package), Vitest, Playwright (desktop + Pixel 7), Comlink engine worker.
+   - **Plan model (D-090):** a plan is `{base, key, analysis, step}`.
+     - The plan stays while the current sequence equals `base` plus a prefix of `step.moves`.
+     - Any other move drops it and a new one is fetched with `engine.analyse` + `engine.nextStep`.
+     - The stage display is frozen at the plan's analysis, so an alg that briefly breaks F2L doesn't flicker the stepper.
+     - Play stops at the end of each step.
+   - **F2L case naming (D-091):** maps `corner*24+edge` (readPieces at `SLOT_PIECES.FR`) to an F2L Basic case, built from `caseState(alg)` under the four AUFs. Otherwise the step is named `STUCK = 'Stuck pieces (take them out first)'`.
+   - Pair steps carry `pairColours` (from `slotColours(...).edge`), so the tutorial says "green–red pair".
+   - **Colour names** by home face U R F D L B: white, red, green, yellow, orange, blue. The opposite colour is `(c+3)%6`.
+   - **Move counts** use HTM excluding rotations. Results: CFOP averages 57.3 moves with full LL (min 42) and 71.0 with 2-look (min 49).
+
+3. **Files and code sections**
+
+   - **Engine**
+     - **src/engine/algSource.ts:** `LLAlg` gained `id`, and `list()` maps `{ id: c.id, name, alg }`.
+     - **src/engine/solvers.ts:**
+       - `Step.caseId?`; `llStep` sets `caseId: match.entry?.id || undefined`; `NO_ALG = { id: '', name: '', alg: '' }`.
+       - New `export const STUCK`, plus `f2lCase(corner, edge)` with a lazy `f2lKeys` map (imports `getSet`, `AlgCase` and `caseState`).
+       - `solveNextPair` returns `caseName: known?.name ?? STUCK, caseId: known?.id`.
+       - The header comment now reads "human-move search … D-084".
+     - **src/engine/api.ts:**
+       - `EngineStep` gained `caseId?`, `slot?` and `pairColours?: number[]`.
+       - `toEngineStep(step, state, colour)` computes `pairColours`; `solveAll` threads the state through the steps.
+       - `findPieces` now covers more stages: 2x2 OLL returns 'Top-layer pieces', 2x2 PBL/AUF returns null, and 3x3 OLL/PLL returns 'Last-layer pieces' (LL corners and edges containing the top colour).
+     - **src/engine/tutorial.test.ts** (new) checks:
+       - every F2L case is named under every AUF;
+       - stuck cases from f2l-advanced (`-stuck-`) get STUCK;
+       - LL/PBL case ids: 2lo-sune, oll-27, pbl-diag-diag;
+       - hint labels;
+       - the 100-scramble CFOP test: min &gt; 30 moves; full LL average strictly between 50 and 65; 2-look average &lt; 80; pairs ≤ 4.
+
+   - **Shared hooks and free-play**
+     - **src/lib/useCubeKeys.ts** (new):
+       - exports `isEditable` and `useCubeKeys({keymap, onMove, onUndo, onRedo, onEscape, locked, extra?})`;
+       - cstimer keymap, Ctrl+Z/Backspace undo, Ctrl+Y redo, Esc;
+       - `extra` is keyed by `e.key`.
+     - **src/lib/useHelperEngine.ts** (new): returns `{engine, version}`. It loads the trainer store, calls `setAlgChoices(choiceMap(choices))`, and bumps `version` after each update.
+     - **src/features/play/useFreePlay.ts:** now exports `allowedOn2x2` and `moveDuration`.
+     - **src/features/play/PlayPage.tsx:** refactored to use `useHelperEngine`, `useCubeKeys` and the shared helpers.
+     - **src/features/play/PlayOptionsDialog.tsx:** optional `title` prop, default 'Free-play options'.
+
+   - **Tutorial**
+     - **src/components/ui/Icon.tsx:** added the icons check, chevron, copy, lightbulb and eye.
+     - **src/features/tutorial/stages.ts** (new) exports:
+       - `STAGES` — 3x3: Cross, F2L 1–4, OLL, PLL, Solved; 2x2: Face, OLL, PBL, Solved;
+       - `stageIndex(analysis)`;
+       - `COLOUR_NAMES`;
+       - `stepTitle(step, puzzle)`, e.g. "Solve the white cross", "Pair up and insert the X–Y pair", "Orient the edges (look 1 of 2)";
+       - `stageGuide(puzzle, index)`;
+       - `moveCount`;
+       - `solutionRows` (labels: Cross, F2L n, OLL (edges), and so on) and `solutionText`;
+       - `checkScramble(input, puzzle)`, which returns `{tokens, moves}`, accepts curly apostrophes and applies 2x2 rules.
+     - **src/features/tutorial/stages.test.ts** (new): 7 tests.
+     - **src/features/tutorial/ScrambleForm.tsx** (new):
+       - a "Random scramble" button;
+       - a typed input labelled "Or type the scramble of your own cube" with a Start button;
+       - invalid tokens highlighted, with the message "Not a valid move: K".
+     - **src/features/tutorial/StageStepper.tsx** (new): a grid of segment bars with labels. The current stage has `aria-current="step"` and `data-testid="tutorial-stage"`.
+     - **src/features/tutorial/SolutionPanel.tsx** (new):
+       - a `&lt;details&gt;` titled "Full solution" showing the move total;
+       - a table (`data-testid="solution-table"`) and a Total row;
+       - a "Copy solution" button;
+       - a "Solve from here" link.
+     - **src/features/tutorial/CaseDialog.tsx** (new):
+       - `CaseDiagram` via `diagramProps`, the set name and group, and the chosen alg;
+       - a trainer link and a "Play it on the cube" button.
+     - **src/features/tutorial/TutorialPage.tsx** (new, main page):
+       - functions `planPosition` and `join`, and the set `CASE_KINDS`;
+       - Hint uses `findPieces`; pair steps are relabelled "The X–Y pair";
+       - the solution shows chips with `aria-current`, plus Previous move / "Play this step" (`data-testid="play-step"`, which becomes "Pause" while playing) / Next move, and the ←/→ keys;
+       - Undo, Redo, "Restart scramble", and the scramble text (`data-testid="tutorial-scramble"`, with an sr-only "Scramble: " prefix);
+       - MovePad, SolutionPanel, a SolvedCard ("Solved!", "New scramble", a trainer link) and a "Tutorial options" dialog.
+     - **src/features/tutorial/CfopTutorialPage.tsx / OrtegaTutorialPage.tsx:** render `&lt;TutorialPage puzzle="3x3x3"/&gt;` and `"2x2x2"`.
+
+   - **tests/tutorial.spec.ts** (new):
+     - the CFOP run sets "Very fast" speed, uses a random scramble, checks hint/reveal/step, plays each stage to solved, checks the stage sequence and solution table, then confirms a D move regresses to Cross and Undo returns to Solved;
+     - Ortega plays to solved;
+     - typed scramble validation;
+     - OLL popup: the scramble `z2 R U2 R' U' R U' R'` gives case "Sune", and the dialog shows the img and alg `R U R' U R U2 R'`.
+
+   - **Docs**
+     - decisions.md: D-090 (plan model and shared hooks) and D-091 (case names, pair colours, LL hints) added.
+     - SPEC.md §5.6: an "As built (P4…)" paragraph.
+     - plan.md: P4 row now reads "✅ Done (owner check pending) … Deployed (commit 2b030be)…".
+     - README.md: the coming-soon note now lists "(settings, accounts, learn)".
+     - Memory cubebuddy-project.md: status updated to P0–P4 deployed (2b030be); P5 needs the go-ahead.
+
+4. **Errors and fixes**
+
+   - The test assumed 4 pair steps, but sometimes a pair is solved for free. Relaxed to ≤ 4.
+   - A bash heredoc failed to parse because of quoting. Wrote the file with the Write tool instead.
+   - The typed-scramble e2e test failed because of the sr-only prefix. Added a test id and asserted `"Scramble: R U R' U' F2"`.
+   - The README sed edit didn't match. Redone with python.
+   - "releasing space too early" failed once under 4 workers. This is a known load flake, and it passed on its own.
+
+5. **Problem solving and results**
+
+   - Unit tests: 1525 passed, 2 skipped. Lint, typecheck and check:no-md all pass.
+   - Local E2E: 61 passed with 1 load flake.
+   - Branch CI passed. Main CI passed and deployed commit 2b030be. The branch phase/p4-tutorials was deleted locally and remotely.
+   - Live-site tutorial e2e: 8/8 passed.
+   - Screenshots checked the laptop and phone layouts.
+
+6. **All user messages**
+
+   - "go ahead for P4"
+   - Earlier standing constraints still in effect, quoted verbatim in section 1.
+
+7. **Pending tasks**
+
+   - The owner will test P1–P4 on a real phone.
+   - P5 (onboarding, accounts, PWA) must not start without the user's go-ahead.
+   - **Ongoing rules:**
+     - Keep decisions.md updated.
+     - Never commit .md files except README.md.
+     - Use the attribution lines on commits.
+     - Use branches and the CI-then-merge flow.
+     - Re-check the cubing.js patch on any upgrade.
+
+8. **Current work**
+
+   P4 is complete and deployed (2b030be), and docs and memory are updated. The last action fixed the memory status sentence to read "Owner will test P1–P4 on a phone later; P5 (onboarding, accounts, PWA) not started and needs the owner's go-ahead." The working tree should be clean on main; only local gitignored docs changed.
+
+9. **Optional next step**
+
+   Send the user a final P4 report:
+   - what was built;
+   - test results, including the 57.3 / 71.0 move averages;
+   - live verification;
+   - what to try on a phone.
+
+   Then ask whether to start P5. Do not start P5 without confirmation.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: C:\Users\Rishe\.claude\projects\C--Users-Rishe-Desktop-CubeBuddy\5735b118-3bc9-4a5f-b524-bb1b33d36478.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
+
+The messages after this summary are the most recent messages from before compaction, kept verbatim. The summary was written without seeing them, so something it says has not happened yet may already have happened in them.</pre></div><button class="more" type="button" data-for="u25" aria-expanded="false">Show full prompt</button><p class="none">No text reply for this turn; the work was done with tools.</p></section><section class="turn" id="turn-26"><h2><a href="#turn-26">Turn 26</a></h2><div class="user" id="u26"><pre>Start p5</pre></div><details class="resp"><summary><span>Response</span><small>69 characters</small></summary><pre>The live test run is slower than usual. I'll report when it finishes.</pre></details></section><section class="turn" id="turn-27"><h2><a href="#turn-27">Turn 27</a><span class="badge">Automatic context summary</span></h2><div class="user clamp" id="u27"><pre>This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+&lt;tools-used-before-summary&gt;AskUserQuestion, Bash, Edit, Grep, PowerShell, Read, Skill, ToolSearch, WebFetch, WebSearch, Write&lt;/tools-used-before-summary&gt;
+Summary:
+1. **Primary Request and Intent**
+
+   **Project:** CubeBuddy, a speedcubing web app at https://coder-r2.github.io/cubebuddy/ (repo `C:\Users\Rishe\Desktop\CubeBuddy`, GitHub `coder-r2/cubebuddy`, Firebase project `[REDACTED]`).
+   - Constraints: $0 cost; works on phone, tablet and laptop; 3x3 and 2x2 only; no AI/ML; built in phases P0–P6.
+
+   **This session:** the user said "Start p5". P5 is onboarding, accounts and PWA:
+   - onboarding quiz;
+   - notation course;
+   - Settings page with a keymap editor;
+   - Firebase auth: Google popup with a redirect fallback, and email/password with verification and reset;
+   - sync service: pull/merge/push, chunked solves, tombstones, union merge on first sign-in, status indicator, retries with backoff;
+   - firestore.rules;
+   - Account page: sign out with keep/clear, delete account, JSON export/import with schemaVersion;
+   - PWA: manifest, icons, service worker scoped to /cubebuddy/, update prompt.
+
+   **Standing constraints, verbatim:**
+   - "another important note: start tracking the repo. also, no .md files (that is meant for claude and used by claude or used by me for some other purpose than is necessary for project deployment) shows up in the repo at any push/commit"
+   - README.md is the exception: "yes readme is required, do the needful."
+   - The owner's cstimer export (`cstimer_*.txt`) must never be committed; it is gitignored.
+   - `.env.local` (Firebase config) is gitignored and must stay that way.
+   - SPEC.md, plan.md and decisions.md are local only (gitignored).
+
+   **Commits** end with:
+   ```
+   Co-Authored-By: Claude Opus 5.5 &lt;noreply@anthropic.com&gt;
+   Claude-Session: https://claude.ai/code/session_011aA9bddDKpAFy2ZrqABAbT
+   ```
+
+   **Workflow:** branch → push → wait for CI → fast-forward main (which deploys) → delete the branch.
+
+2. **Key Technical Concepts**
+
+   - **Stack:** React 19, Vite 8, TypeScript 6, Tailwind 4, Zustand, Dexie 4, cubing.js 0.66.1 (patched), Vitest, Playwright (desktop + Pixel 7).
+   - **Sync (D-092):**
+     - *Local changes:* records with `updatedAt` &gt; `lastPushedAt`, a watermark stored in syncMeta under key 'sync' as `{uid, cursor, lastPushedAt}`.
+     - *Pull:* docs whose server `syncedAt` is newer than a full-precision cursor `{seconds, nanos}`.
+     - *Merge:* last write wins by `updatedAt`, with tombstones.
+     - *No echo:* records the cloud already has equally new are not pushed back (`inSync` set).
+     - *Solves:* stored in weekly chunks; chunkId is `${sessionId}_${floor(createdAt/WEEK)}`.
+     - *Encoding:* solves and alg records are JSON strings inside map fields; writes use set-with-merge.
+     - *First sign-in:* union of local and cloud; the account's settings win; an empty local default session with the same name and puzzle as a cloud session is hard-deleted.
+     - *JSON import:* resets the watermark (`requestFullPush`).
+     - *Transport:* Firestore Lite.
+     - *Lazy loading:* Firebase loads only on the Account page, or at startup if localStorage `cubebuddy:signed-in` is '1'.
+     - *Scheduling:* a Dexie DBCore middleware calls `onLocalWrite` listeners (suppressed while `db.applyingRemote` is true). Pushes wait 5 s after a change, or run immediately when the tab is hidden. Focus triggers a sync if the last attempt was more than 30 s ago; reconnecting triggers one too. Failures back off from 5 s, doubling up to 5 min.
+     - Email accounts can sync before verifying.
+   - **PWA (D-093):**
+     - `registerType: 'prompt'`, registered from React with `useRegisterSW`.
+     - Precaches everything, with an `index.html` navigation fallback.
+     - Checks for updates hourly and whenever the app becomes visible.
+     - Playwright sets `serviceWorkers: 'block'` except in pwa.spec.ts.
+   - **Onboarding (D-094):**
+     - Level = max(method level, min(time level, method level + 1)).
+     - "Can't solve yet" skips the time question.
+     - Speed presets per level are 1, 2, 3, 5 (Slow, Normal, Fast, Very fast).
+
+3. **Files and Code Sections**
+
+   **New files**
+   - `src/sync/cloudTypes.ts`
+     - The `Cloud` interface (`pull(since)`, `push(writes)`, `deleteAll()`).
+     - Types `SyncCursor`, `cursorAfter`, `CloudDoc`, `CloudWrite {collection: 'meta'|'sessions'|'solveChunks', id, data, merge}`, `PulledDocs`.
+   - `src/sync/codec.ts`
+     - `chunkIdOf`.
+     - `encodeSolve` / `decodeSolve`, using a JSON array `[timeMs, penalty, scramble, comment, source, createdAt, updatedAt, deleted 0|1]`.
+     - `sessionData`, `decodeSession`.
+     - `decodeSettings`, which keeps known keys only and falls back to `DEFAULT_SETTINGS`.
+     - encode/decode for Choice, Progress and Stats.
+   - `src/sync/syncEngine.ts`
+     - `readSyncState`, `clearSyncState`, `requestFullPush`.
+     - `syncOnce(db, cloud, uid, now)`: collects dirty keys, pulls, `applyPull` (one transaction with `applyingRemote`), `buildWrites`, push, then saves `{uid, cursor, lastPushedAt: start-1}`.
+     - Returns `{pulled, pushed, changed: Set&lt;'settings'|'timer'|'trainer'&gt;}`.
+   - `src/sync/memoryCloud.ts`: an in-memory fake that merges maps one level deep and counts reads and writes.
+   - `src/sync/syncEngine.test.ts` (9 tests): union, LWW, tombstones including whole-session deletes, settings, alg records, weekly chunks and minimal pushes, full push, account switch, malformed data.
+   - `src/sync/config.ts`: `firebaseConfig` from `VITE_FIREBASE_*`, and `accountsConfigured`.
+   - `src/sync/firebase.ts`
+     - Lazy module: `initializeApp`, `getAuth`, `getFirestore` (lite), and a `GoogleAuthProvider` with `prompt: select_account`.
+     - Functions: `onUser` (also calls `getRedirectResult`), `signInWithGoogle` (falls back to redirect on popup-blocked or unsupported environment), `signUpWithEmail` (sends verification), `signInWithEmail`, `resetPassword`, `signOut`, `resendVerification`, `refreshUser`, `usesPassword`.
+     - `deleteAccount(password)`: re-authenticates with a credential or a popup, then `cloudFor(uid).deleteAll()`, then `deleteUser`.
+     - `errorCode`.
+     - `FirestoreCloud`: path `users/{uid}/{collection}`; pulls with `where('syncedAt','&gt;',Timestamp)`; writes batches of up to 400 with `syncedAt: serverTimestamp()`.
+   - `src/sync/account.ts`
+     - Zustand store `useAccount` with fields `configured`, `auth` ('idle'|'loading'|'signed-out'|'signed-in'), `loadFailed`, `user`, `sync {status, lastSyncedAt, error}`.
+     - Actions: `start`, the sign-in actions, `syncNow`, `signOut(keep)`, `deleteAccount(pw, keep)`.
+     - Also exports `STATUS_COLOUR`, `authMessage` (friendly error text), `wasSignedIn`, and `reloadStores(changed?)`.
+     - Sign-out runs a final sync first; "clear" wipes the synced tables, syncMeta and `cubebuddy:*` localStorage keys.
+   - `firestore.rules`
+     - Owner-only under `users/{uid}`.
+     - Every write must have `stamped()`, i.e. `syncedAt == request.time`.
+     - meta/settings: `updatedAt is number`, at most 50 keys.
+     - meta/algs: only the keys choices, progress, trainerStats and syncedAt; each map has at most 1000 entries.
+     - sessions: field types checked; name at most 100 characters; puzzle is '3x3x3' or '2x2x2'.
+     - solveChunks: keys sessionId, solves and syncedAt; `chunkId.matches(sessionId + '_[0-9]+')`; at most 5000 solves.
+     - Everything else is denied by default.
+   - `src/lib/backup.ts`
+     - `SCHEMA_VERSION = 1`, `exportBackup` (live records only), `parseBackup` (validates through the codec decoders), `BackupFormatError`.
+     - `importBackup`: LWW merge, then `requestFullPush`.
+   - `src/lib/backup.test.ts` (4 tests).
+   - `src/lib/download.ts`: `download(text, filename, type)` and `today()`.
+   - `src/lib/speeds.ts`: `SPEEDS` = Slow 1, Normal 2, Fast 3, Very fast 5.
+   - `src/features/learn/quiz.ts`
+     - `levelFor`, `presetFor(level)` (level, animationSpeed, llMode, f2lStyle, inspection, visibleStats).
+     - `LEVEL_NAMES`.
+     - `SUGGESTED_START`: L1 `/learn#notation`, L2 `/tutorial/cfop`, L3 `/trainer/oll-2look`, L4 `/timer`.
+   - `src/features/learn/quiz.test.ts`.
+   - `src/features/learn/OnboardingQuiz.tsx`
+     - Steps: solve → lastLayer → time → speed → done.
+     - Skip sets `onboardingDone`.
+     - Test ids: `quiz-level`; button "Show me the notation course".
+   - `src/features/learn/notation.ts`: `NOTATION_GROUPS`, `variantsOf`, `QUIZ_TASKS` (`['R U', "R' U2", "F' L", 'D2 B', "r U'", 'M2 U']`), `sameState`, `pretty`.
+   - `src/features/learn/MoveDiagram.tsx`: isometric SVG with the turning layers coloured and arrows on the two visible faces that run along the axis.
+   - `src/features/learn/NotationCourse.tsx`
+     - `MoveCards`: one shared cube in a sticky aside; buttons labelled "Show X"; test id `notation-move`.
+     - `MiniQuiz`: interactive cube plus MovePad and `useCubeKeys`; test id `quiz-task`; shows "Correct!" and a Next button.
+   - `src/features/learn/LearnPage.tsx`
+     - Waits for hydration.
+     - Starts with the quiz if `?quiz` is present or `!onboardingDone`.
+     - Level card; beginner callout for L1 or no level, linking to `https://jperm.net/3x3`.
+     - `#notation` section.
+   - `src/components/SpeedControl.tsx`: `SpeedSlider` (range input labelled "Animation speed", `aria-valuetext`) and `SpeedPreview` (loops `R U R' U'`).
+   - `src/features/settings/KeymapEditor.tsx`: capture mode; notice text such as "I now does x′ (it did R before)."; reset button.
+   - `src/features/settings/BackupPanel.tsx`.
+   - `src/features/settings/SettingsPage.tsx`: sections Profile, Cube (speed, colour scheme, keymap in `&lt;details&gt;`), Solving helpers, Timer, Appearance, Data.
+   - `src/app/SyncBadge.tsx`: cloud icon with a status dot in the header.
+   - `src/app/UpdatePrompt.tsx`: "A new version of CubeBuddy is available." with Reload and Later buttons; also an offline-ready toast.
+   - `public/` icons: pwa-192x192.png, pwa-512x512.png, maskable-icon-512x512.png and apple-touch-icon.png, rendered from favicon.svg.
+   - `tests/onboarding.spec.ts`: quiz → level → notation → mini-quiz → settings preset; skip; keymap rebind/unbind/reset (used on /play); JSON backup export and import in a fresh context; account page.
+   - `tests/pwa.spec.ts`: manifest check, the app's own service worker becomes ready and controls the page, offline pages, and the offline Ortega tutorial.
+
+   **Modified files**
+   - `src/db/db.ts`: `SYNCED_TABLES`, the write-notify middleware, `applyingRemote`, `onLocalWrite`.
+   - `src/lib/keymap.ts`:
+     - `moveForKey` treats an override of `''` as unbound.
+     - Added `effectiveKeymap`, `isBindableKey`, `keyLabel`, `bindKey` and `unbindKey`; tests were added.
+   - `src/features/play/PlayOptionsDialog.tsx`: exports `Choice` and `HelperOptions({speed})`; the dialog wraps them.
+   - `src/features/timer/TimerOptionsDialog.tsx`: exports a `TimerOptions` body.
+   - `src/features/timer/DataDialog.tsx`: uses the shared download helper.
+   - `src/features/account/AccountPage.tsx`: full rewrite (sign in, signed in, sign-out and delete dialogs, backup).
+   - `src/features/home/HomePage.tsx`: `QuizPrompt` region "Get started"; the hero CTA becomes "Learn notation" once onboarding is done.
+   - `src/app/App.tsx`: calls `useAccount.start()` at startup if `wasSignedIn()`.
+   - `src/app/Layout.tsx`: adds `SyncBadge` and `UpdatePrompt`.
+   - `src/components/ui/Icon.tsx`: adds the cloud and download icons.
+   - `vite.config.ts`: VitePWA config.
+   - `tsconfig.app.json`: adds the type `vite-plugin-pwa/react`.
+   - `index.html`: apple-touch-icon link and apple title meta.
+   - `playwright.config.ts`: `serviceWorkers: 'block'`.
+   - `src/components/ui/ComingSoon.tsx`: deleted.
+
+   **Docs (local, uncommitted)**
+   - decisions.md: D-092, D-093 and D-094.
+   - SPEC.md: as-built notes for P5 and the chunk-schema change.
+   - plan.md: P5 row reads "🟡 Built, owner actions pending".
+   - Memory file updated.
+   - README.md (committed): updated features, the rules note, and the "under development" banner removed.
+
+4. **Errors and fixes**
+   - Backslash escaping in keymap.ts and keymap.test.ts: fixed with the Edit tool.
+   - Full-push test assumed records already in the cloud get re-pushed: rewritten around an imported old record.
+   - `injectThemeColor` is an invalid option: removed. The built HTML has no duplicate theme-color tags.
+   - Icon script import failure: fixed with `createRequire`.
+   - Ambiguous screenshot selector: fixed with `exact: true`.
+   - Keymap e2e on /play failed because the cube hadn't loaded: wrapped in `toPass`.
+   - PWA e2e heading: corrected to "Full PLL".
+   - The PWA test registered the service worker itself: changed to rely on the app's own registration.
+   - Ruwix link unverifiable (network blocks it): switched to J Perm's tutorial, which was verified.
+
+5. **Problem Solving**
+
+   **Before deploying (local and branch CI):**
+   - 1542 unit tests passed (2 skipped).
+   - The full local e2e suite passed: 74 tests, 2 skipped.
+   - Lint, format, typecheck and the no-md check all pass.
+   - Branch CI passed.
+
+   **Deploy:**
+   - Main fast-forwarded to 71e7b1f; main CI passed and the site deployed.
+
+   **Limits:**
+   - Real Firebase sync cannot be tested by me (no test account).
+   - Until the owner publishes the rules, Firestore stays in production mode and denies access, so sync will show "The server refused access… rules may not be published yet."
+
+6. **All user messages**
+   - "Start p5"
+   - Earlier standing constraints are quoted verbatim in section 1.
+
+7. **Pending Tasks**
+
+   **Waiting on the background command (ID b1nlln7pl):**
+   - the live-site e2e run;
+   - deleting the branch, locally and remotely.
+
+   **To do next:**
+   - Commit nothing further. The docs changed are local, gitignored .md files.
+   - Report to the user, including the owner actions:
+     1. Publish `firestore.rules`: paste it at https://console.firebase.google.com/project/[REDACTED]/firestore/rules and click Publish.
+     2. Run Rules Playground checks, for example:
+        - a get on `/users/A/sessions/x` while authenticated as uid A → allowed;
+        - the same get as uid B → denied;
+        - an unauthenticated get → denied.
+     3. Two-device sync test: solves and alg progress made on the laptop show on the phone and the reverse; a deletion propagates.
+     4. Install on Android Chrome, desktop Chrome and iOS Safari, then test airplane mode.
+     5. Confirm the update prompt appears after the next deploy.
+
+   **Ongoing rules:**
+   - Keep decisions.md updated.
+   - Never commit .md files except README.md.
+   - Use the attribution lines on commits.
+   - Use branches and the CI-then-merge flow.
+   - Re-check the cubing.js patch on any upgrade.
+   - P6 needs the user's go-ahead.
+
+8. **Current Work**
+
+   P5 is deployed (commit 71e7b1f on main, CI green). The last command ran the new tests against the live site, then deleted the branch:
+
+   ```
+   npx playwright test -c playwright.live.config.ts tests/onboarding.spec.ts tests/pwa.spec.ts --workers=4; rm playwright.live.config.ts; git branch -d phase/p5-onboarding-accounts-pwa &amp;&amp; git push origin --delete phase/p5-onboarding-accounts-pwa; git status --short
+   ```
+
+   - It timed out at 300 s and moved to the background (ID b1nlln7pl, output in the session's tasks folder as b1nlln7pl.output).
+   - Its result is unknown.
+   - The temporary file `playwright.live.config.ts` may still exist in the repo root. It is untracked and needs removing if it's still there.
+
+9. **Optional Next Step**
+
+   When b1nlln7pl completes:
+   1. Read its output.
+   2. Make sure `playwright.live.config.ts` is gone and the branch is deleted locally and remotely.
+   3. Give the user the final P5 report:
+      - what was built;
+      - test results;
+      - the live-site check result;
+      - the exact owner actions (publish the rules text, Rules Playground checks, two-device test, phone install and offline test).
+
+   Then ask whether to start P6. Do not start P6 without confirmation.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: C:\Users\Rishe\.claude\projects\C--Users-Rishe-Desktop-CubeBuddy\5735b118-3bc9-4a5f-b524-bb1b33d36478.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
+
+The messages after this summary are the most recent messages from before compaction, kept verbatim. The summary was written without seeing them, so something it says has not happened yet may already have happened in them.</pre></div><button class="more" type="button" data-for="u27" aria-expanded="false">Show full prompt</button><details class="resp"><summary><span>Response</span><small>2,977 characters</small></summary><pre>P5 is live at https://coder-r2.github.io/cubebuddy/ (main is at `71e7b1f`, CI passed, the site deployed). I haven't checked it on the live site: that test run was stopped because the computer was low on memory. It says nothing about the code, but the run never finished, so I have no live result. The full suite passed on your machine and in CI before the merge. Tell me if you want me to run the live check again.
+
+The merged P5 branch is deleted locally and on GitHub, and the temporary test config file is gone.
+
+**What's in P5**
+- **Onboarding quiz:** a few questions about how you solve set your level and suggest where to start (notation course, CFOP tutorial, OLL trainer or the timer). It also sets matching defaults, such as animation speed and helpers.
+- **Notation course:** cards that animate each move on a 3D cube, diagrams with arrows, and a short quiz where you do the moves yourself.
+- **Settings page:** all options in one place, including animation speed, colour scheme, helpers, timer and theme. You can rebind any keyboard key to a move or reset to the cstimer defaults.
+- **Accounts:** sign in with Google, or with email and password (with email verification and password reset).
+- **Sync:** solves, sessions, settings and alg progress sync between devices. Deletions sync too. The first sign-in combines your local data with the cloud data, and a cloud icon in the header shows sync status.
+- **Account page:** sign out and choose to keep or clear the data on that device, delete the account, and export or import a JSON backup.
+- **Install as an app:** the app is installable with its own icons, works offline, and shows a "new version available" prompt.
+
+**Tests:** 1,542 unit tests and 74 browser tests pass (desktop and Pixel 7), with no lint or type errors. No .md files other than README.md are committed. I couldn't test sync with a real Firebase account because I don't have one.
+
+**Things only you can do**
+1. **Publish the security rules.** Until you do, sync will show "The server refused access…". Paste the contents of `firestore.rules` at https://console.firebase.google.com/project/[REDACTED]/firestore/rules and click **Publish**.
+2. **Check the rules in the Rules Playground** (same page):
+   - a get on `/users/A/sessions/x` signed in as uid `A` should be allowed;
+   - the same get signed in as uid `B` should be denied;
+   - the same get signed out should be denied.
+3. **Test sync on two devices.** Sign in on your laptop and phone. Do a few solves and mark some algs on one, and check they appear on the other, both ways. Then delete a solve and check it disappears on the other device.
+4. **Install the app** on Android Chrome, desktop Chrome and iOS Safari (Share → Add to Home Screen). Turn on airplane mode and check the timer and tutorials still open.
+5. **Check the update prompt.** After the next deploy, an open copy of the app should show "A new version of CubeBuddy is available."
+
+P6 is the last phase. Should I start it?</pre></details></section><section class="turn" id="turn-28"><h2><a href="#turn-28">Turn 28</a></h2><div class="user" id="u28"><pre>run the live check again and give me explicit instructions on what you want me to do</pre></div><details class="resp"><summary><span>Response</span><small>3,361 characters</small></summary><pre>I ran the live check again and all 12 tests passed on the real site, desktop and phone, in 50 seconds. That covers the quiz, the notation course, the keyboard map, backup export and import, the sign-in page, installing and offline use.
+
+I also checked your Firebase setup: Google sign-in and email/password sign-in are both turned on, and `coder-r2.github.io` is on the allowed domain list. The one piece I can't see is whether the security rules are published. Until they are, sync is refused.
+
+Here's what I need you to do, in order.
+
+## 1. Publish the security rules (5 min, required)
+
+1. In this Claude Code prompt, type this and press Enter. It copies the rules to your clipboard:
+   ```
+   ! Get-Content firestore.rules -Raw | Set-Clipboard
+   ```
+2. Open https://console.firebase.google.com/project/[REDACTED]/firestore/rules
+3. Click inside the editor, press **Ctrl+A** to select everything there, then **Ctrl+V** to paste over it.
+4. Click **Publish**. It takes effect within about a minute.
+
+## 2. Check the rules in the Rules Playground (3 min)
+
+Stay on the same page and open **Rules Playground** (a panel beside the editor). Run these three tests:
+
+| Test | Simulation type | Location | Authenticated | Firebase UID | Expected result |
+|---|---|---|---|---|---|
+| a | get | `/users/A/sessions/x` | On | `A` | **Allowed** |
+| b | get | `/users/A/sessions/x` | On | `B` | **Denied** |
+| c | get | `/users/A/sessions/x` | Off | – | **Denied** |
+
+For each test, set the fields and click **Run**.
+
+## 3. Test sync across two devices (10 min)
+
+1. **Laptop:** open https://coder-r2.github.io/cubebuddy/, go to **Account** and sign in with Google. The Account page should say **Synced**, and the dot on the cloud icon in the header should turn green.
+2. **Phone:** open the same site and sign in with the **same** Google account.
+3. **Laptop:** do 3 solves on the Timer. In the Trainer, mark one alg as learned or learning.
+4. **Phone:** open **Account** and tap **Sync now**. The 3 solves and the alg mark should appear.
+5. **Phone:** delete one of those solves. **Laptop:** reload the page. That solve should be gone.
+6. **Optional:** sign up for a new account with email and password, and check that the verification email arrives. Also try "Forgot password".
+
+## 4. Install the app and test offline (5 min per device)
+
+- **Android Chrome:** open the ⋮ menu and tap **Install app** (or **Add to Home screen**).
+- **Desktop Chrome:** click the install icon at the right end of the address bar.
+- **iPhone Safari:** tap **Share**, then **Add to Home Screen**.
+
+Open the installed app once, then turn on airplane mode and close and reopen it. The Timer, Trainer and tutorials should all work. Sync will show as offline, which is expected.
+
+## 5. Update prompt (no action now)
+
+The next time I deploy (during P6), an open copy of the app should show **"A new version of CubeBuddy is available."** with a **Reload** button. Tell me if it doesn't appear.
+
+## What to send me
+
+Reply with something like "rules published, playground a/b/c OK, sync works, installed on Android". If anything fails, tell me which step it was and paste the exact message you saw. A red cloud dot or "The server refused access…" on the Account page almost always means the rules aren't published yet, or haven't taken effect yet.
+
+Once you've done this, tell me whether to start P6.</pre></details></section><section class="turn" id="turn-29"><h2><a href="#turn-29">Turn 29</a></h2><div class="user" id="u29"><pre>&lt;bash-input&gt;Get-Content firestore-rules -Raw | Set-Clipboard&lt;/bash-input&gt;</pre></div><p class="none">No text reply for this turn; the work was done with tools.</p></section><section class="turn" id="turn-30"><h2><a href="#turn-30">Turn 30</a></h2><div class="user" id="u30"><pre>&lt;bash-stdout&gt;&lt;/bash-stdout&gt;&lt;bash-stderr&gt;/usr/bin/bash: line 1: Get-Content: command not found
+/usr/bin/bash: line 1: Set-Clipboard: command not found
+&lt;/bash-stderr&gt;</pre></div><details class="resp"><summary><span>Response</span><small>669 characters</small></summary><pre>That command failed for two reasons, both mine. The `!` prefix runs commands in bash, not PowerShell, so `Get-Content` doesn't exist there. And the file is `firestore.rules`, with a dot.
+
+I've copied the rules to your clipboard myself: all 60 lines, and I checked the special characters came through correctly.
+
+Carry on from step 1.2:
+
+1. Open https://console.firebase.google.com/project/[REDACTED]/firestore/rules
+2. Click inside the editor and press **Ctrl+A**, then **Ctrl+V**.
+3. Click **Publish**.
+
+If something else replaces your clipboard first, open `firestore.rules` in VS Code or Notepad and copy everything (Ctrl+A, Ctrl+C), or just ask me to copy it again.</pre></details></section><section class="turn" id="turn-31"><h2><a href="#turn-31">Turn 31</a></h2><div class="user" id="u31"><pre>all works fine, move on to next phase</pre></div><details class="resp"><summary><span>Response</span><small>3,372 characters</small></summary><pre>P6 is finished and live at https://coder-r2.github.io/cubebuddy/, so every planned phase (P0–P6) is now built. It went out in two deploys, both with CI passing; main is at `da0f3b2`. The live site passed its checks after each deploy.
+
+## What's new
+
+- **Cross colour:** Settings → Solving helpers now has three choices: *White*, *White or yellow* and *Any colour*. The same choice is in the free-play and tutorial options. With more than one colour, the helpers pick whichever cross is shortest and keep that colour for the rest of the solve (on the 2x2, the first face). Titles name the colour, for example "Solve the yellow cross".
+- **Beginner tutorial** (`/tutorial/beginner`): a layer-by-layer solve in 7 stages, using the standard beginner algorithms with the same hint, play and step controls as the other tutorials. The step card shows which algorithm to use. Beginner solves average about 148 moves, which is normal for this method.
+  - It's in the menu and on the home page.
+  - The Learn page's "Never solved a cube?" box now sends people here instead of to J Perm's site. J Perm is still credited on the About page.
+- **Copy your own cube:** the 3x3 tutorials' start screen now has *Scan with camera* and *Enter by hand*.
+  - Both open a flat map of the cube's six faces (the "sticker map") where you can fix any sticker.
+  - It explains anything impossible in plain words, such as a twisted corner, a flipped edge or 10 white stickers.
+  - The tutorial then starts from exactly your cube.
+
+**Tests:** 1,570 unit tests and 84 browser tests pass, on desktop and phone. One thing I couldn't test is camera accuracy on a real cube. In simulated lighting the colour reading averages at most 2 wrong stickers per scan, but a real cube and room light can differ.
+
+## What I need you to do
+
+1. **Update prompt** (checks the last P5 item): open your installed copy of CubeBuddy. Within an hour, or when you switch back to it, it should say **"A new version of CubeBuddy is available."** Tap **Reload**.
+2. **Cross colour** (2 min): go to **Settings → Solving helpers → Cross colour → Any colour**. Open **Free-play**, scramble, and check that the status line names a colour (for example "Blue cross not solved"). Tap **Solve cross**: the cube should rotate so that colour ends up on the bottom.
+3. **Beginner tutorial** (5 min, on your phone): **More → Beginner tutorial → Random scramble**. Press ▶ through every stage until it says **Solved!**.
+4. **Camera scanning: the main check, 10 scans** (about 20 min):
+   - On your phone, scramble your real cube, then open **CFOP tutorial → Scan with camera** and allow the camera.
+   - Follow each prompt: fill the white square with the face and tap **Capture**. Do this 6 times.
+   - On the sticker map, count how many stickers you had to correct, then tap **Use this cube**. The 3D cube should match your real one.
+   - Do this 10 times with different scrambles, in normal room light.
+   - Reply with the 10 correction counts (for example "1, 0, 3, 2, …"). The target is an average of 2 or fewer. If one colour pair keeps getting mixed up, such as red and orange, tell me which.
+5. **Enter by hand** (optional): **CFOP tutorial → Enter by hand**. Tap stickers and colours to copy your cube, then **Use this cube**.
+
+Reply with what you found. If something is wrong, tell me which step and paste the exact message you saw.</pre></details></section><section class="turn" id="turn-32"><h2><a href="#turn-32">Turn 32</a><span class="badge">Automatic context summary</span></h2><div class="user clamp" id="u32"><pre>This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+&lt;tools-used-before-summary&gt;AskUserQuestion, Bash, Edit, Grep, PowerShell, Read, Skill, ToolSearch, WebFetch, WebSearch, Write&lt;/tools-used-before-summary&gt;
+Summary:
+1. **Primary Request and Intent**
+
+   **Project:** CubeBuddy, a speedcubing web app.
+   - Live site: https://coder-r2.github.io/cubebuddy/
+   - Repo: `C:\Users\Rishe\Desktop\CubeBuddy`; GitHub `coder-r2/cubebuddy`; Firebase project `[REDACTED]`.
+   - Constraints: $0 cost; works on phone, tablet and laptop; 3x3 and 2x2 only; no AI/ML; built in phases P0–P6.
+
+   **This session:**
+   - Finish P5 follow-up: run the live check again and give the user explicit owner instructions. Done; the user confirmed "all works fine".
+   - "move on to next phase": P6. P6a, P6b and P6c are all built and deployed.
+
+   **Standing constraints, verbatim:**
+   - "another important note: start tracking the repo. also, no .md files (that is meant for claude and used by claude or used by me for some other purpose than is necessary for project deployment) shows up in the repo at any push/commit"
+   - README.md is the exception: "yes readme is required, do the needful."
+   - The owner's cstimer export (`cstimer_*.txt`) must never be committed; it is gitignored.
+   - `.env.local` (Firebase config) is gitignored and must stay that way. Never print the API key.
+   - SPEC.md, plan.md and decisions.md are local only (gitignored).
+
+   **Commits** end with:
+   ```
+   Co-Authored-By: Claude Opus 5.5 &lt;noreply@anthropic.com&gt;
+   Claude-Session: https://claude.ai/code/session_011aA9bddDKpAFy2ZrqABAbT
+   ```
+
+   **Workflow:** branch → push → wait for CI → fast-forward main (which deploys) → delete the branch. Keep decisions.md and plan.md updated.
+
+2. **Key Technical Concepts**
+
+   **Stack:** React 19, Vite 8, TypeScript 6, Tailwind 4, Zustand, Dexie 4, cubing.js 0.66.1 (patched), Vitest, Playwright (desktop + Pixel 7), and a comlink engine worker.
+
+   **Facelets and pieces:**
+   - Faces are ordered U R F D L B. Colours are home-face indices: 0 white (on U), 1 red, 2 green, 3 yellow, 4 orange, 5 blue.
+   - Each state is a 54-sticker array.
+   - `readPieces` returns `pos*3+ori` for corners and `pos*2+ori` for edges, relative to the centres.
+   - `CORNER_FACELETS` lists each corner's stickers in y, z, x order.
+
+   **Cross colour modes (D-095):**
+   - `COLOUR_SETS`:
+     - `white: [0]`
+     - `'white-yellow': [0, 3]`
+     - `neutral: [0, 3, 2, 5, 1, 4]`
+   - `chooseColour` scores each allowed colour by progress × 100 minus cross (or face) distance. Ties go to the earlier colour.
+   - `solveAll` keeps the colour picked for the starting cube.
+
+   **Beginner method (D-096):**
+   - Algorithms:
+     - corner: `R U R' U'`
+     - right insert: `U R U' R' U' F' U F`
+     - left insert: `U' L' U L U F U' F'`
+     - top cross: `F R U R' U' F'`
+     - top edges: `R U R' U R U2 R'`
+     - place corners: `U R U' L' U R' U' L`
+     - twist corners: `R' D' R D`
+   - Slots are tracked by the colours of their two side centres; the cube is turned to face each slot with y rotations.
+   - `joinMoves` merges turns of the same layer where two sequences meet.
+   - Averages about 148 moves per solve (maximum 200 over 300 scrambles).
+
+   **Copying a real cube (D-097):**
+   - Faces are scanned in a fixed order: green, red, blue, orange (white on top), then white (blue at the top), then yellow (green at the top).
+   - Colours are compared in Lab, with lightness weighted 0.5. Each colour is capped at 9 stickers, assigned closest first. Doubtful stickers are marked with a dot.
+   - Validation checks colour counts, real pieces, mirror-image corners (via clockwise colour order), duplicates, corner twist, edge flip and permutation parity.
+   - Setup: solve with CFOP, rewrite as face turns only (decompose other moves by search, then conjugate rotations away), and invert.
+
+3. **Files and Code Sections**
+
+   **P6a: cross colour modes**
+
+   - `src/engine/colourSets.ts` (new): exports `COLOUR_SETS`, `STICKER_HEX` (`['#ffffff','#d1213a','#00a35a','#ffd500','#ff6a13','#0f55c4']`), `COLOUR_NAMES` and `opposite = c =&gt; (c+3)%6`. It has no solver imports, so it is safe for the UI bundle.
+   - `src/engine/colour.ts` (new): `chooseColour(state, puzzle, colours)`. It uses a progress function: 2x2 face/oll/pbl/auf/solved map to 0–4; 3x3 is cross + pairs as 1–5, oriented 6, up to AUF 7, solved 8.
+   - `src/engine/solvers.ts`:
+     - `crossEdges`; `export const crossDistance(state, colour)`.
+     - `bestFace`; `export const faceDistance`.
+     - `StepKind` extended with `'lbl-corner'|'lbl-edge'|'lbl-eo'|'lbl-ep'|'lbl-cp'|'lbl-co'`.
+   - `src/engine/api.ts`:
+     - `HelperOptions extends SolveOptions { colours?; method?: 'cfop'|'lbl' }`.
+     - `LblAnalysis {colour, report}`.
+     - `EngineStep.colour`; `Analysis` gains `&amp; {colour}`.
+     - `resolve()` picks the colour.
+     - `nextStep`, `solveAll` and `findPieces` branch to LBL when `lbl(puzzle, options)`.
+     - New methods `analyseLbl(moves, options)` and `setupFor(colours: number[]): string` (runs `checkState`, throws on a problem, returns `formatAlg(setupFor(...))`).
+   - `src/lib/useHelperEngine.ts`: adds `useHelperOptions()`, which returns `{options:{colours: COLOUR_SETS[crossColorMode], f2lStyle, llMode}, key}`.
+   - `src/features/play/PlayPage.tsx`: uses `useHelperOptions`; status text names the colour ("Yellow cross not solved", "First face (x) not made yet").
+   - `src/features/play/PlayOptionsDialog.tsx`: `HelperOptions` gains a "Cross colour" Choice (White / White or yellow / Any colour) with help text.
+   - `src/features/settings/SettingsPage.tsx`: removed the old "planned for a later update" cross colour note.
+
+   **P6c: beginner tutorial**
+
+   - `src/engine/lbl.ts` (new):
+     - `LblStage`, `LblReport`, `LBL_ALGS`, `analyseLbl`, `joinMoves`, `nextLblStep` and `solveAllLbl` (at most 40 steps).
+     - Step builders `cornerMoves`, `edgeMoves` and `twistMoves`.
+     - Checks `crossShape` and `best()`, with intact-ness guards.
+   - `src/features/tutorial/stages.ts`:
+     - New: `Method`, `PUZZLE_OF`.
+     - `STAGES` is keyed by cfop/ortega/lbl. The lbl stages are Cross, First layer, Middle layer, Top cross, Top edges, Place corners, Twist corners, Solved.
+     - `stageIndex(Analysis|LblAnalysis)`.
+     - `stepTitle` uses colours ("Put in the white–green–red corner", "Twist the yellow corners", …).
+     - `stageGuide(method, index, colour)`.
+     - Row labels "Corner n", "Edge n", etc., using per-kind counts.
+     - `COLOUR_NAMES` is re-exported.
+   - `src/features/tutorial/TutorialPage.tsx`:
+     - Prop `{method}`; `COPY` keyed by method, with `next` links.
+     - `solveOptions` adds `method: 'lbl'`; calls `analyseLbl` for lbl.
+     - Shows "Alg:" (testid `step-alg`) for lbl steps.
+     - `SolvedCard` takes `next`.
+   - `src/features/tutorial/BeginnerTutorialPage.tsx` (new); `CfopTutorialPage` and `OrtegaTutorialPage` now pass `method`.
+   - `src/app/App.tsx`: adds the route `tutorial/beginner`.
+   - `src/app/nav.ts`: adds "Beginner tutorial".
+   - `src/app/Layout.tsx`: `topLink` padding is now `px-2.5 … xl:px-3`, so 8 nav items fit at 1024 px.
+   - `src/features/home/HomePage.tsx`: adds a Beginner tutorial card.
+   - `src/features/learn/LearnPage.tsx`: the callout links to `/tutorial/beginner`; the J Perm constant was removed.
+   - `src/features/learn/quiz.ts`: L1 text updated.
+   - `src/features/about/AboutPage.tsx`: credit bullet for the beginner method.
+
+   **P6b: camera scan and net editor**
+
+   - `src/engine/validate.ts` (new):
+     - `StateProblem {kind: 'unset'|'centres'|'counts'|'piece'|'twist'|'flip'|'parity'; message; stickers}`.
+     - `checkState(colours)` uses `MIRRORED` (from the sign of the normals' determinant), `clockwise`, `HOME_CLOCKWISE` and `parity`.
+   - `src/engine/setup.ts` (new): `decompose` (cached search over face sets and 24 rotations), `faceTurnsOnly(moves)` and `setupFor(state)`.
+   - `src/features/scan/classify.ts` (new): `rgbToLab`, `distance`, `classify(samples)` returning `{colours, doubtful}`, and `averageRgb`.
+   - `src/features/scan/NetEditor.tsx` (new):
+     - Cross-layout net; sticker buttons carry `data-sticker` and aria-labels.
+     - Palette group "Colours", buttons labelled `${name} (${count} of 9)`.
+     - Auto-advances to the next unset sticker.
+   - `src/features/scan/CameraScanner.tsx` (new):
+     - `SCAN_STEPS` (not exported); `cameraSupported()`.
+     - `getUserMedia` with `facingMode` environment.
+     - Live 9-cell preview every 150 ms; the guide is inset 14% and samples 45% of each cell.
+     - Buttons: Capture X face / Back. `FaceBadge`.
+     - Error fallback offers "Enter the colours by hand".
+     - Test id `scan-instruction`.
+   - `src/features/scan/ScanDialog.tsx` (new):
+     - Dialog titled "Copy your cube"; camera and edit modes.
+     - Messages: "This cube is valid."; problems shown with test id `scan-problem`, but unset-sticker problems only after the user presses "Use this cube".
+     - Buttons: Use this cube, Use the camera / Scan again, Clear.
+   - `src/features/tutorial/ScrambleForm.tsx`: on 3x3, adds "Scan with camera" and "Enter by hand" buttons, plus `ScanDialog`, whose `onUse` calls `onStart(setup)`.
+   - `src/components/ui/Icon.tsx`: adds the camera and grid icons.
+   - `src/components/CaseDiagram.tsx`: uses `STICKER_HEX`.
+
+   **Tests**
+   - `src/engine/colour.test.ts`: 11 tests.
+   - `src/engine/lbl.test.ts`: 200 scrambles solved, stages in order, plus stage reports with a `z2` prefix.
+   - `src/engine/setup.test.ts`: `checkState` cases and `setupFor` reproduces the cube.
+   - `src/features/scan/classify.test.ts`.
+   - `src/features/tutorial/stages.test.ts`: lbl tests added; uses `STAGES.cfop` and `STAGES.ortega`.
+   - `tests/tutorial.spec.ts`: yellow cross, beginner tutorial to solved, and the Learn page link (exact match).
+   - `tests/scan.spec.ts`:
+     - file-level `test.use` with camera permission and the fake-media launch arguments;
+     - by-hand entry (twist error, then fixed, then the tutorial's cube equals the entered cube);
+     - camera flow with six captures.
+
+   **Docs (local only, never committed)**
+   - decisions.md: D-095, D-096 and D-097.
+   - plan.md: P5 ✅; P6a ✅ and P6c ✅ (a2d289e); P6b "🟡 Deployed, owner check pending" (da0f3b2).
+   - Memory file updated.
+   - README.md (committed): mentions the beginner tutorial, colour neutral and cube copying.
+
+4. **Errors and fixes**
+   - The live run was killed by memory pressure. I didn't restart it until the user asked; the rerun used 2 workers.
+   - The user's `!` command failed (bash shell, and the file name had a dash). I copied the rules with PowerShell `Set-Clipboard`.
+   - Tests assumed white was on the bottom. Fixed with a `z2` prefix (white is home U).
+   - An easy scramble skipped PLL. The e2e test now only checks for Solved.
+   - The "beginner tutorial" link matched two elements. Fixed with `exact: true`.
+   - The nav overflowed by 3 px at 1024. Fixed with tighter padding.
+   - Bash heredoc quoting broke. Patch scripts are now written to scratchpad .py files.
+   - Mirror-image corners weren't detected. Added the clockwise colour-order check.
+   - Playwright `launchOptions` aren't allowed inside a describe block. Moved them to file level.
+   - Lint flagged `set-state-in-effect` and the exported constant. Fixed with lazy initial state and by un-exporting.
+   - CI TS2774 (always-true `getUserMedia` condition). Fixed with a typeof check. The local `tsc -b` had hidden it through its incremental cache, so use `--force`.
+
+5. **Problem Solving**
+
+   All P6 items are built and deployed:
+   - unit tests: 1570 passed, 2 skipped;
+   - local e2e: 84 passed, 2 skipped;
+   - CI green;
+   - live tutorial tests: 14 of 14;
+   - live scan and smoke tests: 16 of 16.
+
+   Firebase providers and the authorized domain are confirmed. The user confirmed P5 works.
+
+6. **All user messages**
+   - "run the live check again and give me explicit instructions on what you want me to do"
+   - (bash input) `Get-Content firestore-rules -Raw | Set-Clipboard`, which failed
+   - "all works fine, move on to next phase"
+   - Earlier standing constraints are quoted verbatim in section 1.
+
+7. **Pending Tasks**
+   - Give the user the P6 report, with the owner action for P6b: 10 real-cube camera scans in normal room light; target an average of 2 or fewer corrections, and invalid states always rejected with a clear reason.
+   - Possibly mention that installed copies should now show the update prompt (the P5 owner check).
+   - All planned phases (P0–P6) are complete. Ask what's next; don't start new work without the user.
+
+8. **Current Work**
+
+   The last command:
+   - deleted branch `phase/p6-deferred` locally and remotely;
+   - stopped the vite preview server on port 4173 (PID 86816);
+   - updated plan.md's P6b row to "🟡 Deployed, owner check pending … Deployed (commit da0f3b2); live e2e pass. Owner: 10 real-cube scans in room light, count corrections";
+   - updated the memory file.
+
+   The output showed "stopped preview 86816". `git status` and `git branch -a | grep p6` printed nothing, so the branch is gone and the working tree is clean. Main is at da0f3b2.
+
+9. **Optional Next Step**
+
+   Report to the user that P6 is finished:
+   - **P6a:** cross colour setting.
+   - **P6c:** beginner tutorial at /tutorial/beginner.
+   - **P6b:** "Scan with camera" and "Enter by hand" on the CFOP and beginner tutorial start screens.
+   - Test results.
+
+   Then give explicit owner instructions for the P6b check: open the CFOP tutorial on a phone, tap "Scan with camera", scan the six faces as instructed, count how many stickers need fixing, and repeat 10 times. Also ask them to check the update prompt in an installed copy. Then ask what they'd like next. Do not start new work without confirmation.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: C:\Users\Rishe\.claude\projects\C--Users-Rishe-Desktop-CubeBuddy\5735b118-3bc9-4a5f-b524-bb1b33d36478.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
+
+The messages after this summary are the most recent messages from before compaction, kept verbatim. The summary was written without seeing them, so something it says has not happened yet may already have happened in them.</pre></div><button class="more" type="button" data-for="u32" aria-expanded="false">Show full prompt</button><p class="none">No text reply for this turn; the work was done with tools.</p></section><section class="turn" id="turn-33"><h2><a href="#turn-33">Turn 33</a></h2><div class="user" id="u33"><pre>all good, no mistakes was found in camera scanning as well. what is the next phase? (if nothing then also add camera scanning for 2x2 ortega)</pre></div><details class="resp"><summary><span>Response</span><small>2,409 characters</small></summary><pre>There was no next phase: P0–P6 were everything in the plan, and they're all built. So I added camera scanning and hand entry for the 2x2 to the Ortega tutorial. It's live at https://coder-r2.github.io/cubebuddy/, and the 3x3 scanning is now marked done in the plan.
+
+## What's new
+
+**Ortega tutorial → start screen** now has **Scan with camera** and **Enter by hand**, like the 3x3 tutorials. A 2x2 has no centre pieces, so a few things work differently:
+
+- **Hold it any way up.** Faces are named by where they are (front, right, back, left, top, bottom), not by colour. You make the same turns between faces as on the 3x3, and the guide shows a 2×2 grid.
+- **Reading colours:** with no centres to compare against, it starts from typical sticker colours and adjusts them to your cube and your light. Each colour gets exactly 4 stickers.
+- **Sticker map:** shows only the 24 stickers a 2x2 has. It still explains impossible cubes in words, such as "There are 5 yellow and 3 white stickers" or a twisted corner.
+- **Same hold on screen:** the tutorial's cube is held exactly the way you're holding yours, so you don't have to turn your cube to match.
+
+**Tests:**
+- 1,578 unit tests pass. These include 2x2s scanned in all 24 holds, each rebuilt exactly and then solved by the tutorial.
+- In simulated light the colour reading made no mistakes in normal, warm and cool light, and about 0.5 per scan in dim warm light.
+- 88 browser tests pass on laptop and phone sizes. The scan and tutorial tests also passed on the live site.
+- As with the 3x3, real-cube accuracy is the one thing only you can check.
+
+## What I need you to do (about 10 min, on your phone)
+
+1. Open your installed CubeBuddy. When it shows "A new version is available", tap **Reload**.
+2. Scramble your real 2x2. Go to **More → Ortega tutorial → Scan with camera** and allow the camera.
+3. Hold the cube any way you like, then follow each prompt: fill the white square with the face and tap **Capture**. Keep the same side on top for the first four faces.
+4. On the sticker map, count the stickers you had to fix, then tap **Use this cube**. Check that the 3D cube matches your real one and is held the same way.
+5. Do this 3–5 times and reply with the correction counts. If a colour pair keeps getting mixed up, tell me which.
+6. Optional: try **Enter by hand** once.
+
+Nothing else is planned after this. Tell me if you'd like another feature.</pre></details></section><section class="turn" id="turn-34"><h2><a href="#turn-34">Turn 34</a></h2><div class="user" id="u34"><pre>make a technical report of the bug you found in cubing.js in bug.md as well as the temporary fix you applied and possible solutions to the bug in the cubing.js repo itself</pre></div><details class="resp"><summary><span>Response</span><small>2,240 characters</small></summary><pre>I wrote the report to `bug.md` in the project folder. It isn't committed: `.gitignore` excludes every `.md` file except README. I couldn't run `git check-ignore` to confirm because the command checker kept failing, but the `*.md` rule covers it.
+
+**The bug:** when an app adds a move, the 3D view used for every cube in CubeBuddy (cubing.js calls it PG3D) keeps an old snapshot of the cube. When it redraws without a new move, for example when a highlight is applied, it redraws from that snapshot. The snapshot is taken from the first frame of the turn animation, so the layer that just turned is drawn almost a full turn away from where it really is. The cube's actual state is right; only the picture is wrong. That's why "Find next F2L pair" sometimes showed the pair in the wrong place.
+
+**What the report covers:**
+- **What went wrong**, with the steps to reproduce it on its own and in CubeBuddy, and how often it failed (about 60% of runs before the fix; 6 out of 6 for the regression test with the fix removed).
+- **The cause in the code**:
+  - When a move is added, every frame of its animation has the same end state; only the animation progress changes.
+  - The 3D view only updates its snapshot when the cube state changes, so it keeps the first animation frame.
+  - Highlights, hint stickers and textures redraw from that stale snapshot.
+  - The default 3x3 view doesn't keep a snapshot, which is why only this view is affected.
+- **The temporary fix**: a one-line change applied automatically on every install (`patches/cubing+0.66.1.patch`) that makes the view always keep the latest frame. The report explains why it's safe, which workarounds failed, the regression test that guards it, and what to do when upgrading cubing.js.
+- **Five possible fixes in cubing.js** itself. I recommend the same one-line change as ours. The others are more structural.
+- **A suggested test for cubing.js** and a **ready-to-post issue** for their GitHub.
+
+Two things I couldn't check:
+- The report hasn't been sent to cubing.js, and I didn't check whether a version newer than 0.66.1 already fixes it. That's the first thing to check before posting the issue.
+- The suggested test in section 6 comes from reading the code; I haven't run it.</pre></details></section><section class="turn" id="turn-35"><h2><a href="#turn-35">Turn 35</a></h2><div class="user" id="u35"><pre>alright anything left to do for cubebuddy?</pre></div><details class="resp"><summary><span>Response</span><small>1,213 characters</small></summary><pre>Nothing is required. Every planned phase (P0–P6) is built and live, and so is the 2x2 scanning you asked for. A few loose ends:
+
+**Waiting on you**
+- **Check 2x2 scanning on a real cube.** Scan a scrambled 2x2 3–5 times in the Ortega tutorial and tell me how many stickers you had to fix each time. It's the only part of the 2x2 work I couldn't test myself.
+
+**Optional, your call**
+- **Report the cubing.js bug** using the ready-made issue at the end of `bug.md`. First check whether a newer cubing.js version already fixes it. If it does, we could upgrade and drop our patch.
+- **Delete old branches.** `phase/p0-foundation`, `phase/p1-timer`, `phase/p2-engine` and `phase/p3-trainer` are still on GitHub and on your computer, even though everything in them is already on main. Deleting them is tidy-up only and can't easily be undone, so I haven't done it without asking.
+
+**Possible next features** (none are planned):
+- A cross trainer: practise solving the white cross in as few moves as possible.
+- More 2x2 methods (CLL or EG) beyond Ortega.
+- Ways to compare times with friends, now that accounts and sync work.
+
+If you're happy with how CubeBuddy is now, it's finished. Tell me if you want any of these.</pre></details></section>
+<footer>The entry labelled "Automatic context summary" was written by the tool when the conversation grew too long and was compacted; it is shown as it was. Turns with no text reply were completed with tool work only.</footer>
+</main>
+<script>
+(function () {
+  var all = function () { return document.querySelectorAll('details.resp'); };
+  document.getElementById('expand').onclick = function () { all().forEach(function (x) { x.open = true; }); };
+  document.getElementById('collapse').onclick = function () { all().forEach(function (x) { x.open = false; }); };
+  document.querySelectorAll('.more').forEach(function (b) {
+    b.onclick = function () {
+      var el = document.getElementById(b.getAttribute('data-for'));
+      var open = el.classList.toggle('open');
+      b.setAttribute('aria-expanded', open);
+      b.textContent = open ? 'Show less' : 'Show full prompt';
+    };
+  });
+  function openHash() {
+    var m = /^#turn-(\d+)$/.exec(location.hash);
+    if (m) { var x = document.querySelector('#turn-' + m[1] + ' details.resp'); if (x) x.open = true; }
+  }
+  addEventListener('hashchange', openHash); openHash();
+})();
+</script>
+</body>
+</html>

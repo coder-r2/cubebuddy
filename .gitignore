@@ -42,3 +42,7 @@ desktop.ini
 
 # Personal cstimer exports dropped in for local testing (tests use synthetic fixtures)
 cstimer_*.txt
+
+# Local transcript source (the published page is public/transcript/index.html)
+cubebuddy-chat-history.txt
+cubebuddy-transcript.txt
