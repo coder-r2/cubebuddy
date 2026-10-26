@@ -6,3 +6,5 @@ test-results
 node_modules
 package-lock.json
 *.md
+# generated static page holding the verbatim conversation
+public/transcript
