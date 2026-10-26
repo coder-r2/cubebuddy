@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>CubeBuddy interview prep</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<style>
+:root { color-scheme: dark light; --bg:#111214; --card:#1a1c20; --card2:#202329; --line:#2b2e34; --text:#e8e9ec; --mute:#9aa0aa; --accent:#6ea8ff; --accent-bg:#16233a; --c-feat:#1f3a5f; --c-ui:#3b2f5c; --c-eng:#5a3a1e; --c-data:#1f4d3a; --c-plat:#4a4a52; --c-ext:#2b2e34; }
+@media (prefers-color-scheme: light) {
+  :root { --bg:#f5f6f8; --card:#fff; --card2:#f0f2f6; --line:#dcdfe5; --text:#1a1c20; --mute:#5c6370; --accent:#1d5fd1; --accent-bg:#e8f0fd; --c-feat:#cfe0fb; --c-ui:#e1d8f6; --c-eng:#fadfc4; --c-data:#cdeedd; --c-plat:#e3e4e8; --c-ext:#eceef2; }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+main { max-width: 1000px; margin: 0 auto; padding: 24px 16px 72px; }
+h1 { font-size: 1.7rem; margin: 0 0 6px; }
+h2 { font-size: 1.3rem; margin: 40px 0 8px; scroll-margin-top: 16px; }
+h3 { font-size: 1.05rem; margin: 22px 0 6px; }
+p { margin: 0 0 10px; }
+.lede { color: var(--mute); }
+code { font: .88em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; background: var(--card2); border: 1px solid var(--line); border-radius: 5px; padding: 0 5px; }
+a { color: var(--accent); }
+.toc { display:flex; gap:8px; flex-wrap:wrap; margin: 14px 0 0; }
+.toc a { text-decoration:none; font-size:.9rem; padding:4px 12px; border:1px solid var(--line); border-radius:999px; background:var(--card); color:var(--text); }
+.toc a:hover { border-color: var(--accent); color: var(--accent); }
+
+/* diagram */
+.diagram-wrap { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px; overflow-x:auto; }
+svg#diagram { display:block; min-width: 760px; width:100%; height:auto; }
+.edge { stroke: var(--mute); stroke-opacity:.35; stroke-width:1.5; fill:none; }
+.edge.on { stroke: var(--accent); stroke-opacity:1; stroke-width:2.5; }
+.node { cursor:pointer; outline:none; }
+.node rect { stroke: var(--line); stroke-width:1.5; rx:10; }
+.node text { fill: var(--text); font: 600 13px system-ui,sans-serif; text-anchor: middle; pointer-events:none; }
+.node text.sub { font-weight:400; font-size:11px; fill: var(--mute); }
+.node.g-feat rect { fill: var(--c-feat); } .node.g-ui rect { fill: var(--c-ui); } .node.g-eng rect { fill: var(--c-eng); }
+.node.g-data rect { fill: var(--c-data); } .node.g-plat rect { fill: var(--c-plat); }
+.node:hover rect, .node:focus-visible rect { stroke: var(--accent); stroke-width:2.5; }
+.node.sel rect { stroke: var(--accent); stroke-width:3.5; }
+.ext rect { fill: var(--c-ext); stroke-dasharray: 5 4; } .ext { cursor: default; }
+.legend { display:flex; gap:14px; flex-wrap:wrap; font-size:.85rem; color:var(--mute); margin: 10px 2px 0; }
+.legend i { display:inline-block; width:12px; height:12px; border-radius:3px; border:1px solid var(--line); margin-right:6px; vertical-align:-1px; }
+.chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+.chip { font:inherit; font-size:.9rem; padding:5px 12px; border-radius:999px; border:1px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; }
+.chip:hover, .chip.sel { border-color: var(--accent); color: var(--accent); }
+.chip.sel { background: var(--accent-bg); }
+
+/* detail */
+#detail { margin-top: 18px; scroll-margin-top: 12px; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding: 18px 18px 14px; }
+.card h2 { margin: 0 0 4px; font-size:1.4rem; }
+.tag { display:inline-block; font-size:.78rem; color:var(--mute); border:1px solid var(--line); border-radius:999px; padding:1px 9px; margin: 0 6px 6px 0; }
+.cols { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 760px) { .cols { grid-template-columns: 1fr; } }
+.box { background: var(--card2); border:1px solid var(--line); border-radius:10px; padding: 12px 14px; }
+.box h3 { margin: 0 0 6px; font-size:.78rem; text-transform: uppercase; letter-spacing:.06em; color: var(--mute); }
+.box ul { margin: 0; padding-left: 18px; } .box li { margin: 0 0 4px; }
+.qhead { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin: 22px 0 8px; }
+.qhead h3 { margin:0; font-size:1.1rem; }
+.mini { font:inherit; font-size:.85rem; padding:4px 10px; border-radius:8px; border:1px solid var(--line); background:var(--card); color:var(--text); cursor:pointer; margin-left:6px; }
+.mini:hover { border-color: var(--accent); }
+details.q { background: var(--card); border:1px solid var(--line); border-radius:10px; margin: 0 0 8px; }
+details.q summary { cursor:pointer; padding: 10px 14px; font-weight:600; list-style:none; display:flex; gap:10px; }
+details.q summary::-webkit-details-marker { display:none; }
+details.q summary::before { content:"\25B8"; color: var(--mute); flex:none; }
+details.q[open] summary::before { content:"\25BE"; }
+details.q summary b { color: var(--accent); flex:none; min-width: 2ch; }
+details.q .ans { padding: 2px 16px 12px 40px; border-top: 1px solid var(--line); padding-top: 10px; }
+.placeholder { color: var(--mute); text-align:center; padding: 26px 12px; border:1px dashed var(--line); border-radius:14px; }
+.theory { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 760px) { .theory { grid-template-columns: 1fr; } }
+footer { color:var(--mute); font-size:.85rem; margin-top: 40px; }
+</style>
+</head>
+<body>
+<main>
+<h1>CubeBuddy interview prep</h1>
+<p class="lede">A walkthrough of how CubeBuddy is built and why. Click a box in the diagram (or a name below it) to see what that component does, the reasoning behind it, and ten questions an interviewer could ask about it, each with a drop-down answer. At the end: ten questions on the whole project, a short summary of the theory behind it, and fifteen theory questions.</p>
+<nav class="toc" aria-label="Sections">
+  <a href="#architecture">Diagram</a><a href="#detail">Component</a><a href="#overall">Project questions</a><a href="#theory">Theory summary</a><a href="#theory-qs">Theory questions</a>
+</nav>
+
+<h2 id="architecture">Architecture</h2>
+<p class="lede">Arrows show what depends on what. Everything runs in the browser; the only server-side piece is Firebase, and it is optional.</p>
+<div class="diagram-wrap"><svg id="diagram" viewBox="0 0 960 520" role="group" aria-label="CubeBuddy component diagram"></svg></div>
+<div class="legend">
+  <span><i style="background:var(--c-feat)"></i>Feature pages</span><span><i style="background:var(--c-ui)"></i>Shared UI</span><span><i style="background:var(--c-eng)"></i>Solving engine</span><span><i style="background:var(--c-data)"></i>Data and sync</span><span><i style="background:var(--c-plat)"></i>Platform and delivery</span>
+</div>
+<div class="chips" id="chips" role="group" aria-label="Choose a component"></div>
+
+<div id="detail"><div class="placeholder">Select a component above to see its reasoning and interview questions.</div></div>
+
+<h2 id="overall">Ten questions about the whole project</h2>
+<div id="overall-list"></div>
+
+<h2 id="theory">The theory you need, in brief</h2>
+<div class="theory" id="theory-box"></div>
+
+<h2 id="theory-qs">Fifteen theory questions</h2>
+<div id="theory-list"></div>
+
+<footer>Figures and decisions come from the project's decision log (D-001 to D-099) and the code. Where a number is quoted it is either a mathematical fact or something the test suite checks.</footer>
+</main>
+<script>
+const COMPONENTS = [];
+const OVERALL = [];
+const THEORY_SUMMARY = [];
+const THEORY_QS = [];
+COMPONENTS.push({
+  id: 'shell',
+  name: 'App shell & routing',
+  tagline: 'The React single-page app that hosts every feature: navigation, theme, lazy-loaded pages and the update prompt.',
+  decisions: ['D-005', 'D-021', 'D-029', 'D-041', 'D-042', 'D-054', 'D-060'],
+  what: 'CubeBuddy is a React 19 + TypeScript single-page app built with Vite. `main.tsx` mounts a `BrowserRouter` whose basename comes from Vite\'s `BASE_URL` (`/cubebuddy`). `App.tsx` declares the routes (`/play`, `/timer`, `/trainer`, `/tutorial/cfop|ortega|beginner`, `/learn`, `/settings`, `/account`, `/about`, plus an unlisted `/lab`), and `Layout.tsx` provides the navigation, theme toggle, sync badge and the "new version available" toast. Pages are loaded with `React.lazy`, so the heavy 3D and engine code is only downloaded on pages that use it.\n\nStyling is Tailwind CSS v4 utilities on top of CSS custom-property tokens; switching `data-theme` swaps the token values for dark and light.',
+  why: 'One codebase has to feel right on a phone, a tablet and a laptop, work offline and cost nothing to host. A static single-page app on GitHub Pages satisfies all three: no server, instant navigation, installable as a PWA.\n\nRoute-level code splitting keeps the first load small on phones; the cubing.js 3D renderer, the engine worker and Firebase are each pulled in only when a page needs them.',
+  alts: ['Next.js or another SSR framework: needs a server or build-time export, and nothing here benefits from server rendering.', 'HashRouter (`/#/timer`): avoids the 404 problem but gives ugly, non-shareable URLs.', 'CSS-in-JS: adds runtime cost; CSS variables plus Tailwind do the same job statically.', 'Svelte/Vue: fine choices, but React has the largest ecosystem and cubing.js examples are framework-agnostic web components.'],
+  files: ['`src/main.tsx`, `src/app/App.tsx`, `src/app/Layout.tsx`, `src/app/nav.ts`', '`src/app/useTheme.ts`, `src/app/ThemeToggle.tsx`, `src/app/UpdatePrompt.tsx`', '`src/index.css` (theme tokens), `vite.config.ts`'],
+  qa: [
+    ['Why React, TypeScript and Vite rather than something like Next.js?', 'The app is entirely client-side: the timer, solver and cube all run in the browser, and data lives in IndexedDB. Server rendering would add infrastructure and cost without helping any page. React has the biggest ecosystem and TypeScript (strict) catches the kind of off-by-one mistakes a cube engine is prone to. Vite gives fast dev builds and clean static output that GitHub Pages can serve.'],
+    ['GitHub Pages has no rewrite rules. How do deep links like `/cubebuddy/timer` work?', 'Three layers cooperate. The router uses a basename of `/cubebuddy`. At build time a small Vite plugin copies `index.html` to `404.html`, and GitHub Pages serves `404.html` for unknown paths, so the app boots and the router reads the URL. Once the service worker is installed, a navigation fallback to `index.html` handles it offline too.'],
+    ['How do you keep the first page load fast on a phone?', 'Every route is `React.lazy`, so the home page does not download the 3D renderer, the engine worker or Firebase. Firebase is loaded only on the Account page, or at startup for devices that were already signed in. The trade-off: `build.modulePreload` had to be turned off for the cubing.js worker (D-055), so lazy routes have no preload hints; in return the worker\'s import graph stays free of app code.'],
+    ['How are dark and light themes implemented?', 'Colours are CSS custom properties, and a `data-theme` attribute on the document selects the dark or light set. The default follows the operating system\'s colour scheme; a manual override is stored in the namespaced `cubebuddy:theme` key. Components never hard-code colours, so adding a theme is a token change. Canvas-based pieces (the uPlot graph) are rebuilt when `data-theme` changes because they cannot read CSS variables live.'],
+    ['Why Tailwind CSS plus CSS variables instead of a component library?', 'The layouts must adapt across phone, tablet and laptop, and utility classes make responsive variants quick to write and review. A component library would impose its own look and add JavaScript weight, while the cube-specific UI (move pad, alg player, net editor) is custom anyway. Tokens keep the theme in one place.'],
+    ['How do you know it works on phones and not just on a laptop?', 'Playwright end-to-end tests run against the production build in two projects: desktop Chromium and a Pixel 7 emulation with touch. Touch-specific bugs were found this way, for example the "ghost click" after a touch stop (D-089). The owner also tests on real devices after each phase, and the unlisted `/lab` page exists to make those on-device checks quick.'],
+    ['Why is TypeScript pinned at 6.0.3 when 7.x exists?', 'typescript-eslint\'s supported range stopped below 6.1 at scaffold time. Lint rules matter more than a faster compiler for this project, so the version was held and recorded in the decision log to revisit later (D-054). All dependencies are pinned to exact versions for reproducible builds.'],
+    ['What are the unlisted pages and why does `/lab` ship to production?', '`/lab` runs the early technical spikes live: click-to-turn, highlighting, setup scrambles and scramble workers. It is lazy-loaded so it costs nothing elsewhere, CI uses it, and it lets you test a real phone against the deployed build. `/transcript` and `/interview` are static pages outside the app. Unlisted means not linked, not private.'],
+    ['How does the "update available" prompt work, and why not auto-update?', 'The PWA plugin is set to `registerType: "prompt"`. When a new service worker is found (checked hourly and when the tab becomes visible) a toast offers a reload. Silent auto-update could swap code under someone in the middle of a solve or a drill, so the user chooses when.'],
+    ['What is "origin isolation" and why did it matter here?', 'Every project on `coder-r2.github.io` shares one browser origin, so they share localStorage and IndexedDB namespaces. CubeBuddy prefixes its localStorage keys with `cubebuddy:`, names its IndexedDB database `cubebuddy`, and scopes its service worker to `/cubebuddy/`, so it cannot overwrite or serve another project\'s data (D-030).']
+  ]
+});
+
+COMPONENTS.push({
+  id: 'cubeview',
+  name: 'CubeView (3D renderer)',
+  tagline: 'A thin React wrapper around cubing.js\'s twisty-player, plus the 2D SVG diagrams, move pad and alg player built on it.',
+  decisions: ['D-006', 'D-007', 'D-057', 'D-061', 'D-068', 'D-083', 'D-086'],
+  what: '`CubeView` wraps cubing.js\'s `<twisty-player>` web component. Pages pass a setup, an alg or move list, a stickering mask, speed and flags such as `interactive` and `locked`; the wrapper handles the PG3D renderer, tap direction and playback (`togglePlay`, `step`, `seek`). `AlgPlayer` adds the app\'s own controls (move chips, timeline, play/pause, 0.5×/1×/2×), `MovePad` gives touch input, and `CaseDiagram` draws 2D SVG case pictures for lists and printing.\n\nThe repo also carries a small patch to cubing.js (`patches/cubing+0.66.1.patch`) that fixes a repaint bug.',
+  why: 'Writing a 3D cube renderer with animation, stickering and move input would cost a day or more; cubing.js already does it and is the de-facto standard in the community. The wrapper means no page talks to twisty-player directly, so the renderer could be swapped later and its quirks are fixed in one place.\n\nBrowsers allow only about 16 live WebGL contexts per page, so grids of cases use generated SVG and a 3D cube appears only as the page\'s main cube or inside a popup.',
+  alts: ['A custom Three.js cube: full control but about a day of work plus touch-input bugs.', '3D cubes in every grid cell: hits the WebGL context limit and drains phone batteries.', 'Custom drag-to-turn input: needs ray-casting and is unreliable on phones; click/tap-to-turn plus a move pad was chosen instead.', 'Forking cubing.js: heavier than a version-pinned patch that fails loudly if it stops applying.'],
+  files: ['`src/components/CubeView/CubeView.tsx`, `webgl.ts`', '`src/components/AlgPlayer.tsx`, `MovePad.tsx`, `CaseDiagram.tsx`, `SpeedControl.tsx`', '`patches/cubing+0.66.1.patch`, `tests/play.spec.ts`'],
+  qa: [
+    ['Why use cubing.js instead of building your own 3D cube?', 'It already provides rendering, move animation, stickering masks, alg playback and press-to-move input, which would have taken a day or more to write and debug. It is MPL-2.0 licensed, used by the speedcubing community, and is credited on the About page. The custom part of CubeBuddy is where cubing.js is not enough: the solving engine.'],
+    ['What does the `CubeView` wrapper buy you?', 'A single place for renderer quirks and app policy: choosing PG3D when a cube is interactive, applying the tap-direction setting, locking input during helper animation, exposing a stable playback API and tidying up on unmount. If cubing.js changed or were replaced, only this file would change instead of every page.'],
+    ['Why are the case grids SVG while the main cube is 3D?', 'Browsers cap live WebGL contexts at about 16 per page. A grid of 57 OLL cases in 3D would fail and burn battery on a phone. Generated SVG is cheap, crisp at any size and prints well. The 3D cube appears only where it adds value: the page\'s main cube or a case popup, mounted lazily.'],
+    ['Why switch to the PG3D renderer for interactive cubes?', 'A spike at the start of the project found that cubing.js only ray-casts presses in PG3D; with the default renderer a click did nothing. After switching, Playwright verified that a click produces a move on desktop and on a phone viewport. Later every 3D view moved to PG3D for a consistent black-plastic look.'],
+    ['How does tap direction work, given phones have no right-click?', 'cubing.js decides direction from the pointer `button` on pointerup: left click is anticlockwise and right click clockwise. Most people expect a tap to turn clockwise, so a `tapDirection` setting (default clockwise) is applied by a capture-phase `pointerup` listener that redefines `button` on the event before cubing.js reads it. It is three lines, needs no fork, and avoids animating the wrong direction first.'],
+    ['Tell me about the cubing.js bug you found and patched.', 'After solving pairs, "Find next F2L pair" showed the cube in the wrong state although the highlight was correct. PG3D only stored its last position when the pattern changed, so after a move animation it kept a frame where the last move was still mid-turn; changing the stickering mask then repainted from that stale frame and re-applied the move on screen. The patch assigns the position on every call. It is applied by `patch-package` on install, pinned to version 0.66.1 and fails loudly if it no longer applies.'],
+    ['How did you prove the patch fixed it rather than just hoping?', 'A Playwright test pixel-compares the cube before and after "Find next F2L pair". About 60% of runs failed before the patch and the new test failed 6 of 6 times with the patch removed; with the patch it passed every time. Several workarounds that did not touch cubing.js (folding moves into the setup, re-applying the mask, toggling the renderer) either failed or flashed.'],
+    ['Why build your own alg player controls?', 'The owner found the stock cubing.js control panel clunky and out of style with the rest of the site. `AlgPlayer` renders the alg as tappable move chips with the next move highlighted, a timeline slider and play/pause/step buttons using the site\'s tokens. Two library quirks shaped it: `togglePlay()` also pauses after toggling, so play and pause are called directly, and the move index is ambiguous exactly on a move boundary, so the move count is derived from move start times.'],
+    ['Why does the home-page cube re-solve itself after 120 moves?', 'cubing.js reprocesses the whole move list every time one is appended, so a tab left open for hours would slow down steadily. After 120 idle moves the history is replaced by a short equivalent setup computed with `cubing/search`, which is loaded only at that point. Free-play does the same after 80 animated moves.'],
+    ['Highlighting pieces: how do you show only the pair the user should look at?', 'cubing.js stickering presets assume a white top layer, which does not match yellow-up demos, so masks are computed per piece instead. For "Find" the target pieces and centres stay normal and everything else is greyed out with the ignore mask, because the library\'s own "dim" is barely visible. Demos for last-layer algs grey out the F2L and keep the last layer normal.']
+  ]
+});
+
+COMPONENTS.push({
+  id: 'engine',
+  name: 'Cube engine (Web Worker)',
+  tagline: 'A pure-TypeScript cube model and search library that runs off the main thread behind a small Comlink API.',
+  decisions: ['D-036', 'D-069', 'D-070', 'D-072', 'D-075', 'D-055'],
+  what: '`src/engine` has no DOM dependency. The primary state is a 54-sticker array holding each sticker\'s home face (ordered U R F D L B). Moves are generated from 3D geometry, so outer turns, wide turns, slices and rotations share one definition. A piece view (`position·3 + orientation` for corners, `·2` for edges) is derived for fast searching. Tables are built by breadth-first search when the worker starts.\n\nThe worker exposes `init`, `analyse`, `nextStep`, `solveAll`, `findPieces`, `setAlgChoices`, `setupFor` and a validity check. States cross the boundary as move strings and results come back as plain JSON.',
+  why: 'Search loops visit millions of nodes, and generic cubing.js pattern objects are far too slow for stage-specific goals such as "keep the cross and the solved pairs". A purpose-built engine can be orders of magnitude faster and gives full control of each stage.\n\nRunning it in a Web Worker keeps the interface at 60 fps while searches run. Passing the state as a move string keeps messages tiny and uses the same representation as the cube view\'s history.',
+  alts: ['cubing.js KPuzzle for everything: simple but too slow for the staged searches and awkward for custom goals.', 'Kociemba two-phase for the whole solve: short solutions but not human CFOP stages, so useless for teaching.', 'Running search on the main thread: janks the UI and the timer.', 'WebAssembly: not needed; measured times were hundreds of times under budget.'],
+  files: ['`src/engine/facelets.ts`, `cubies.ts`, `notation.ts`', '`src/engine/tables.ts`, `api.ts`, `worker.ts`, `client.ts`', '`src/engine/*.test.ts` (11 test files)'],
+  qa: [
+    ['Why write your own engine when cubing.js can already solve a cube?', 'cubing.js is great for scrambles, parsing and rendering, and CubeBuddy uses it for those. But CFOP teaching needs staged goals ("solve this pair without disturbing the cross"), human-style moves and millions of cheap node expansions per second. A coordinate-based engine with precomputed tables does that far faster than generic permutation objects, and gives complete control of what each stage means.'],
+    ['Why a Web Worker, and what does Comlink do?', 'Searches and table building would block the main thread and make animations and the timer stutter. A worker runs them in parallel. Comlink wraps `postMessage` so calling the worker looks like calling an async function. The worker starts on first use and builds its tables immediately (about 0.3 s on desktop), so later calls are instant.'],
+    ['Explain the engine\'s state model.', 'The primary state is 54 stickers, each storing the face it belongs to. A move is produced geometrically: rotate the stickers of the affected layers about the move\'s axis. Because one definition covers outer, wide, slice and rotation moves, directions cannot disagree; tests pin each direction to WCA notation and check identities such as `M = x\' R L\'`. Analysis compares stickers to the face centre, so it is independent of how the cube is held. Searches use a derived piece view for speed.'],
+    ['What is a pruning table and what does the cross table contain?', 'A pruning table stores, for each simplified state, the minimum number of moves to reach the goal, found by breadth-first search from the goal. The cross table covers the positions and orientations of four edges: 12·11·10·9 placements × 2⁴ flips = 190,080 states. Solving the cross is then just following decreasing distances, which gives an optimal cross in microseconds.'],
+    ['How fast is it, and how do you stop regressions?', 'Measured times were far under the budgets in the spec. CI runs a performance test that logs table build time and the 95th-percentile timings and fails if any is above a fifth of its budget (cross 10 ms, pair 100 ms, full chain 400 ms), leaving headroom for slow phones. A property test chains the helpers on 1,000 seeded random scrambles on every push.'],
+    ['How do you know the engine is correct?', 'Layers of tests: move directions pinned to WCA notation and group identities; property tests that apply the helper chain to random scrambles and require a solved cube; exhaustive checks over every legal last-layer orientation (216) and permutation (288) and every 2x2 PBL state (576); and the alg database verification (D-076). A test also caught a wrong PBL alg that had been written from memory.'],
+    ['Why pass states as move strings instead of the state object?', 'A move string from solved is tiny to send across the worker boundary, easy to log and replay, and is exactly what the cube view and the free-play history already hold. The worker rebuilds the state by applying the moves, which costs microseconds. Results are plain JSON so structured cloning stays cheap.'],
+    ['What goes wrong with the worker in a Vite production build?', 'cubing.js starts its search worker from a runtime URL, so Vite bundled the worker entry as a normal chunk and wrapped its dynamic import in a preload helper that lived in the app entry chunk. The worker then imported the whole app and crashed with `document is not defined`. Fix: `modulePreload: false`, one global stylesheet, and the preload helper split into its own chunk, so the worker\'s import graph excludes app code (D-055).'],
+    ['Why does validation run on the main thread but solving in the worker?', 'Validation (`checkState`) is a handful of counts and parity checks, effectively instant, and the UI wants immediate feedback while the user edits stickers. Solving needs tables and searches, so it belongs in the worker. Keeping them separate also means the net editor works even before the worker has built its tables.'],
+    ['How would you extend the engine to another puzzle, say 4x4?', 'The sticker-plus-geometry design generalises (more layers, more stickers), but the search side would not: a 4x4 needs reduction method stages, parity handling and much larger tables. The 2x2 support is a useful precedent: it reuses the geometry, adds its own tables (the 4⁸ first-face table, ⟨R,U,F⟩ optimal solver) and keeps the same `nextStep` API shape.']
+  ]
+});
+
+COMPONENTS.push({
+  id: 'solvers',
+  name: 'Stage solvers & helpers',
+  tagline: 'Deterministic CFOP, Ortega and beginner-method solvers that explain the next step instead of just solving the cube.',
+  decisions: ['D-001', 'D-012', 'D-070', 'D-071', 'D-084', 'D-095', 'D-096'],
+  what: 'Given a cube state, the solvers work out which stage the cube is in and return the next step: a case name, the moves, the alg and which pieces to highlight. CFOP: an optimal cross from the pruning table; F2L pairs by an exact search over human "slot triggers"; OLL and PLL by trying the user\'s algs against every pre-AUF. 2x2: an optimal first face, then Ortega OLL and PBL. Beginner: layer-by-layer with seven stages and only beginner algs. A colour-mode setting lets the engine choose among white, yellow or any cross colour.\n\nNo machine learning is used anywhere: everything is deterministic search and table lookup.',
+  why: 'CubeBuddy is a teacher, so the solver must produce solutions a person would actually perform, in stages they can learn. Each CFOP stage is a small search space (an optimal cross is at most 8 moves), so exact search finishes in milliseconds; ML would be slower, less reliable and could not explain itself.\n\nThe helpers always work from the cube as it is now, with no remembered plan, so the user can turn the cube any way at any time and the next hint still makes sense.',
+  alts: ['Machine learning (rejected, D-001): unexplainable, needs training data and is slower than exact search.', 'One optimal or two-phase solver: shortest moves but not CFOP stages, so it cannot teach.', 'IDA* for F2L with all face turns: found "extremely non-standard" solutions that broke the cross, so it was replaced by trigger-based search.', 'Hand-written recognition tables for OLL/PLL: duplicate data and break when the user picks a custom alg.'],
+  files: ['`src/engine/solvers.ts`, `f2lSearch.ts`, `f2lCases.ts`, `colour.ts`', '`src/engine/twoByTwo.ts`, `lbl.ts`, `analyse.ts`, `setup.ts`', '`src/engine/algSource.ts`, `cases.ts`'],
+  qa: [
+    ['Why is there no AI or machine learning in a project like this?', 'Because the problem does not need it and it would make the product worse. Each CFOP stage has a small, exactly searchable space, so a deterministic solver is fast, always correct and can say why it picked a move. A model would need training, would sometimes be wrong, and could not produce the named cases and highlights the tutorials show. It was also an explicit constraint of the project (D-001).'],
+    ['How is the cross solved?', 'With an exact breadth-first table over the four cross edges (190,080 states). To solve, look up the current state\'s distance and repeatedly pick a move that reduces it by one. That is an optimal cross by construction and takes microseconds (0.04 ms measured on desktop at first build).'],
+    ['How does the F2L solver work now?', 'It does not use arbitrary face turns. A pair is solved with U turns plus "slot triggers" `X U^k X\'` where X is a side turn that lifts a slot into the top layer, only on unsolved slots. A trigger leaves the cross and the other slots untouched, so only the target corner and edge are tracked (576 states) and an exact cost-weighted search (U costs 1, a trigger costs 3) finds the best solution. The cheapest pair goes first. Over 300 scrambles it averages 6.5 moves per pair and about 57 moves for a whole CFOP solve with full last layer.'],
+    ['Why did you replace the first F2L solver?', 'The first version was an IDA* search over all face turns using the cross and pair tables. It found short solutions, but the owner pointed out it used "extremely non-standard algorithms such as breaking the cross and fixing it … or block building". A teaching tool must show moves a cuber would use, so the search space was restricted to human moves. This is a good example of a requirement discovered from feedback, not from the spec.'],
+    ['How are OLL and PLL cases recognised?', 'By brute force over the alg list. For each alg in the active set, try every pre-AUF (and the finishing AUF where needed) and keep the shortest that reaches the goal with F2L intact; the matching entry names the case. It is at most a few thousand tiny simulations (under 1 ms), always consistent with the user\'s chosen alg, and it doubles as validation that an alg really works.'],
+    ['What is IDA* and where is it used?', 'Iterative-deepening A*: depth-first search with a limit on cost = moves so far + a lower-bound heuristic, repeated with a growing limit. It keeps memory tiny while remaining optimal if the heuristic never overestimates. Here it generates CLL algs (optimal ⟨R,U,F⟩ with orientation and permutation tables) and the 2x2 optimal solve used to copy a real cube.'],
+    ['How does colour-neutral mode choose a cross colour?', 'The UI sends the allowed colours (white; white or yellow; any) with every call. The engine picks the colour whose solve is furthest along, counting cross, pairs and then last-layer progress, so a finished cross keeps its colour for the rest of the solve. If no colour has progress, it picks the shortest optimal cross, and ties go to white, yellow, green, blue, red, orange. Because it is stateless, the same cube always gets the same answer.'],
+    ['How does the 2x2 / Ortega solver differ from the 3x3 one?', 'There are no centres, so any face can be the first face: an exact table over the four face-colour sticker positions (4⁸ patterns) is tried for all six bottoms. Then Ortega OLL (7 cases) and PBL use the same brute-force alg matching. The PBL set was cut to five cases because the removed ones are the same cases held upside down, which the solver handles by optionally starting a step with `x2`.'],
+    ['Describe the beginner layer-by-layer solver.', 'Seven stages: cross, first layer, middle layer, top cross, top edges, place corners, twist corners. Each step uses only beginner algs (for example `R U R\' U\'` repeated for corners, `F R U R\' U\' F\'` for the top cross) and holds the target slot at the front with `y` rotations, as beginner guides do. Slots are tracked by their two side-centre colours so rotations do not lose them. Across 300 scrambles it averages about 148 moves, max 200.'],
+    ['What does a "step" returned by the engine contain, and why that shape?', 'A case name when it matches a known case ("F2L 12", "OLL 27 Sune"), the moves, the alg, the colours of the pair or the pieces to highlight, and the colour used. One `nextStep` serves both the "Show me" hint (name and alg) and the "Solve" button (moves), so the UI has one code path instead of one per stage.']
+  ]
+});
+COMPONENTS.push({
+  id: 'timer',
+  name: 'Timer',
+  tagline: 'A cstimer-class speedcubing timer: inspection, penalties, WCA averages, sessions, graph and cstimer import/export.',
+  decisions: ['D-009', 'D-018', 'D-022', 'D-043', 'D-062', 'D-063', 'D-064', 'D-066', 'D-082', 'D-089'],
+  what: 'The timer page combines a full-screen clock driven by a pure state machine (`machine.ts`), random-state scrambles from cubing.js, WCA inspection with +2/DNF rules and optional spoken "8 seconds / 12 seconds" call-outs, named sessions per puzzle, a virtualised solve history with per-solve details, rolling statistics (best, mean, worst, Ao5, Ao12, Ao50, Ao100) and a uPlot progress graph. Solves can also be typed in, and sessions can be imported from and exported to cstimer\'s file format.',
+  why: 'The goal was to replace cstimer for the owner, so behaviour copies cstimer\'s muscle memory: tap to start inspection, hold until green to start the solve, any key or tap stops, and the clock covers the whole screen while timing.\n\nThe timing logic is a pure reducer fed with timestamped events, which makes it testable without a browser and keeps it independent of how often the screen repaints.',
+  alts: ['Component-local state with `setTimeout` timing: hard to test and drifts with frame rate.', 'Storing precomputed averages in the database: goes stale when a solve is edited; recomputing from solves is simple and fast enough.', 'An SVG chart library: slows down with thousands of points; uPlot is canvas-based and about 50 KB.', 'Auto-import from cstimer: impossible, its data lives in another origin\'s storage with no API.'],
+  files: ['`src/features/timer/machine.ts`, `useTimer.ts`, `LiveTime.tsx`', '`src/features/timer/stats.ts`, `time.ts`, `scrambles.ts`, `cstimer.ts`', '`src/features/timer/TimeGraph.tsx`, `HistoryList.tsx`, `src/stores/timer.ts`'],
+  qa: [
+    ['Why model the timer as a pure state machine?', 'A reducer `(state, event) → state` with events `press`, `release`, `tick` and `cancel`, each carrying a timestamp, can be unit-tested with fake times and no DOM. The phases are idle, holding, ready, armed, inspecting, inspect-holding, inspect-ready, running and stopped. Releasing before the hold time returns to the previous phase and flags a false start. The React hook just feeds it key and pointer events.'],
+    ['What are the inspection rules you implemented?', 'WCA inspection is 15 seconds. Starting the solve after 15 s but within 17 s is a +2 penalty; after 17 s it is a DNF. The constants are `INSPECTION_MS = 15000` and `INSPECTION_DNF_MS = 17000`, and the penalty earned in inspection is applied to the resulting solve. Optional speech call-outs at 8 and 12 seconds use speech synthesis with a beep fallback.'],
+    ['How are averages computed?', 'WCA style trimmed means. Ao5 and Ao12 drop the best and worst; Ao50 and Ao100 drop 5% from each end, rounded up. A DNF counts as the worst result, and if there are more DNFs than trimmed slots the average is DNF. A +2 adds two seconds to that solve. All of it is recomputed in memory from the session\'s solves whenever they change, which is well under a frame for a few thousand solves.'],
+    ['How do you keep the timer accurate if the screen repaints slowly?', 'The elapsed time comes from the timestamps on press and release events, not from counting frames, so a slow repaint can only make the displayed number lag, not change the result. The big clock runs its own animation-frame loop so the rest of the page is not re-rendered 60 times a second, and a loop only runs while a hold or inspection needs it.'],
+    ['Why does the clock cover the whole screen while timing?', 'On a phone, a finger lifting after the stop tap could land on a button underneath. The full-screen overlay makes any tap a stop and nothing else. A related bug still appeared: lifting the finger removed the overlay and the phone\'s synthetic click hit the logo. The fix swallows the next click within 500 ms of a touch stop (D-089).'],
+    ['What was the stuck-timer bug (D-082)?', 'The timed trainer drill stopped a solve, drew the next case and disabled the timer while the scramble loaded. Disabling removed the key-up listener before the stopping key was released, so the machine stayed in "stopped". Fix: key releases are always handled; only presses respect `disabled`. The bug was found by an end-to-end test, not by hand.'],
+    ['How do scrambles work?', 'cubing.js produces random-state WCA scrambles (`randomScrambleForEvent` for 3x3 and 2x2) in its own worker. One scramble per puzzle is generated ahead of time, so "next scramble" is instant after a solve. Random-state means every cube state is equally likely, as in WCA competitions, rather than a random move sequence.'],
+    ['How does the cstimer import and export work?', 'cstimer exports JSON with `session1…N` arrays of `[[penalty, ms, …splits], scramble, comment, timestamp]` and a `properties.sessionData` string. Each session maps to a CubeBuddy session by name and puzzle, so re-importing adds only new solves (de-duplicated by time, scramble and timestamp). Events CubeBuddy does not support are skipped and listed in the summary. A synthetic fixture covers the edge cases, and the owner\'s real export stays out of git.'],
+    ['How does it stay fast with thousands of solves?', 'Three things: the history list is virtualised with TanStack Virtual so only visible rows exist in the DOM; the graph is a canvas uPlot chart; and solves are loaded through a `[sessionId+createdAt]` Dexie index. If someone imported a huge history, the next step would be incremental rolling windows instead of full recomputation (noted, not needed yet).'],
+    ['Why dedicated chart colours?', 'The two average lines must be distinguishable for colour-blind users in both themes. The chosen pairs were run through a validator for lightness, chroma, protan/deutan/tritan separation and contrast against the card; the first dark-mode choice failed and was replaced. The history list doubles as the table view, and singles are neutral grey with DNFs as gaps.']
+  ]
+});
+
+COMPONENTS.push({
+  id: 'play',
+  name: 'Free-play',
+  tagline: 'A virtual cube you can turn by tap, move pad or keyboard, with undo, a clean move history and next-step helpers.',
+  decisions: ['D-010', 'D-011', 'D-031', 'D-032', 'D-033', 'D-058', 'D-068', 'D-073'],
+  what: 'Free-play lets users scramble a 3x3 or 2x2 and turn it with a click or tap on a face, an on-screen move pad (face turns, slices, rotations, prime and double) or a keyboard layout copied from cstimer. The history shows merged moves (`R R` becomes `R2`) while a raw log underneath keeps undo exact. Helper buttons ("Find next F2L pair", "Solve OLL", and so on) call the engine, highlight the right pieces or animate the moves, and add them to the history in a distinct colour.',
+  why: 'Click/tap-to-turn comes free with cubing.js, while true drag-to-turn needs custom ray-casting (about a day) and is unreliable on phones, so a move pad covers touch. Experienced cubers have keyboard muscle memory from cstimer, so its layout is the default and remappable.\n\nEverything is a move in one log: user moves and helper moves share the same history and undo, so there is one model of state.',
+  alts: ['Drag-to-turn input: costly and unreliable on touch screens.', 'Scroll-wheel undo: touchpads emit many events per gesture and touch devices have none.', 'A merged-only history: simpler, but undo would jump two moves at once.', 'Key codes by character (`event.key`): breaks on non-QWERTY layouts; physical `event.code` keeps muscle memory.'],
+  files: ['`src/features/play/PlayPage.tsx`, `useFreePlay.ts`, `HistoryPanel.tsx`', '`src/lib/useCubeKeys.ts`, `keymap.ts`, `useHelperEngine.ts`, `randomMove.ts`', '`src/components/MovePad.tsx`, `tests/play.spec.ts`'],
+  qa: [
+    ['Why not drag the cube faces with your finger?', 'It looks natural but needs custom ray-casting against the cube, gesture disambiguation against camera orbiting, and is unreliable on small screens. cubing.js already supports click/tap-to-turn, and a move pad is faster and more precise on phones. Dragging empty space orbits the camera. Drag-to-turn was recorded as out of scope (D-024).'],
+    ['How does the keyboard mapping work?', 'The default table is copied from cstimer\'s virtual-cube source: `I`/`K` = R/R\', `J`/`F` = U/U\', `H`/`G` = F/F\', and so on, plus slices, wide moves and rotations. It is keyed by physical key (`KeyboardEvent.code`), so the layout is the same on non-QWERTY keyboards. The settings editor stores only differences from the default, and an empty string unbinds a default key.'],
+    ['How do undo and the merged history coexist?', 'The visible history merges moves (`R R` → `R2`, `R R\'` cancels) so it reads cleanly. Underneath is a raw move log, and undo/redo always reverts exactly one physical move: undoing the second `R` of `R R` turns the display back from `R2` to `R`. Merging never crosses the boundary between user moves and helper moves.'],
+    ['What happens when the user presses "Solve next pair"?', 'The page sends the current move string and options to the engine worker, gets a step back, and queues its moves one at a time on the cube at the user\'s animation speed. Input is locked while it plays, Esc stops queuing, the moves are appended to the history in a helper colour, and they can be undone like any other move.'],
+    ['How is playback paced and kept in sync with the engine?', 'Each queued move waits for cubing.js\'s own duration (1 s per quarter turn, 1.5 s per half turn at tempo 1) divided by the speed setting. A browser probe confirmed the cube stayed in sync through 90 moves, compaction, undo/redo and a full helper solve. After 80 animated moves the cube is snapped to the same state with an empty move list once idle, because cubing.js reprocesses the whole list.'],
+    ['Why did you drop scroll-wheel undo?', 'Touchpads emit many wheel events for one swipe, so one gesture could undo dozens of moves. Touch devices have no wheel at all, and scrolling conflicts with zoom and page scroll. Undo and redo buttons plus `Ctrl+Z` / `Ctrl+Y` / `Backspace` are predictable (D-011).'],
+    ['How are cross colour modes surfaced here?', 'The options panel offers White, White or yellow, and Any colour. The choice is sent with every engine call, and the status text names the colour the engine used ("Solve the yellow cross"). The engine decides statelessly from the cube, so the helper never flips colour partway through a solve once a cross exists.'],
+    ['How much code is shared with the tutorials?', 'A lot: the move log (`useFreePlay`), keyboard handling (`useCubeKeys`) and the engine hook that sends alg choices to the worker (`useHelperEngine`) are shared with the tutorial pages. That is why a tutorial\'s Play/Step controls, undo and keyboard behave exactly like free-play.'],
+    ['What bug did testing the helpers uncover?', 'Switching `interactive` swapped renderers mid-playback, and helper buttons flickered as an alg passed through other stages. The fix keeps the PG3D renderer, uses a separate `locked` flag that turns presses off, and shows "Playing: …" instead of reacting to intermediate states.'],
+    ['Why is the default animation speed 2 and not 1?', 'At tempo 1 the animation felt sluggish in testing. Choices are Slow 1, Normal 2, Fast 3 and Very fast 5, and onboarding presets map to these (D-073, D-094). A setting also controls whether tapping turns clockwise or anticlockwise.']
+  ]
+});
+
+COMPONENTS.push({
+  id: 'trainer',
+  name: 'Alg database & trainer',
+  tagline: 'About 1,100 verified algorithms with diagrams, timed and recognition drills, spaced-repetition ordering and print sheets.',
+  decisions: ['D-016', 'D-027', 'D-028', 'D-056', 'D-076', 'D-077', 'D-079', 'D-080', 'D-087', 'D-088'],
+  what: 'The data layer (`src/data/algs`) defines sets: OLL (57), PLL (21), 2-look OLL/PLL, F2L Basic (41), F2L Advanced (159: the 41 cases in the other three slots plus 36 stuck-piece cases), Ortega OLL and PBL, and CLL (42). Each case has a main alg and up to two alternatives, and the user can pick one or type a custom alg that is verified by simulation. The trainer offers a timed drill with generated setup scrambles, a recognition drill, per-case progress (Not started / Learning / Learned) and print-friendly sheets.',
+  why: 'Correctness of algs is the product\'s core value, so every alg is machine-verified and the same case definition drives verification, recognition, diagrams, demos and setup scrambles. Algs that were hard to write from memory (CLL, advanced F2L) are generated by the engine and marked as such.\n\nPrint sheets reflect the user\'s own chosen algs, so they are produced from CSS print styles rather than pre-made PDFs.',
+  alts: ['Hand-writing every alg: error-prone; a wrong PBL alg was caught this way.', 'Using the inverse alg as the setup scramble: reveals the answer (Sune\'s optimal setup is exactly its inverse).', 'A PDF library or pre-generated PDFs: extra dependency and ignores the user\'s alg choices.', 'Automatic mastery grading: needs per-case timing UI nobody asked for; progress is user-set with three states.'],
+  files: ['`src/data/algs/*.ts`, `src/engine/cases.ts`, `algSource.ts`', '`src/features/trainer/TimedDrill.tsx`, `RecognitionDrill.tsx`, `srs.ts`, `setup.ts`, `PrintView.tsx`', '`src/components/CaseDiagram.tsx`, `src/stores/trainer.ts`'],
+  qa: [
+    ['What is in the algorithm database?', 'OLL 57 cases, PLL 21, F2L Basic 41, F2L Advanced 159, CLL 42, Ortega OLL and a five-case PBL set, plus 2-look OLL and PLL sets. A case has an id, a main alg, up to two alternatives, a set-level goal (`f2l-pair`, `eo`, `oll`, `cpll`, `pll`, `ortega-oll`, `pbl`, `cll`) and a stickering rule for demos.'],
+    ['How do you know every alg is correct?', 'CI verifies each case: the main alg sets up a genuine case (preconditions hold, goal not yet met); every alg reaches the goal after some pre-AUF; every case is recognised as itself; no alg in a set solves a different case with the same goal; set sizes match the spec. About 1,100 alg checks pass, and the checks are orientation-independent so algs may contain rotations and slices.'],
+    ['Why are some algs generated by the engine?', 'Writing 42 CLL and 159 advanced F2L algs from memory is error-prone. CLL cases are enumerated from every top-layer state with the bottom layer solved and solved optimally with ⟨R,U,F⟩. Advanced F2L takes the familiar front-right alg relabelled for each slot plus the shortest human-move alternative. An enumeration also proved F2L Basic has exactly 41 cases. Generated cases are flagged and the popup says so.'],
+    ['How do you make setup scrambles that do not reveal the answer?', 'For short cases the optimal setup is the inverse alg (Sune\'s setup came back as its own inverse). So first randomise everything the case ignores (for example a random PLL and AUF for OLL cases), solve that state with cubing.js, invert the solution, and reject any result equal to an inverted alg of the case, including the user\'s custom alg. Tests prove the scramble produces the intended case.'],
+    ['How are custom algs handled?', 'The user types an alg, it is parsed by the notation parser and verified by simulation: it must solve the case and keep the solved parts intact. Only then is it saved as the choice, and the choice is used everywhere: trainer, tutorials, helpers and print sheets. The engine\'s brute-force recognition means no tables need rebuilding when a choice changes.'],
+    ['Explain the spaced-repetition ordering.', 'Each case has a Leitner box from 0 (struggling) to 4 (solid), its last five times and a recognition-miss count. Cases are drawn at random with weight from the box (8, 5, 3, 2, 1), scaled by how slow the recent mean is relative to the set average (clamped between 0.5× and 2×), plus 0.5 per recent miss up to five. A good attempt moves a case up a box and a poor one down; it avoids an immediate repeat when it can.'],
+    ['How does the recognition drill work?', 'It shows a case diagram and asks the user to pick the case name or alg from choices drawn from the whole set. Last-layer diagrams are rotated by a random AUF but F2L diagrams are not, since F2L cases are anchored to the slot. Misses feed the spaced-repetition weights.'],
+    ['How do printables work without a PDF library?', 'The print view uses `@media print` CSS with SVG case diagrams, forced light colours and the app chrome hidden. Users choose "Save as PDF" in the browser. A Playwright test renders full OLL to PDF and requires at most three pages on both A4 and Letter. SVG gives vector-quality output and always reflects the user\'s own algs.'],
+    ['Why are the diagrams SVG and how are PLL arrows drawn?', 'To avoid the WebGL context limit and to print well. PLL arrows go from each piece to its home, computed for the final AUF that leaves the fewest pieces to move; before that fix, algs that leave the layer offset (Z, J and R perms) showed every piece moving.'],
+    ['Where do the algorithms come from, and how is that credited?', 'OLL and PLL numbering matches J Perm\'s sheets; all 57 main OLL algs and 17 of 21 main PLL algs were cross-checked as identical to J Perm\'s. Other sets come from common tutorials, F2L numbering is CubeBuddy\'s own, and CLL, F2L Advanced and two F2L Basic cases are generated. The About page states this and credits csTimer\'s format, the WCA inspection rule and the open-source libraries.']
+  ]
+});
+
+COMPONENTS.push({
+  id: 'tutorial',
+  name: 'Tutorials',
+  tagline: 'Guided CFOP (3x3), Ortega (2x2) and beginner layer-by-layer lessons that adapt to whatever the user does to the cube.',
+  decisions: ['D-025', 'D-034', 'D-035', 'D-085', 'D-090', 'D-091', 'D-096'],
+  what: 'One `TutorialPage` serves all three methods; only the stage list differs. The user starts from a random or typed scramble (or copies a real cube with the camera). Each stage has a short written guide, and the stepper shows the next step from the engine: case name, highlighted pieces, the alg and Play/Step controls. The user can turn the cube at any time and the tutorial re-analyses it, even going backwards if solved parts are broken. A full-solution panel is collapsed by default.',
+  why: 'The hybrid flow (free interaction plus predictable controls) needs the engine to work from the cube as it is, with no remembered script. "Plans" keep the displayed step stable while the user follows it, so an OLL alg that briefly breaks F2L does not make the stepper flicker.\n\nStatic stage guides were chosen over dynamically generated sentences, which would have needed many templates for little gain.',
+  alts: ['A fixed step-by-step script per scramble: breaks as soon as the user turns the cube themselves.', 'Generated natural-language explanations: about a day of templates, little value.', 'Separate pages per method: three copies of the same stepper logic.', 'Showing the whole solution up front: spoils learning, so it is collapsed.'],
+  files: ['`src/features/tutorial/TutorialPage.tsx`, `StageStepper.tsx`, `SolutionPanel.tsx`, `stages.ts`', '`src/features/tutorial/CfopTutorialPage.tsx`, `OrtegaTutorialPage.tsx`, `BeginnerTutorialPage.tsx`', '`tests/tutorial.spec.ts`'],
+  qa: [
+    ['What is a "plan" in the tutorial and why does it exist?', 'After every change the engine analyses the cube and returns the next step; that step\'s moves are the plan. While the move list equals the plan\'s start plus a prefix of its moves (whether via Play, Step or the user typing the same moves), the plan and its stage stay put. Any other move drops the plan and a new one is computed. This prevents the stepper from flickering through stages when an alg temporarily breaks earlier work.'],
+    ['What stages does each tutorial have?', 'CFOP: cross, four F2L pairs, OLL, PLL (last-layer steps can be 2-look, for example "look 1 of 2", depending on the level). Ortega (2x2): first face, OLL, PBL. Beginner: cross, first layer, middle layer, top cross, top edges, place corners, twist corners. The stage list is the only thing that differs between pages; the stepper, free-play log and keyboard handling are shared.'],
+    ['How does a step name what you are looking at?', 'F2L pairs are named from the F2L Basic set by the target corner and edge position under any pre-AUF ("F2L 12"); a pair outside the 41 cases becomes "Stuck pieces (take them out first)". Last-layer steps carry the case id for a popup with diagram and alg. Pair steps also carry the edge colours, so the tutorial says "the green–red pair", which stays correct after rotations, unlike a slot name.'],
+    ['Why static guides instead of generated explanations?', 'Generating a sentence for every situation needs many templates (about an extra day) and still sounds robotic. A short written guide per stage plus case names, highlights, the alg and steppable moves gave the same learning value (D-035). Fewer moving parts also means fewer wrong explanations.'],
+    ['Why is the full solution collapsed?', '`solveAll` runs on the scramble to produce the whole solution, but showing it by default would give everything away. It is collapsed, and once the user has moved the cube a "Solve from here" option re-solves from the current state.'],
+    ['Why was PBL reduced to five cases?', 'The owner pointed out that "adjacent top, adjacent bottom" is redundant because you can flip the cube. Diagonal-top/adjacent-bottom and the two bottom-only cases are the same cases held upside down. A test checks that no PBL case equals another with the layers swapped (it flags all three removed ones). The engine can still solve all 576 PBL states, using `x2` when nothing shorter works.'],
+    ['Why was the beginner tutorial built last?', 'It was deferred in D-034 because the core phases mattered more, then built on the same stepper and engine API, so it cost much less than starting from scratch. It averages about 148 moves, which is realistic for a beginner solve, and replaced an external link for first-time solvers.'],
+    ['How does a real cube get into a tutorial?', 'Through the scan component: the user scans with the camera or enters stickers by hand, the state is validated, and the engine produces a setup move sequence that makes exactly that cube from the standard orientation. The tutorial then starts from that move sequence like any other scramble, so it needs no special case.'],
+    ['How are tutorials tested?', 'Playwright specs drive the tutorial pages end to end, and the engine behind them is covered by 1,000-scramble property tests that chain every helper and require a solved cube. Tests also check that pair solutions only use U and side turns, and that no B turns appear in front-right style.'],
+    ['How do cross-colour modes show up in the lessons?', 'The tutorial titles, guides and status text name the colour the engine picked ("Solve the yellow cross"). OLL and PLL diagrams stay in the standard yellow-top colours. Because the engine fixes the colour for the starting cube in `solveAll` and re-evaluates from progress in `nextStep`, a finished cross keeps its colour all the way through.']
+  ]
+});
+COMPONENTS.push({
+  id: 'scan',
+  name: 'Camera scan & net editor',
+  tagline: 'Copy a real 3x3 or 2x2 into the app with the camera or by hand, check it is a legal cube, and turn it into setup moves.',
+  decisions: ['D-019', 'D-097', 'D-098'],
+  what: 'The tutorial start screens offer "Scan with camera" and "Enter by hand"; both end in a net editor where the user taps a sticker and a colour. The camera path uses `getUserMedia` (rear camera preferred), a square centre-cropped view with a 3×3 (or 2×2) guide, and averages the middle 45% of each guide cell. Faces are scanned in six holds so samples arrive in reading order. A Lab-space classifier assigns colours and marks doubtful stickers with a dot; `validate.ts` explains the first problem in words; the worker converts the entered cube into a move sequence.',
+  why: 'Reading colours from a camera is the least reliable feature in the app (red versus orange, white versus yellow under coloured light), so it is isolated, calibrated from the cube itself and always followed by an editor where mistakes take seconds to fix.\n\nTurning the state into setup moves keeps the tutorial engine simple: it only ever starts from a move sequence.',
+  alts: ['RGB nearest-colour matching: lighting shifts break it; Lab distance behaves closer to human perception.', 'Fixed colour thresholds: fail under different lamps; centre-calibrated references adapt.', 'Machine-learning colour recognition: excluded by D-001 and unnecessary here.', 'Uploading frames to a server: needless privacy risk and cost; all processing is in the browser.'],
+  files: ['`src/features/scan/CameraScanner.tsx`, `NetEditor.tsx`, `ScanDialog.tsx`, `classify.ts`', '`src/engine/validate.ts`, `src/engine/setup.ts`', '`tests/scan.spec.ts`, `src/features/scan/classify.test.ts`'],
+  qa: [
+    ['Walk me through the scan pipeline end to end.', 'Camera permission via `getUserMedia`; a centre-cropped square preview with a guide; capture averages the middle 45% of each cell to avoid edges and glare; six holds produce 54 colour samples in facelet order; the classifier assigns colours; the net editor shows the result with doubt dots; validation checks the cube is real; the engine solves it with CFOP, rewrites that as face turns only and inverts it to get setup moves. Any failure (permission blocked, no camera) falls back to the editor.'],
+    ['Why use the Lab colour space instead of RGB?', 'Lab is designed so that distance roughly matches perceived colour difference, and it separates lightness from colour. Distance is computed in CIE Lab with lightness weighted ×0.5, because lighting changes mostly shift lightness while the hue difference is what separates, say, red from orange.'],
+    ['How does the classifier avoid assigning ten stickers to one colour?', 'Each colour is capped at nine stickers (four on a 2x2) and stickers are assigned closest-first. Each face centre gives that colour\'s reference on a 3x3, so the references adapt to the room\'s lighting. Stickers that were near-ties or did not get their nearest colour are marked with a dot ("check this one") so the user knows where to look.'],
+    ['What are the hardest colour confusions and how do you handle them?', 'Red/orange and white/yellow, especially under warm or cold light. Centre calibration and the capacity cap handle most cases; the doubt dots and the editor handle the rest. In the owner\'s ten real scans no corrections were needed.'],
+    ['What does `validate.ts` check?', 'All stickers set; centres at home; nine of each colour; every corner and edge is a real piece (including rejecting mirror-image corners using the clockwise colour order) with no duplicates; corner twists sum to 0 mod 3; edge flips sum to 0 mod 2; and corner and edge permutation parities match. The first failure is explained in words and the stickers involved are outlined.'],
+    ['Why must the corner and edge permutation parities be equal?', 'Every legal move is a quarter turn that performs a 4-cycle of corners and a 4-cycle of edges; each 4-cycle is an odd permutation, so each move flips both parities at once. Starting from solved (both even), they always stay equal. A state with one swapped pair of edges alone is therefore unreachable, and the editor reports it.'],
+    ['How do you turn the entered cube into setup moves?', 'The worker solves the entered state with CFOP, rewrites the solution using outer face turns only (wide turns, slices and rotations are decomposed by search into face turns plus a rotation, and the rotation is conjugated away), then inverts it. The inverse makes exactly the entered cube from the standard orientation, so the tutorial can start from a plain move sequence.'],
+    ['Why must the setup be face turns only?', 'Rotations and slices would change where the centres end up, but the app treats white on top and green in front as the reference frame. Restricting to face turns keeps the centres fixed, so the same move string reproduces the entered cube on the tutorial\'s cube without a hidden reorientation.'],
+    ['How is the 2x2 different?', 'A 2x2 has no centres, so there is nothing to calibrate against or to name faces by. It can be held any way up: faces are named by position (front, right, back, left, top, bottom) with a 2×2 guide on corner facelets 0, 2, 6 and 8. References start at typical camera colours and are refined for up to eight rounds (capacity-limited assignment, then each reference moves to the mean of its stickers). Validation checks only corners (four per colour, twist sum 0 mod 3), because any corner permutation is reachable. The setup puts the yellow-orange-blue corner at DBL, solves optimally with ⟨R,U,F⟩ and appends the rotation back to the user\'s hold.'],
+    ['What about privacy and permissions?', 'Video frames are sampled in the browser and never sent anywhere; only the resulting colour grid is used. The camera is requested only when the user taps "Scan with camera", and the manual editor works without any permission. The page needs HTTPS (GitHub Pages provides it) because browsers only allow `getUserMedia` on secure origins.']
+  ]
+});
+
+COMPONENTS.push({
+  id: 'learn',
+  name: 'Onboarding, notation & settings',
+  tagline: 'A short quiz that picks a starting level, an interactive notation course, and the Settings and backup pages.',
+  decisions: ['D-014', 'D-020', 'D-021', 'D-031', 'D-094'],
+  what: 'A 3–4 question quiz assigns one of four internal levels (never solved; beginner method; learning CFOP; full CFOP). Each level is a preset bundle: animation speed, 2-look or full last-layer helpers, F2L style, inspection and visible stats. The notation course shows a card for every move type with an isometric diagram; tapping a card plays that move on one shared 3D cube, and a mini-quiz asks the user to perform moves. Settings reuses the free-play and timer option panels, a keymap editor, theme and a JSON backup panel.',
+  why: 'The app serves people from "never solved a cube" to experienced cubers, so sensible defaults matter. Internal levels keep preset logic simple and testable, while every individual setting stays editable.\n\nThe notation course uses one shared cube and generated diagrams to avoid the WebGL limit and heavy image or GIF assets.',
+  alts: ['Self-selected level only: users often misjudge themselves; a quiz is more reliable.', 'Per-move animated GIFs: heavy, not themeable, not interactive.', 'One 3D cube per notation card: hits the WebGL context cap.', 'Comparing the quiz answer as a move string: rejects valid alternatives such as `R2` versus `R R`.'],
+  files: ['`src/features/learn/OnboardingQuiz.tsx`, `quiz.ts`, `NotationCourse.tsx`, `MoveDiagram.tsx`, `notation.ts`', '`src/features/settings/SettingsPage.tsx`, `KeymapEditor.tsx`, `BackupPanel.tsx`', '`src/lib/backup.ts`, `tests/onboarding.spec.ts`'],
+  qa: [
+    ['How does the quiz decide a level?', 'The level is the maximum of the method level and the smaller of the time level and the method level plus one: `max(method, min(time, method + 1))`. "Can\'t solve yet" skips the time question. This stops someone who claims a fast time but cannot explain a method from landing in an advanced preset, while still rewarding genuine progress.'],
+    ['What does a level change?', 'A preset bundle: animation speed (Slow, Normal, Fast, Very fast for levels 1–4), 2-look or full last-layer helpers, the F2L style, inspection and which stats are visible. Everything remains individually changeable in Settings, and the quiz can be retaken from there.'],
+    ['Why internal levels rather than letting users pick?', 'The owner chose a quiz over self-selection. Four internal levels keep the preset logic a small lookup table that is easy to unit-test, and the user never has to understand the levels, only their effects.'],
+    ['How are the notation diagrams made without image files?', 'Each card draws an isometric SVG of the move: the turning layers are coloured and arrows are drawn on the two visible faces along the axis. Being generated, they follow the theme tokens, scale cleanly and add no assets to download or cache.'],
+    ['Why does the mini-quiz compare cube states?', 'It compares the facelet states (`sameState`) after the user\'s moves, so any move sequence that produces the same cube counts as correct (`R2` or `R R`, or equivalent rotations). Comparing strings would mark a correct answer wrong.'],
+    ['How does the keymap editor work?', 'The defaults are cstimer\'s virtual-cube table keyed by physical key. The editor stores only the differences from the default; an empty string unbinds a default key. Because only differences sync, a future change to the defaults still reaches users who have not customised that key.'],
+    ['How does the backup and restore work?', 'A JSON file with a `schemaVersion` (currently 1) contains settings, sessions, solves and alg data. Importing merges by `updatedAt`, so restoring an older backup never overwrites newer records, and it resets the sync push watermark so old imported records are uploaded to the account. It also gives people a way out that works with no account.'],
+    ['How does onboarding treat complete beginners?', 'Level 1 users see the notation course, free-play and the beginner layer-by-layer tutorial. Learn\'s "Never solved a cube?" callout and the quiz suggestion point to the beginner tutorial; once finished it links on to the CFOP tutorial. The old external tutorial link is now just a credit on the About page.'],
+    ['What accessibility considerations are there?', 'Controls are real buttons with labels. Where the layout shortens text on narrow cards (the progress control reads "New / Learning / Learned"), the full names stay as accessible labels. Colours for charts were checked for colour-vision differences, and dark/light themes follow the system setting.'],
+    ['What would you improve in onboarding?', 'The quiz is only four questions, so levels are approximate; a short practical check (for example, ask the user to perform and recognise one OLL case) could place people more accurately. Analytics are deliberately absent for privacy, so any tuning would need user feedback from the people actually using the app.']
+  ]
+});
+
+COMPONENTS.push({
+  id: 'storage',
+  name: 'State & local storage',
+  tagline: 'Zustand stores for live state and Dexie (IndexedDB) for durable data, with every record ready for sync.',
+  decisions: ['D-004', 'D-030', 'D-038', 'D-063', 'D-065'],
+  what: 'Durable data lives in IndexedDB through Dexie 4: tables `settings`, `sessions`, `solves`, `algChoices`, `progress`, `trainerStats` and a local-only `syncMeta`. Every record has `updatedAt` and a soft-delete flag. Zustand stores (`settings`, `timer`, `trainer`) hold live state and call Dexie. Per-device UI state, such as the selected session, is in namespaced localStorage. Each store is created by a factory that takes the database, so tests can pass an in-memory one.',
+  why: 'The app is local-first: it works fully offline and logged out, and login only adds syncing. IndexedDB scales to tens of thousands of solves where localStorage (about 5 MB, synchronous) does not. Zustand is minimal and handles high-frequency updates (timer, move log) without boilerplate.\n\n`updatedAt` plus tombstones are added from day one so sync could be built later without migrating data.',
+  alts: ['localStorage for everything: small quota, synchronous, no queries.', 'Redux Toolkit: more ceremony than this app needs.', 'Raw IndexedDB: verbose and error-prone; Dexie is the mature wrapper.', 'A hosted database as primary storage: breaks offline use and costs money at scale.'],
+  files: ['`src/db/db.ts`, `src/db/types.ts`', '`src/stores/settings.ts`, `timer.ts`, `trainer.ts`', '`src/lib/backup.ts`'],
+  qa: [
+    ['What does "local-first" mean here?', 'The browser database is the source of truth the UI reads and writes. The app works with no network and no account. The cloud is an optional replica that is synced in the background, so a failed or slow network never blocks a solve being recorded.'],
+    ['Why IndexedDB through Dexie instead of localStorage?', 'IndexedDB is asynchronous, holds far more, supports indexes and handles tens of thousands of records. localStorage is synchronous (it can block the UI), stores only strings and has a small quota. Dexie adds a clean query API, typed tables and middleware.'],
+    ['Describe the schema and indexes.', 'Version 1 declares `settings: key`, `sessions: id, puzzle, updatedAt`, `solves: id, [sessionId+createdAt], updatedAt`, `algChoices`, `progress` and `trainerStats` keyed by `caseId` with `updatedAt`, and `syncMeta: key`. The compound `[sessionId+createdAt]` index gives a session\'s solves in time order; the `updatedAt` indexes let sync find changed records without dirty flags.'],
+    ['Why `updatedAt` and soft deletes on every record?', 'Sync needs to decide, per record, which copy is newer, and to propagate deletions. A tombstone (`deleted` flag with a new `updatedAt`) lets a delete win over an older copy elsewhere instead of the record reappearing from another device. Adding them at the start avoided a data migration later.'],
+    ['Why Zustand rather than Redux or React context?', 'Stores are tiny, need no provider or reducers, and components subscribe to just the slices they use, which matters for the timer and move log updating many times a second. Stores can also be used outside React, for example by the sync engine and tests.'],
+    ['How do you test the stores without a real browser database?', 'Each store comes from a factory such as `createTimerStore(database)`. Tests pass a Dexie instance backed by `fake-indexeddb`, so the same code runs in Node. The default exports use the real database.'],
+    ['What state is synced and what is per-device?', 'Synced: settings, sessions, solves, alg choices, progress and trainer stats. Per-device: which session is selected (`cubebuddy:timer:session`), the trainer\'s chosen cases and the theme override. Keeping them apart stops one phone\'s current view from changing another\'s.'],
+    ['How does the app notice local writes for sync?', 'A Dexie middleware wraps `mutate` on the synced tables and notifies listeners, which only schedule a push (debounced). Which records to push is decided later by comparing `updatedAt` to the last push time, so a missed notification can only delay a push, never lose data. Writes applied from the cloud set `applyingRemote` so they do not trigger another push.'],
+    ['What are the risks of browser storage and how are they mitigated?', 'Browsers may evict site data under storage pressure or when the user clears it, and private windows may not persist. Mitigations: optional cloud sync, JSON export/import for everyone, and cstimer export. The tradeoff of local-first is that backup is the user\'s responsibility unless they sign in.'],
+    ['How do you keep statistics cheap?', 'The current session\'s solves are held in memory and statistics are recomputed whenever the list changes; the history list and graph reuse the same rolling arrays. For a few thousand solves this is well under a frame. For very large imports the plan is incremental windows rather than recomputing everything.']
+  ]
+});
+
+COMPONENTS.push({
+  id: 'sync',
+  name: 'Accounts & cloud sync',
+  tagline: 'Optional Firebase sign-in with last-write-wins sync of solves and settings across devices, built to stay inside free quotas.',
+  decisions: ['D-004', 'D-026', 'D-039', 'D-040', 'D-050', 'D-092'],
+  what: 'Sign-in uses Firebase Auth (Google and email/password with verification and reset). Data lives in Firestore under `users/{uid}`: `meta/settings`, `meta/algs`, `sessions/{id}` and `solveChunks/{id}`. A sync round collects local changes, pulls newer cloud documents, merges last-write-wins per record by `updatedAt`, then pushes. Firestore Lite is used, and Firebase is loaded only on the Account page or at startup for devices that were signed in. `firestore.rules` restricts every user to their own documents.',
+  why: 'Free Spark quotas are counted per document (50,000 reads and 20,000 writes per day), so data is modelled as few large documents: solves are stored per session per week with each record as a JSON string in a map, so a full sync costs a handful of reads, not thousands. Firebase Spark needs no card and does not pause idle projects.\n\nBecause the web config is public by design, security comes from the rules, not from hiding the key.',
+  alts: ['Supabase free tier: pauses idle projects.', 'One document per solve: blows through the free read/write quotas.', 'A CRDT library: heavier than needed when each record has a single owner and a timestamp.', 'Realtime listeners and Firestore offline cache: unnecessary because IndexedDB is already the local store.'],
+  files: ['`src/sync/syncEngine.ts`, `codec.ts`, `cloudTypes.ts`, `memoryCloud.ts`', '`src/sync/firebase.ts`, `account.ts`, `config.ts`', '`firestore.rules`, `src/features/account/AccountPage.tsx`'],
+  qa: [
+    ['Describe the Firestore data model.', '`users/{uid}/meta/settings`, `users/{uid}/meta/algs` (choices, progress and trainer stats as maps), `users/{uid}/sessions/{id}` and `users/{uid}/solveChunks/{id}`. Solves are grouped one document per session per week of `createdAt`, and records are stored as JSON strings inside map fields so each record is one index entry, keeping documents far from Firestore\'s index limits.'],
+    ['Why chunk solves by session and week and not "500 per document"?', 'A count-based chunk cannot be assigned consistently by two devices that are both offline: each would put different solves in "chunk 3". Grouping by week of `createdAt` is deterministic, so two devices always agree where a solve belongs. With set-with-merge each device writes only its own solves.'],
+    ['How does sync resolve conflicts?', 'Last-write-wins per record by `updatedAt`, with tombstones for deletions. That is enough here because a record normally has one author at a time (a solve is created on one device). Records the cloud already has equally new are not pushed back. It is simpler than a CRDT and its failure mode, losing the older of two simultaneous edits to the same record, is acceptable for solve comments or settings.'],
+    ['What about clock skew between devices?', 'Pulling does not compare device clocks. Each cloud document gets a server-stamped `syncedAt`, and each device asks for documents newer than the newest `syncedAt` it has seen, using a full-precision cursor. So a phone with a wrong clock cannot hide changes. `updatedAt` from device clocks is only used to break ties between two edits of the same record.'],
+    ['Walk through one sync round.', 'Collect local records whose `updatedAt` is after the start of this device\'s last push; pull cloud docs with `syncedAt` after the cursor; merge per record; push the changed documents; advance the watermark. Pushes are debounced by about five seconds (immediately if the tab is hidden); failures retry with backoff from 5 seconds doubling to 5 minutes, and again on reconnect or focus.'],
+    ['How is data protected?', 'Firestore security rules allow a user to read and write only documents under their own `uid`. The API key and project ID in the web config are public identifiers, not secrets; anyone can see them in the page. Without the rules the data would be open; with them, a stranger with the key still cannot read other users\' data. Rules are published manually from `firestore.rules` through the Firebase console, since the Firebase CLI is not used.'],
+    ['Why Firestore Lite?', 'The full SDK adds realtime listeners and an offline cache, neither of which is needed: IndexedDB already stores everything locally and sync runs on a schedule. Lite is smaller (about 58 KB gzipped for Firebase here) and is lazy-loaded, so people who never sign in never download it.'],
+    ['Why use the Google popup flow, with redirect only as fallback?', 'The app is on github.io, not on Firebase\'s own auth domain. Redirect sign-in across domains breaks in browsers that partition third-party storage (Safari and Chrome), and GitHub Pages cannot host Firebase\'s auth helper path. Popup works across origins; redirect is used only when the popup is blocked or unsupported.'],
+    ['What happens on first sign-in on a device that already has data?', 'Both sides are pulled and pushed, so the result is the union. The account\'s settings win over the device\'s. A fresh empty default session on the device is dropped if the account already has a session of the same name. Deleting the account re-authenticates, deletes the cloud data and then the user.'],
+    ['How do you test sync without a real Firebase project?', 'The sync engine talks to a `Cloud` interface. Tests use an in-memory implementation (`MemoryCloud`) to simulate several devices, offline edits, tombstones and clock skew. The real Firestore code is a thin adapter. End-to-end checks of the real service were done by the owner on two devices, because automated tests have no test account.']
+  ]
+});
+
+COMPONENTS.push({
+  id: 'pwa',
+  name: 'PWA & offline',
+  tagline: 'An installable app whose service worker precaches everything, so every page works offline after the first visit.',
+  decisions: ['D-023', 'D-030', 'D-093', 'D-099'],
+  what: '`vite-plugin-pwa` (Workbox `generateSW`) builds a service worker that precaches every built file, about 2.8 MB including cubing.js chunks and the engine worker, with an `index.html` navigation fallback. The manifest provides name, icons (192, 512 and a maskable 512) and standalone display. `registerType: "prompt"` means a toast offers to reload when a new deploy is found, checked hourly and when the app becomes visible. The worker is scoped to `/cubebuddy/`, and unlisted static pages (`/transcript/`, `/interview/`) are excluded from the cache and the fallback.',
+  why: 'A cube timer is used at competitions and on bad connections, and the app is already local-first with an in-browser solver, so being fully offline-capable costs little. Precaching everything guarantees any page works after one visit; the update prompt avoids swapping code mid-solve.\n\nScoping the worker to its own path and excluding static pages means it cannot hijack other projects on the same origin.',
+  alts: ['Runtime caching on demand: pages might be missing offline the first time they are needed.', '`autoUpdate`: reloads unexpectedly; surprising during a session.', 'No PWA: works online only, no install and no offline timer.', 'A hand-written service worker: more code and cache-invalidation bugs than Workbox.'],
+  files: ['`vite.config.ts` (VitePWA options)', '`src/app/UpdatePrompt.tsx`', '`tests/pwa.spec.ts`, `public/*.png` icons'],
+  qa: [
+    ['What makes a web app a PWA?', 'A web app manifest (name, icons, display mode, start URL, scope), a service worker that controls the page and HTTPS. With those, browsers can offer installation and the app can work offline. CubeBuddy adds an update prompt on top.'],
+    ['What does the service worker actually cache and how?', 'Workbox `generateSW` produces a precache manifest of every built file with content-hash revisions, about 2.8 MB. On install the worker downloads them; later requests are served from cache first. When a new build changes a hash, only the changed files are re-fetched. `cleanupOutdatedCaches` removes old entries.'],
+    ['Why precache everything instead of caching at runtime?', 'It guarantees that every page, including the 3D and engine chunks, works offline after a single visit. With runtime caching, a page the user had never opened would fail offline exactly when they need it, such as at a competition.'],
+    ['Why use a prompt for updates?', 'A silent auto-update could replace the running code during a solve or drill. With `registerType: "prompt"` the new worker waits, a toast says a new version is available, and the user reloads when ready. The app checks hourly and when the tab becomes visible.'],
+    ['How does the service worker interact with the shared github.io origin?', 'The scope is `/cubebuddy/`, so it controls only this app\'s URLs and caches only its own assets. Other projects on the same domain are unaffected. Storage keys and the IndexedDB name are also prefixed for the same reason.'],
+    ['Why exclude `/transcript/` and `/interview/` from the worker?', 'They are standalone static pages, not part of the single-page app. Without an exclusion the navigation fallback would serve the app\'s `index.html` for them in an installed app, and the router would show Not Found. A `navigateFallbackDenylist` entry and `globIgnores` keep them as real network pages, and also keep about 200 KB of non-app content out of the offline cache.'],
+    ['What works offline and what does not?', 'Everything except sign-in and sync: timer, free-play, trainer, tutorials, scanning and settings. Data is written to IndexedDB. When the device is back online, sync resumes on reconnect or focus.'],
+    ['How are the icons produced?', 'Rendered from `favicon.svg` into 192×192, 512×512, a maskable 512×512 (with safe-zone padding so Android can crop it into shapes) and an Apple touch icon at 180×180.'],
+    ['How do you test a service worker?', 'In Playwright, service workers are blocked in all specs except `pwa.spec.ts`, so other tests do not see stale caches. The PWA spec checks the manifest and icons, that the scope of the worker is `/cubebuddy/`, and that every page loads offline after the first visit, all against the production build.'],
+    ['What are the limits of installing on phones?', 'Android Chrome offers install directly; iOS uses "Add to Home Screen" and has stricter storage eviction for sites not used regularly. That is another reason to offer sync and export: the PWA makes the app available offline, but browser storage is still not a guaranteed archive.']
+  ]
+});
+
+COMPONENTS.push({
+  id: 'build',
+  name: 'Build, CI & testing',
+  tagline: 'A gated pipeline: lint, format, typecheck, unit tests, build and end-to-end tests must pass before GitHub Pages deploys.',
+  decisions: ['D-029', 'D-044', 'D-045', 'D-049', 'D-051', 'D-052', 'D-054', 'D-055', 'D-067'],
+  what: 'A GitHub Actions workflow ("CI / Deploy") runs on every push: a guard that no Markdown file except `README.md` is tracked, `npm ci`, ESLint, Prettier check, `tsc` typecheck, Vitest, `vite build`, a Playwright install and the end-to-end tests, then uploads the Pages artifact. A separate job deploys it only if everything passed. Work happens on a branch, CI runs on it, and `main` is only fast-forwarded when green, which triggers the deploy.',
+  why: 'Correctness of the solvers and alg data is the product\'s core value and is cheap to test automatically, so CI is the safety net. Gating the deploy on every check keeps the live site always working.\n\nExact dependency pins, avoiding releases newer than two weeks, and a patch for cubing.js keep builds reproducible and reduce supply-chain risk.',
+  alts: ['Deploying from a local machine: easy to skip tests or deploy broken code.', 'Only unit tests: miss real-browser and phone-touch bugs that Playwright found.', 'Floating dependency ranges: surprise breakage, especially with cubing.js\'s experimental APIs.', 'The Firebase CLI: not needed; rules are published manually and everything else is static.'],
+  files: ['`.github/workflows/deploy.yml`, `vite.config.ts`, `scripts/check-no-md.mjs`', '`src/**/*.test.ts` (Vitest), `tests/*.spec.ts` (Playwright)', '`playwright.config.ts`, `eslint.config.js`, `.gitattributes`, `patches/`'],
+  qa: [
+    ['Walk me through the CI pipeline.', 'Checkout; the no-Markdown guard; set up Node 24; `npm ci`; lint; Prettier check; typecheck; Vitest; production build; install Chromium; Playwright end-to-end tests; upload artifacts. The deploy job needs the check job to succeed. Order is cheapest-first, so quick failures such as formatting stop the run early.'],
+    ['What is your testing strategy?', 'A pyramid. Many fast Vitest unit tests cover the engine, statistics, cstimer round-trips, merge logic, notation and the alg database. Property and exhaustive tests prove completeness (1,000 random scrambles, all 216 orientations, 288 permutations and 576 PBL states). A handful of Playwright specs run the production build in desktop and Pixel 7 projects to cover real-browser behaviour such as touch, the service worker, print layout and camera flows.'],
+    ['Give an example of a bug only an end-to-end test found.', 'The stuck timer (D-082): the trainer drill disabled the timer while loading the next scramble, which removed the key-up listener before the stopping key was released. A unit test of the reducer passed; only the integrated flow showed it. The touch ghost-click bug (D-089) and the cubing.js repaint bug were also found in a real browser.'],
+    ['Why use a branch plus fast-forward merge?', '`main` must always be deployable, and merging deploys. A phase branch gets CI, the owner can check it, and then `main` is fast-forwarded, keeping a linear history. Each phase also has explicit exit criteria so "done" is objective.'],
+    ['What does the "no Markdown" guard do and why?', 'The owner wanted the public repository to hold only what is needed to build and deploy the app, so planning documents (spec, plan, decisions) stay local. `.gitignore` excludes `*.md`, with an exception for `README.md`, and a CI step fails the build if any other Markdown file is tracked. Three layers: the ignore rule, a pre-commit check by the assistant, and CI.'],
+    ['What notable Vite settings are there?', '`base: "/cubebuddy/"` for the project site; a plugin that copies `index.html` to `404.html` for deep links; worker format `es`; build target `es2023`; `modulePreload: false`, `cssCodeSplit: false` and a separate `vite-preload-helper` chunk so cubing.js\'s worker does not import the app; and `optimizeDeps.exclude: ["cubing"]` for the dev server because pre-bundling breaks its worker URLs.'],
+    ['What is your dependency policy?', 'Exact versions pinned by `package-lock.json`, taking the newest stable major at scaffold time but, for later additions, the newest release at least two weeks old (for example TanStack Virtual 3.14.14) as a basic supply-chain precaution. cubing.js is pinned exactly because it exposes `experimental*` APIs. Upgrades are deliberate and re-check the cubing.js patch.'],
+    ['Why `patch-package` for cubing.js rather than forking?', 'A one-line fix does not justify maintaining a fork. `patch-package` runs on `postinstall`, applies `patches/cubing+0.66.1.patch` and fails loudly if the patch does not apply after an upgrade. The report and draft upstream issue are kept so the fix can be proposed to cubing.js.'],
+    ['How are Firebase configuration values handled in CI?', 'They are stored as GitHub repository variables and provided to the build as `VITE_FIREBASE_*` environment variables; locally they live in a git-ignored `.env.local`. They are public identifiers, since they end up in the shipped JavaScript anyway, so protection comes from Firestore security rules. The owner\'s personal cstimer export is also git-ignored.'],
+    ['What would you add to the pipeline?', 'Automated accessibility checks, visual regression snapshots for the diagrams, a bundle-size budget that fails CI when the main chunk grows, and a scheduled job that builds against the newest cubing.js to warn early when the patch stops applying.']
+  ]
+});
+OVERALL.push(
+  ['Give me a 30-second pitch for CubeBuddy.', 'CubeBuddy is a free speedcubing companion that runs entirely in the browser: a cstimer-class timer, a virtual cube, a verified algorithm trainer and guided CFOP, Ortega and beginner tutorials that analyse the user\'s own cube and tell them the next step. You can even scan a real cube with the camera and be walked through solving it. It costs $0 to host, works offline as an installable app, and syncs across devices if you sign in.'],
+  ['What was the hardest technical problem?', 'Producing solutions that teach rather than merely solve. A fast optimal solver is easy to get; the hard part was a staged engine whose F2L uses human moves, recognises last-layer cases against the user\'s own algs, and works from any cube state with no stored script. The first F2L search found short but unnatural solutions, so it was rebuilt around slot triggers. A close second was tracking down the cubing.js repaint bug that made correct highlights look wrong.'],
+  ['Why a local-first design with optional sync?', 'It makes the app work offline and logged out, it is free (no server, Firebase Spark needs no card) and a network failure can never lose a solve. Sync is an add-on: per-record last-write-wins with timestamps, designed around the free quota\'s per-document counting. The cost is that backup is the user\'s responsibility unless they sign in, so JSON and cstimer export exist.'],
+  ['How did you make sure the solver and the algorithm data are correct?', 'By testing them as mathematical objects, not by spot checks: every alg in the database is simulated for its case, goal and recognition (about 1,100 checks); the engine is run on 1,000 seeded random scrambles in CI; and exhaustive tests cover every last-layer orientation and permutation state and every 2x2 PBL state. Enumerations proved set sizes (exactly 41 F2L cases). A test caught a wrong PBL alg that had been written from memory.'],
+  ['How was AI used to build this, and how did you stay in control of the result?', 'The project was built with an AI coding assistant driven by a written spec and a decision log. It started with a long clarifying-question phase, and each architectural choice was recorded as a decision with its reason (D-001 to D-099). Work was delivered in phases on branches, with CI gating deployment. The product itself contains no AI or machine learning (D-001). Human review mattered: the owner caught non-standard F2L algorithms, a redundant PBL case and the highlight bug while using the app, and those became decisions and tests. The full conversation is published on the unlisted transcript page.'],
+  ['How would the app handle many more users?', 'Everything computational runs on the user\'s device, so load does not grow with users; only sync touches a server. Firestore is modelled around its free per-document quotas, with solves chunked per session per week, so each sync costs a few reads and writes. The stated audience is the owner and friends (D-002), so no abuse protection beyond security rules was built; real scale would add rate limits, monitoring and quotas.'],
+  ['What is the security model?', 'There are no secrets in the front end. The Firebase web config is public by design; access control is enforced by Firestore rules that restrict each user to their own documents, and Firebase Auth handles sign-in, verification and password reset. Camera frames are processed locally and not uploaded. The repository keeps the owner\'s personal data (cstimer export) and environment files out of git, and CI blocks unwanted Markdown files.'],
+  ['Name three trade-offs you made and why.', 'First, an own TypeScript engine instead of cubing.js\'s solver: more code, but orders of magnitude faster staged search. Second, last-write-wins sync instead of CRDTs: simpler and sufficient for single-author records. Third, a patch to cubing.js instead of a fork or workaround: minimal upkeep, but it is tied to version 0.66.1 and must be re-checked on upgrades.'],
+  ['What are the project\'s limitations?', 'Only 3x3 and 2x2. No Bluetooth smart cubes, drag-to-turn or scroll-wheel undo (all consciously out of scope). Camera colour recognition can still need manual correction in poor light. Browser storage can be evicted, so sync or export is needed for safety. Sync was verified by the owner on real devices but automated tests only cover it against an in-memory cloud.'],
+  ['What would you build next?', 'The owner has asked for a friends feature, which is on hold until scope is agreed. It would reverse an explicit non-goal (social features were out of scope) and need new Firestore rules, since today every user can only read their own data; privacy defaults and how friendships are formed must be decided first. Other candidates: automated accessibility checks, a bundle-size budget in CI and contributing the cubing.js fix upstream.']
+);
+
+THEORY_SUMMARY.push(
+  ['The puzzle as a group', 'A 3x3 has 8 corners and 12 edges. Each corner has 3 orientations and each edge 2. Not every arrangement is reachable: corner twists sum to 0 (mod 3), edge flips sum to 0 (mod 2), and corner and edge permutations have equal parity. That leaves 8!·3⁷·12!·2¹¹ / 2 = 43,252,003,274,489,856,000 states. A 2x2 has 7!·3⁶ = 3,674,160 (one corner fixed). Moves compose, have inverses and the identity, so the puzzle is a mathematical group; algorithms are group elements, built from conjugates and commutators.'],
+  ['Search', 'Breadth-first search finds shortest paths but its memory grows exponentially; it is used to build exact pruning tables for small sub-problems (the cross: 190,080 states). IDA* is depth-first search with an increasing cost limit and an admissible heuristic (never overestimates), keeping memory tiny and remaining optimal. God\'s number is 20 for the 3x3 in the half-turn metric and 11 for the 2x2. CubeBuddy\'s solvers are staged and exact on small sub-spaces rather than one global optimal search.'],
+  ['The methods', 'CFOP: Cross, F2L (first two layers, 41 cases, pairs a corner and edge), OLL (57 orientation cases) and PLL (21 permutation cases). Layer-by-layer is the beginner version with fewer, longer algs. Ortega (2x2): build a face, orient the last layer (OLL), then permute both layers (PBL). Recognition is mapping a state to a case; an AUF is a final U turn that aligns the last layer.'],
+  ['Colour and vision', 'RGB values shift with lighting. CIE Lab separates lightness (L) from two colour axes (a, b) and its Euclidean distance approximates perceived difference. Classification uses centre-calibrated references, a capacity constraint (nine stickers per colour) and, on a 2x2, iterative re-estimation of the references (k-means style).'],
+  ['Data and distributed systems', 'Local-first: a local database is authoritative and a cloud replica syncs later. Last-write-wins keeps the record with the latest timestamp; tombstones propagate deletes; device clocks can disagree, so pull cursors use server timestamps. Idempotent merges make retries safe. Firestore bills per document read and write, so the data model batches records into chunks.'],
+  ['Browser platform', 'The main thread runs the UI, so heavy work goes to Web Workers (message passing, structured clone, Comlink for RPC). IndexedDB is the async, indexed store; localStorage is small and synchronous. WebGL contexts are scarce (about 16 per page). A service worker is a programmable network proxy with install, waiting and activate phases; Workbox precaching serves versioned files from cache. Statistics follow WCA rules: trimmed means that drop outliers.'],
+  ['Learning and memory', 'Spaced repetition schedules practice by difficulty: a Leitner system moves items between boxes (struggling to solid) and practises weak boxes more often. CubeBuddy weights random choice by box, relative speed and recognition errors. Recognition (seeing which case it is) and execution (performing the alg) are trained separately because they are different skills.']
+);
+
+THEORY_QS.push(
+  ['Why does the 3x3 have 43,252,003,274,489,856,000 states, and where does the division by 12 come from?', 'Counting all placements gives 8!·3⁸·12!·2¹² . Three independent constraints each remove a factor: the last corner\'s twist is determined by the rest (÷3), the last edge\'s flip is determined (÷2), and corner and edge permutation parities must match (÷2). So the count is 8!·3⁷·12!·2¹¹ / 2 = 43,252,003,274,489,856,000, about 4.3×10¹⁹; the full unconstrained count is 12 times larger, and only one in twelve of the "assembled any way" states is solvable.'],
+  ['Why is a single swapped pair of edges unsolvable?', 'Each quarter turn permutes four corners in a 4-cycle and four edges in a 4-cycle. A 4-cycle is an odd permutation (three transpositions), so one move changes both the corner and edge parity at the same time. They therefore stay equal from the solved state onward, and a state in which only the edges have odd parity cannot be reached. A single edge swap is odd for edges only.'],
+  ['Why must corner twists sum to 0 mod 3 and edge flips to 0 mod 2?', 'Each face turn twists corners by +1 or +2 in a way that always sums to a multiple of 3 over the four corners, so the total twist mod 3 is invariant at 0 from the solved state. Quarter turns of the F or B faces flip four edges, an even number, and all other turns flip none, so the total flip count mod 2 is invariant. Hence a single twisted corner or a single flipped edge is unreachable.'],
+  ['What is God\'s number, and what is it for the 2x2?', 'God\'s number is the maximum over all states of the minimum moves needed to solve. It is 20 for the 3x3 in the half-turn metric (a result proved with large computer searches) and 26 in the quarter-turn metric. For the 2x2 it is 11 half-turn moves and 14 quarter-turn moves. In CubeBuddy, `solve2x2RUF` produces optimal solutions of at most 11 moves with ⟨R, U, F⟩.'],
+  ['Compare BFS, DFS and IDA*. Why IDA*?', 'BFS is complete and optimal but stores every frontier node, so memory explodes (the cube has about 18ⁿ nodes at depth n). DFS uses little memory but is not optimal and can run forever without a limit. IDA* repeats depth-limited DFS with a growing cost bound f = g + h, so memory is proportional to depth while the first solution found is optimal when h never overestimates. The extra work from repeating shallower iterations is small because the last level dominates the cost.'],
+  ['What makes a heuristic admissible, and what is a pruning table?', 'A heuristic is admissible if it never overestimates the true remaining cost. A pruning table is a precomputed exact distance for a relaxed problem (for example only the four cross edges), which is a lower bound for the whole problem, so it is admissible. Taking the maximum of several tables stays admissible and prunes more. Consistency additionally means h drops by at most one per move, which is true for BFS-built tables.'],
+  ['Why does the cross table have 190,080 entries?', 'It tracks the four cross edges: choose and order their positions among 12 slots (12·11·10·9 = 11,880) and give each one of two orientations (2⁴ = 16). That is 11,880 × 16 = 190,080. It is small enough to fill by breadth-first search in a fraction of a second, and exact, so solving the cross optimally is a table walk.'],
+  ['What is the branching factor of cube search and how do you reduce it?', 'There are 18 half-turn moves, but turning the same face twice in a row is redundant, and opposite faces commute (R L equals L R), so only one ordering is searched. This cuts the effective branching factor to about 13.3. Restricting to ⟨R, U, F⟩ (9 moves) or to human slot triggers shrinks it further, and pruning tables cut depth. IDA* cost is roughly bᵈ, so reducing b matters enormously.'],
+  ['Explain conjugates and commutators and why algorithms use them.', 'A conjugate `A B A⁻¹` applies B in a different position: move something into place, do B, put things back. A commutator `A B A⁻¹ B⁻¹` is nearly the identity, so it changes only a few pieces, which is what makes it useful for cycling three pieces. Many F2L and last-layer algs are built from these. Sune, `R U R\' U R U2 R\'`, has order 6, meaning repeating it six times returns the cube to its starting state.'],
+  ['Why is Lab better than RGB for classifying sticker colours?', 'RGB mixes brightness and hue, and Euclidean distance in RGB does not match perception: two oranges under different light can be far apart while an orange and a red are close. Lab separates lightness from the a and b colour axes and is built so that distance approximates perceived difference. Weighting lightness down (×0.5) makes the classifier rely on hue, which stays more stable under changing lighting.'],
+  ['What is capacity-constrained assignment, and how does it relate to k-means?', 'Plain nearest-colour assignment can put ten stickers in one colour. Capacity-constrained assignment gives each colour exactly nine (or four) slots and assigns stickers closest-first, which uses prior knowledge about the cube. k-means alternates assigning points to the nearest centre and moving each centre to the mean of its points. CubeBuddy\'s 2x2 classifier does this loop with capacity limits for up to eight rounds, because there are no centres to anchor the references.'],
+  ['Why is last-write-wins acceptable here, and when would it fail?', 'Each record usually has one author at a time: a solve is created once on one device and edited rarely, so concurrent edits of the same record are uncommon and losing the older one is harmless. It fails for collaborative data where both edits matter, such as two devices appending to one list, which is why solves are separate records and not a list in one document. CRDTs or operational transforms would be needed for those.'],
+  ['Why can\'t you trust device clocks, and what do you do instead?', 'Devices can be minutes or hours wrong, so comparing a device\'s `updatedAt` to another\'s is unreliable for deciding what to download. Each cloud document therefore gets a server-stamped `syncedAt`, and a device asks for everything with `syncedAt` after the newest it has seen, which is monotonic on the server. `updatedAt` is still used to decide between two versions of one record, where an error only affects a rare conflict. Related ideas are Lamport and hybrid logical clocks.'],
+  ['How do the event loop and Web Workers keep the UI responsive?', 'JavaScript on the main thread runs one task at a time and must yield for rendering. A long search blocks input and animation. A Web Worker runs a separate event loop on another thread; the page and the worker exchange messages that are copied by structured clone, so no memory is shared. Comlink wraps this into promise-returning calls. CubeBuddy keeps messages tiny (move strings in, JSON out) so the transfer cost is negligible.'],
+  ['Describe the service worker lifecycle and precache versioning.', 'A new worker is installed (downloads and caches its files), then waits while the old one still controls open pages, and activates when those close or when told to skip waiting. Workbox stores each file with a content-hash revision, so after a deploy only changed files are fetched and old entries are cleaned up. CubeBuddy uses a prompt mode: the waiting worker is activated only when the user taps reload, so a page never changes under a running solve.']
+);
+
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+
+  // Layout of the diagram: id -> [x, y, width, group, label lines]
+  var LAYOUT = {
+    learn:    [10, 20, 150, 'feat', ['Onboarding,', 'notation, settings']],
+    timer:    [175, 20, 120, 'feat', ['Timer']],
+    play:     [310, 20, 120, 'feat', ['Free-play']],
+    trainer:  [445, 20, 160, 'feat', ['Alg database', '& trainer']],
+    tutorial: [620, 20, 150, 'feat', ['Tutorials', 'CFOP · Ortega · LBL']],
+    scan:     [785, 20, 165, 'feat', ['Camera scan', '& net editor']],
+    shell:    [10, 160, 200, 'ui', ['App shell', '& routing']],
+    cubeview: [300, 160, 220, 'ui', ['CubeView', '3D renderer (cubing.js)']],
+    solvers:  [640, 160, 220, 'eng', ['Stage solvers', '& helpers']],
+    storage:  [10, 300, 220, 'data', ['State & local storage', 'Zustand + Dexie']],
+    engine:   [640, 300, 220, 'eng', ['Cube engine', 'Web Worker + Comlink']],
+    sync:     [10, 440, 220, 'data', ['Accounts & cloud sync', 'Firebase Auth + Firestore Lite']],
+    pwa:      [560, 440, 170, 'plat', ['PWA & offline', 'service worker']],
+    build:    [760, 440, 190, 'plat', ['Build, CI & testing', 'Vite · Vitest · Playwright']]
+  };
+  var EXT = { id: 'firebase', x: 290, y: 440, w: 200, lines: ['Firebase (Google)', 'external service'] };
+  var H = 60;
+  var EDGES = [
+    ['learn', 'storage'], ['timer', 'storage'], ['trainer', 'storage'],
+    ['play', 'cubeview'], ['trainer', 'cubeview'], ['tutorial', 'cubeview'],
+    ['play', 'solvers'], ['tutorial', 'solvers'], ['trainer', 'solvers'], ['scan', 'solvers'],
+    ['solvers', 'engine'], ['storage', 'sync'], ['sync', 'firebase'],
+    ['shell', 'storage'], ['shell', 'pwa'], ['build', 'pwa']
+  ];
+
+  function el(name, attrs, parent) {
+    var n = document.createElementNS(NS, name);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  function h(tag, cls, html) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (html != null) n.innerHTML = html;
+    return n;
+  }
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  // Text to HTML: paragraphs on blank lines, `code` spans, **bold**.
+  function fmt(s) {
+    return esc(s).split(/\n\n/).map(function (p) {
+      return '<p>' + p.replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>') + '</p>';
+    }).join('');
+  }
+  function inline(s) { return esc(s).replace(/`([^`]+)`/g, '<code>$1</code>'); }
+
+  var byId = {};
+  COMPONENTS.forEach(function (c) { byId[c.id] = c; });
+
+  // ---- diagram ----
+  var svg = document.getElementById('diagram');
+  var edgeLayer = el('g', {}, svg);
+  var nodeLayer = el('g', {}, svg);
+  var centres = {};
+  Object.keys(LAYOUT).forEach(function (id) {
+    var d = LAYOUT[id];
+    centres[id] = [d[0] + d[2] / 2, 20 + (d[1] - 20) + H / 2];
+  });
+  centres[EXT.id] = [EXT.x + EXT.w / 2, EXT.y + H / 2];
+  var edgeEls = EDGES.map(function (e) {
+    var a = centres[e[0]], b = centres[e[1]];
+    var line = el('line', { x1: a[0], y1: a[1], x2: b[0], y2: b[1], class: 'edge' }, edgeLayer);
+    line.dataset.a = e[0]; line.dataset.b = e[1];
+    return line;
+  });
+  // Arrowheads are left out on purpose: the layers (features above, engine and data below) show the direction.
+  var nodeEls = {};
+  Object.keys(LAYOUT).forEach(function (id) {
+    var d = LAYOUT[id];
+    var c = byId[id];
+    var g = el('g', { class: 'node g-' + d[3], tabindex: '0', role: 'button', 'aria-label': (c ? c.name : id) + ' — show details' }, nodeLayer);
+    el('rect', { x: d[0], y: d[1], width: d[2], height: H }, g);
+    d[4].forEach(function (line, i) {
+      var t = el('text', { x: d[0] + d[2] / 2, y: d[1] + (d[4].length === 1 ? 36 : 26 + i * 18), class: i ? 'sub' : '' }, g);
+      t.textContent = line;
+    });
+    g.addEventListener('click', function () { select(id, true); });
+    g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(id, true); } });
+    nodeEls[id] = g;
+  });
+  var ext = el('g', { class: 'node ext g-plat' }, nodeLayer);
+  el('rect', { x: EXT.x, y: EXT.y, width: EXT.w, height: H }, ext);
+  EXT.lines.forEach(function (line, i) {
+    var t = el('text', { x: EXT.x + EXT.w / 2, y: EXT.y + 26 + i * 18, class: i ? 'sub' : '' }, ext);
+    t.textContent = line;
+  });
+
+  // ---- chips ----
+  var chipBox = document.getElementById('chips');
+  var chipEls = {};
+  COMPONENTS.forEach(function (c) {
+    var b = h('button', 'chip', esc(c.name));
+    b.type = 'button';
+    b.addEventListener('click', function () { select(c.id, true); });
+    chipBox.appendChild(b);
+    chipEls[c.id] = b;
+  });
+
+  // ---- question lists ----
+  function qlist(items, prefix) {
+    var frag = document.createDocumentFragment();
+    items.forEach(function (qa, i) {
+      var d = h('details', 'q');
+      var s = h('summary', null, '<b>' + (i + 1) + '.</b><span>' + inline(qa[0]) + '</span>');
+      d.appendChild(s);
+      d.appendChild(h('div', 'ans', fmt(qa[1])));
+      frag.appendChild(d);
+    });
+    return frag;
+  }
+  function toggler(container) {
+    var wrap = h('span');
+    ['Expand all', 'Collapse all'].forEach(function (label, i) {
+      var b = h('button', 'mini', label);
+      b.type = 'button';
+      b.addEventListener('click', function () {
+        container.querySelectorAll('details.q').forEach(function (d) { d.open = i === 0; });
+      });
+      wrap.appendChild(b);
+    });
+    return wrap;
+  }
+
+  // ---- detail ----
+  var detail = document.getElementById('detail');
+  var current = null;
+  function list(items) { return '<ul>' + items.map(function (x) { return '<li>' + inline(x) + '</li>'; }).join('') + '</ul>'; }
+  function select(id, scroll) {
+    var c = byId[id];
+    if (!c) return;
+    current = id;
+    Object.keys(nodeEls).forEach(function (k) { nodeEls[k].classList.toggle('sel', k === id); });
+    Object.keys(chipEls).forEach(function (k) { chipEls[k].classList.toggle('sel', k === id); });
+    edgeEls.forEach(function (e) { e.classList.toggle('on', e.dataset.a === id || e.dataset.b === id); });
+    detail.innerHTML = '';
+    var card = h('div', 'card');
+    card.appendChild(h('h2', null, esc(c.name)));
+    card.appendChild(h('p', 'lede', inline(c.tagline)));
+    var tags = h('div');
+    c.decisions.forEach(function (d) { tags.appendChild(h('span', 'tag', d)); });
+    card.appendChild(tags);
+    card.appendChild(h('div', null, fmt(c.what)));
+    var cols = h('div', 'cols');
+    cols.appendChild(h('div', 'box', '<h3>Why it is built this way</h3>' + fmt(c.why)));
+    cols.appendChild(h('div', 'box', '<h3>Alternatives considered</h3>' + list(c.alts) + '<h3 style="margin-top:12px">Where to look in the code</h3>' + list(c.files)));
+    card.appendChild(cols);
+    var head = h('div', 'qhead');
+    head.appendChild(h('h3', null, 'Top 10 interview questions: ' + esc(c.name)));
+    var qbox = h('div');
+    qbox.appendChild(qlist(c.qa));
+    head.appendChild(toggler(qbox));
+    card.appendChild(head);
+    card.appendChild(qbox);
+    detail.appendChild(card);
+    if (location.hash !== '#c-' + id) history.replaceState(null, '', '#c-' + id);
+    if (scroll) detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ---- fixed sections ----
+  var ov = document.getElementById('overall-list');
+  ov.appendChild(h('div', 'qhead')).appendChild(toggler(ov));
+  ov.appendChild(qlist(OVERALL));
+  var tb = document.getElementById('theory-box');
+  THEORY_SUMMARY.forEach(function (t) { tb.appendChild(h('div', 'box', '<h3>' + esc(t[0]) + '</h3>' + fmt(t[1]))); });
+  var tq = document.getElementById('theory-list');
+  tq.appendChild(h('div', 'qhead')).appendChild(toggler(tq));
+  tq.appendChild(qlist(THEORY_QS));
+
+  function fromHash() {
+    var m = /^#c-([a-z]+)$/.exec(location.hash);
+    if (m && byId[m[1]] && m[1] !== current) select(m[1], true);
+  }
+  addEventListener('hashchange', fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>

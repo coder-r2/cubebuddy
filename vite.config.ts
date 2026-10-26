@@ -55,11 +55,11 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2,webmanifest}'],
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
-        // The unlisted /transcript/ page is a standalone static file: keep it out of the offline cache
-        // and out of the SPA navigation fallback so it always loads as itself.
-        globIgnores: ['transcript/**'],
+        // The unlisted /transcript/ and /interview/ pages are standalone static files: keep them out of the offline
+        // cache and the SPA navigation fallback so they always load as themselves.
+        globIgnores: ['transcript/**', 'interview/**'],
         navigateFallback: 'index.html',
-        navigateFallbackDenylist: [/\/transcript(\/|$)/],
+        navigateFallbackDenylist: [/\/(transcript|interview)(\/|$)/],
         cleanupOutdatedCaches: true,
       },
     }),
